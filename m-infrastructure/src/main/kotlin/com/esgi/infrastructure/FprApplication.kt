@@ -1,4 +1,4 @@
-package com.esgi.fpr
+package com.esgi.infrastructure
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

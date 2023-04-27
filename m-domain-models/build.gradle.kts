@@ -13,9 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":m-infrastructure"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
 
 tasks.withType<KotlinCompile> {

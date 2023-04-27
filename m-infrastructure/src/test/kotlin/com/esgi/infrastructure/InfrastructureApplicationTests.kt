@@ -1,10 +1,10 @@
-package com.esgi.fpr
+package com.esgi.infrastructure
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class FprApplicationTests {
+class InfrastructureApplicationTests {
 
     @Test
     fun contextLoads() {
