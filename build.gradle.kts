@@ -37,7 +37,12 @@ dependencies {
     liquibaseRuntime ("org.liquibase:liquibase-groovy-dsl:3.0.2")
     liquibaseRuntime ("info.picocli:picocli:4.6.1")
     liquibaseRuntime ("org.postgresql:postgresql:42.2.27")
-    liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.21.1")
+    liquibaseRuntime("org.liquibase.ext:liquibase-hibernate6:4.21.1")
+    liquibaseRuntime("org.springframework.boot:spring-boot-starter-data-jpa")
+    liquibaseRuntime(sourceSets.getByName("main").output)
+    liquibaseRuntime(sourceSets.getByName("main").compileClasspath)
+    liquibaseRuntime(sourceSets.getByName("main").runtimeClasspath)
+
 }
 
 fun readProperties(propertiesFile: File) = Properties().apply {
@@ -46,7 +51,7 @@ fun readProperties(propertiesFile: File) = Properties().apply {
     }
 }
 
-val projectProperties = readProperties(file("src/main//resources/application.properties"))
+val projectProperties = readProperties(file("src/main/resources/application.properties"))
 
 configurations {
     compileOnly {
@@ -57,7 +62,7 @@ configurations {
             this.arguments = mapOf(
                 "changeLogFile" to projectProperties["spring.liquibase.change-log"],
                 "url" to projectProperties["spring.datasource.url"],
-                "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQL95Dialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+                "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
                 "driver" to projectProperties["spring.datasource.driver-class-name"],
                 "referenceDriver" to "liquibase.ext.hibernate.database.connection.HibernateDriver",
                 "username" to projectProperties["spring.datasource.username"],
