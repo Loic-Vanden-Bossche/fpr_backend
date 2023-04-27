@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class FprApplication
+class JprApplication
 
 fun main(args: Array<String>) {
-    runApplication<FprApplication>(*args)
+    runApplication<JprApplication>(*args)
 }
