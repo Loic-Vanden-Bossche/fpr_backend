@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.*
 
 plugins {
     id("org.springframework.boot") version "3.0.6"
@@ -36,7 +37,16 @@ dependencies {
     liquibaseRuntime ("org.liquibase:liquibase-groovy-dsl:3.0.2")
     liquibaseRuntime ("info.picocli:picocli:4.6.1")
     liquibaseRuntime ("org.postgresql:postgresql:42.2.27")
+    liquibaseRuntime("org.liquibase.ext:liquibase-hibernate5:4.21.1")
 }
+
+fun readProperties(propertiesFile: File) = Properties().apply {
+    propertiesFile.inputStream().use { fis ->
+        load(fis)
+    }
+}
+
+val projectProperties = readProperties(file("src/main//resources/application.properties"))
 
 configurations {
     compileOnly {
@@ -45,12 +55,13 @@ configurations {
     liquibase {
         activities.register("main") {
             this.arguments = mapOf(
-                "changeLogFile" to "src/main/resources/db/changelog/db.changelog-master.yml",
-                "url" to "jdbc:postgresql://localhost:5432/jpr",
-                "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQLDialect",
-                "driver" to "org.postgresql.Driver",
-                "username" to "postgres",
-                "password" to "root"
+                "changeLogFile" to projectProperties["spring.liquibase.change-log"],
+                "url" to projectProperties["spring.datasource.url"],
+                "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQL95Dialect&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+                "driver" to projectProperties["spring.datasource.driver-class-name"],
+                "referenceDriver" to "liquibase.ext.hibernate.database.connection.HibernateDriver",
+                "username" to projectProperties["spring.datasource.username"],
+                "password" to projectProperties["spring.datasource.password"],
             )
         }
         runList = "main"
