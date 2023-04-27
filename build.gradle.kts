@@ -26,7 +26,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.liquibase:liquibase-core")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -53,6 +53,10 @@ fun readProperties(propertiesFile: File) = Properties().apply {
 
 val projectProperties = readProperties(file("src/main/resources/application.properties"))
 
+tasks.diffChangeLog {
+    dependsOn("compileKotlin")
+}
+
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -60,7 +64,7 @@ configurations {
     liquibase {
         activities.register("main") {
             this.arguments = mapOf(
-                "changeLogFile" to projectProperties["spring.liquibase.change-log"],
+                "changeLogFile" to (projectProperties["spring.liquibase.change-log"] as String).replace("classpath:", "src/main/resources/"),
                 "url" to projectProperties["spring.datasource.url"],
                 "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
                 "driver" to projectProperties["spring.datasource.driver-class-name"],
