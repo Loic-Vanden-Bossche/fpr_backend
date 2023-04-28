@@ -1,33 +1,36 @@
 package com.esgi.infrastructure.persistence.entities
 
 import jakarta.persistence.*
-import org.hibernate.annotations.GenericGenerator
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import java.time.Instant
 import java.util.UUID
 
 @Entity
 @Table(name = "T_USERS")
-class UserEntity {
+class UserEntity (
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", columnDefinition = "VARCHAR(255)")
-    val id: UUID = UUID.randomUUID()
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "USER_ID", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
+    val id: UUID,
 
-    @Column(name = "USER_EMAIL")
-    val email: String = ""
+    @Column(name = "USER_EMAIL", nullable = false, unique = true)
+    val email: String,
 
     @Column(name = "USER_NICKNAME")
-    val nickname: String = ""
+    val nickname: String,
 
     @Column(name = "USER_COINS")
-    val coins = 0
+    val coins: Int,
 
     @Column(name = "USER_PASSWORD")
-    val password: String = ""
+    val password: String,
 
+    @LastModifiedDate
     @Column(name = "USER_UPDATED_AT")
-    val updatedAt = ""
+    val updatedAt: Instant,
 
+    @CreatedDate
     @Column(name = "USER_CREATED_AT")
-    val createdAt = ""
-}
+    val createdAt: Instant
+)

@@ -66,14 +66,13 @@ configurations {
     liquibase {
         activities.register("main") {
             this.arguments = mapOf(
-                "changeLogFile" to (projectProperties["change-log"] as String).replace("classpath:", "$rootDir/m-infrastructure/src/main/resources/"),
+                "changeLogFile" to (projectProperties["change-log"] as String).replace("classpath:", "$rootDir/m-infrastructure/src/main/resources"),
                 "url" to projectProperties["url"],
-                "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
+                "referenceUrl" to "hibernate:spring:com.esgi.infrastructure.persistence.entities?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=${projectProperties["physical-strategy"]}&hibernate.implicit_naming_strategy=${projectProperties["implicit-strategy"]}",
                 "driver" to projectProperties["driver-class-name"],
                 "referenceDriver" to "liquibase.ext.hibernate.database.connection.HibernateDriver",
                 "username" to projectProperties["username"],
                 "password" to projectProperties["password"],
-                "classpath" to "$rootDir/m-infrastructure/src/main/kotlin/com/esgi/infrastructure/persistence/entities",
             )
         }
         runList = "main"

@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog objectQuotingStrategy="QUOTE_ALL_OBJECTS" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="loloi (generated)" id="1682695388608-1">
+        <createTable tableName="T_USERS">
+            <column defaultValueComputed="gen_random_uuid()" name="USER_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="T_USERSPK"/>
+            </column>
+            <column name="USER_COINS" type="INTEGER"/>
+            <column name="USER_CREATED_AT" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+            <column name="USER_EMAIL" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_NICKNAME" type="VARCHAR(255)"/>
+            <column name="USER_PASSWORD" type="VARCHAR(255)"/>
+            <column name="USER_UPDATED_AT" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

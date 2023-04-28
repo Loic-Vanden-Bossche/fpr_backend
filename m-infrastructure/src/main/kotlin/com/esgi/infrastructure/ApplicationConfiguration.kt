@@ -6,6 +6,7 @@ import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+
 @Configuration
 class ApplicationConfiguration(
     private val usersRepository: UsersRepository,
@@ -21,5 +22,4 @@ class ApplicationConfiguration(
             usersPersistence()
         )
     }
-
 }

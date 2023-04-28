@@ -1,15 +1,19 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
+      naming:
+        physical-strategy: com.esgi.infrastructure.persistence.strategies.PhysicalStrategy
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
     open-in-view: false
+    show-sql: true
   datasource:
     url: jdbc:postgresql://localhost:5432/jpr?schema=public
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    change-log: classpath:/db/changelog/db.changelog-master.xml
   devtools:
     livereload:
       port: 35730
