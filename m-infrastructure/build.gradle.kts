@@ -27,8 +27,12 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.liquibase:liquibase-core")
+    implementation(project(mapOf("path" to ":m-application-services")))
+    implementation(project(mapOf("path" to ":m-domain-models")))
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -45,13 +49,11 @@ dependencies {
 
 }
 
-fun readProperties(propertiesFile: File) = Properties().apply {
-    propertiesFile.inputStream().use { fis ->
-        load(fis)
-    }
-}
+val cfg = project.file("src/main/resources/application.yaml")
 
-val projectProperties = readProperties(file("src/main/resources/application.properties"))
+val projectProperties = Properties().apply {
+    load(cfg.inputStream())
+}
 
 tasks.diffChangeLog {
     dependsOn("compileKotlin")
@@ -64,7 +66,7 @@ configurations {
     liquibase {
         activities.register("main") {
             this.arguments = mapOf(
-                "changeLogFile" to (projectProperties["spring.liquibase.change-log"] as String).replace("classpath:", "src/main/resources/"),
+                "changeLogFile" to (projectProperties["spring.liquibase.change-log"] as String).replace("classpath:", "m-infrastructure/src/main/resources/"),
                 "url" to projectProperties["spring.datasource.url"],
                 "referenceUrl" to "hibernate:spring:com.esgi.fpr?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy",
                 "driver" to projectProperties["spring.datasource.driver-class-name"],
