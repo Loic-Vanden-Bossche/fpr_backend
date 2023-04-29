@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 class AuthController(
     private val hashService: HashService,
     private val tokenService: TokensService,

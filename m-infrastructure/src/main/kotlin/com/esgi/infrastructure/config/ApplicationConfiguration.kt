@@ -21,7 +21,7 @@ class ApplicationConfiguration(
 ) {
     @Bean
     fun tokensService(): TokensService {
-        return TokensService(jwtDecoder, jwtEncoder, findingUserByIdUseCase())
+        return TokensService(jwtDecoder, jwtEncoder, findingOneUserByEmailUseCase())
     }
 
     @Bean

@@ -1,6 +1,6 @@
 package com.esgi.infrastructure.services
 
-import com.esgi.applicationservices.FindingOneUserByIdUseCase
+import com.esgi.applicationservices.FindingOneUserByEmailUseCase
 import com.esgi.domainmodels.User
 import org.springframework.security.oauth2.jwt.*
 import java.time.Instant
@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit
 class TokensService(
     private val jwtDecoder: JwtDecoder,
     private val jwtEncoder: JwtEncoder,
-    private val findingUserByIdUseCase: FindingOneUserByIdUseCase,
+    private val findingOneUserByEmailUseCase: FindingOneUserByEmailUseCase,
 ) {
     fun createToken(user: User): String {
         val jwsHeader = JwsHeader.with { "HS256" }.build()
@@ -26,7 +26,7 @@ class TokensService(
         return try {
             val jwt = jwtDecoder.decode(token)
             val userId = jwt.claims["userId"] as String
-            findingUserByIdUseCase.execute(userId)
+            findingOneUserByEmailUseCase.execute(userId)
         } catch (e: Exception) {
             null
         }
