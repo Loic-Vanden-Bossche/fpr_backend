@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 import java.util.*
 
 plugins {
@@ -13,6 +14,14 @@ plugins {
 group = "com.example"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
+
+tasks.withType<BootJar> {
+    enabled to true
+}
+
+tasks.withType<Jar> {
+    enabled to false
+}
 
 configurations {
     compileOnly {
@@ -81,7 +90,6 @@ configurations {
         runList = "main"
     }
 }
-
 
 
 tasks.withType<KotlinCompile> {
