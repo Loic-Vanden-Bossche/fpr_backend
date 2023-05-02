@@ -13,6 +13,17 @@ resource "aws_lb_target_group" "target_group" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
+
+  health_check {
+    enabled             = true
+    path                = "/actuator/health"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    healthy_threshold   = 2
+    unhealthy_threshold = 10
+    timeout             = 10
+    interval            = 30
+  }
   vpc_id      = aws_default_vpc.default_vpc.id
 }
 

@@ -18,6 +18,16 @@ resource "aws_ecs_task_definition" "fpr_backend_task" {
           "hostPort": 8080
         }
       ],
+      healthCheck : {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/actuator/health || exit 1"
+        ],
+        interval: 10,
+        timeout: 5,
+        retries: 10,
+        startPeriod: 240
+      },
       environment : [
         {
           name: "spring.datasource.url",
@@ -53,8 +63,8 @@ resource "aws_ecs_task_definition" "fpr_backend_task" {
   task_role_arn            = aws_iam_role.ecsTaskExecutionRole.arn
 }
 
-resource "aws_ecs_service" "app_service" {
-  name            = "app-first-service"
+resource "aws_ecs_service" "fpr_backend_service" {
+  name            = "fpr-backend-service"
   cluster         = aws_ecs_cluster.fpr_backend_cluster.id
   task_definition = aws_ecs_task_definition.fpr_backend_task.arn
   launch_type     = "FARGATE"
