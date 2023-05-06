@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id("org.graalvm.buildtools.native") version "0.9.17"
     kotlin("jvm") version "1.7.22"
 }
 

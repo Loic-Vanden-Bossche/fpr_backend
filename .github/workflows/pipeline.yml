@@ -42,7 +42,7 @@ jobs:
         run: |
           java --version
           chmod +x gradlew
-          ./gradlew clean build
+          ./gradlew bootBuildImage --imageName=${{ secrets.DOCKER_USERNAME }}/fpr-backend:latest
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -52,14 +52,12 @@ jobs:
           tags: |
             ${{ github.event.pull_request.head.sha || github.sha }}
 
-      - name: Build and push Docker image
-        id: build-image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }} , ${{ secrets.DOCKER_USERNAME }}/fpr-backend:latest
-          labels: ${{ steps.meta.outputs.labels }}
+      - name: Push Docker image
+        id: push-image
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}/fpr-backend ${{ steps.meta.outputs.tags }}
+          docker image ls
+          docker push ${{ secrets.DOCKER_USERNAME }}/fpr-backend -a
 
       - name: Download task def
         run: |
