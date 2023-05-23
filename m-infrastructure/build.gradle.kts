@@ -46,7 +46,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.liquibase:liquibase-core")
-    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation(project(mapOf("path" to ":m-application-services")))
     implementation(project(mapOf("path" to ":m-domain-models")))
     developmentOnly("org.springframework.boot:spring-boot-devtools")

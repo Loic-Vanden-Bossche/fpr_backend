@@ -37,7 +37,6 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository): User
     override fun findByEmail(email: String): User? {
         val mapper = Mappers.getMapper(UserMapper::class.java)
         return userRepository.findByEmail(email)?.let { userEntity ->
-            println(userEntity)
             mapper.toDomain(userEntity)
         }
     }
