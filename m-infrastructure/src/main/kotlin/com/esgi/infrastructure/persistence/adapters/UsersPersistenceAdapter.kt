@@ -10,8 +10,13 @@ import org.mapstruct.factory.Mappers
 class UsersPersistenceAdapter(private val userRepository: UsersRepository): UsersPersistence {
     override fun create(email: String, nickname: String, password: String): User {
         val mapper = Mappers.getMapper(UserMapper::class.java)
-        val createdUser = userRepository.save(UserEntity(email = email, nickname = nickname, password = password))
-        println(createdUser)
+        val userToCreate = UserEntity(
+            email = email,
+            nickname = nickname,
+            password = password
+        )
+
+        val createdUser = userRepository.save(userToCreate)
         return mapper.toDomain(createdUser)
     }
 
