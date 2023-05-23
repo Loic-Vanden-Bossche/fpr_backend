@@ -20,3 +20,6 @@ spring:
 security:
   # minimum 256 bits
   key: 12345678901234567890123456789012
+
+server:
+  forward-headers-strategy: framework
