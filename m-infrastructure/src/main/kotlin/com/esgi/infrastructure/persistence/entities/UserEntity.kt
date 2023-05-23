@@ -12,25 +12,25 @@ class UserEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
-    val id: UUID,
+    val id: UUID? = null,
 
     @Column(name = "USER_EMAIL", nullable = false, unique = true)
     val email: String,
 
-    @Column(name = "USER_NICKNAME")
+    @Column(name = "USER_NICKNAME", nullable = false)
     val nickname: String,
 
-    @Column(name = "USER_COINS")
-    val coins: Int,
+    @Column(name = "USER_COINS", nullable = false)
+    val coins: Int = 0,
 
-    @Column(name = "USER_PASSWORD")
+    @Column(name = "USER_PASSWORD", nullable = false)
     val password: String,
 
     @LastModifiedDate
-    @Column(name = "USER_UPDATED_AT")
-    val updatedAt: Instant,
+    @Column(name = "USER_UPDATED_AT", nullable = false)
+    val updatedAt: Instant? = null,
 
     @CreatedDate
-    @Column(name = "USER_CREATED_AT")
-    val createdAt: Instant
+    @Column(name = "USER_CREATED_AT", nullable = false)
+    val createdAt: Instant? = null,
 )

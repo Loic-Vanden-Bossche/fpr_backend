@@ -3,13 +3,14 @@ package com.esgi.infrastructure.persistence.adapters
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.mappers.UserMapper
+import com.esgi.infrastructure.persistence.entities.UserEntity
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.mapstruct.factory.Mappers
 
 class UsersPersistenceAdapter(private val userRepository: UsersRepository): UsersPersistence {
     override fun create(email: String, nickname: String, password: String): User {
         val mapper = Mappers.getMapper(UserMapper::class.java)
-        return mapper.toDomain(userRepository.save(mapper.toEntity(email, nickname, password)))
+        return mapper.toDomain(userRepository.save(UserEntity(email = email, nickname = nickname, password = password)))
     }
 
     override fun findAll(): MutableList<User> {

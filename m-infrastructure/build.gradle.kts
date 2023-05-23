@@ -9,7 +9,7 @@ plugins {
     kotlin("jvm") version "1.7.22"
     kotlin("plugin.spring") version "1.7.22"
     kotlin("plugin.jpa") version "1.7.22"
-    kotlin("kapt") version "1.7.22"
+    kotlin("kapt")
 }
 
 group = "com.example"
@@ -51,7 +51,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     liquibaseRuntime( "org.liquibase:liquibase-core:4.16.1")
     liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:3.0.2")

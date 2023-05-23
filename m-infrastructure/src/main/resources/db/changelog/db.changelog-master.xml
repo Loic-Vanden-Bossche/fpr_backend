@@ -15,4 +15,10 @@
             <column name="USER_UPDATED_AT" type="TIMESTAMP(6) WITHOUT TIME ZONE"/>
         </createTable>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1684836630258-1">
+        <addNotNullConstraint columnDataType="timestamp(6)" columnName="USER_CREATED_AT" tableName="T_USERS" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1684836630258-2">
+        <addNotNullConstraint columnDataType="timestamp(6)" columnName="USER_UPDATED_AT" tableName="T_USERS" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

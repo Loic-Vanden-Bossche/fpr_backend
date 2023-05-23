@@ -1,9 +1,6 @@
 package com.esgi.infrastructure.config
 
-import com.esgi.applicationservices.FindingAllUsersUseCase
-import com.esgi.applicationservices.FindingOneUserByEmailUseCase
-import com.esgi.applicationservices.FindingOneUserByIdUseCase
-import com.esgi.applicationservices.UserExistingByEmailUseCase
+import com.esgi.applicationservices.*
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import com.esgi.infrastructure.services.TokensService
@@ -53,6 +50,13 @@ class ApplicationConfiguration(
     @Bean
     fun userExistingByEmailUseCase(): UserExistingByEmailUseCase {
         return UserExistingByEmailUseCase(
+            usersPersistence()
+        )
+    }
+
+    @Bean
+    fun registeringUserUseCase(): RegisteringUserUseCase {
+        return RegisteringUserUseCase(
             usersPersistence()
         )
     }
