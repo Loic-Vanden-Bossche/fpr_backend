@@ -9,7 +9,7 @@ data class RegisterDto(
     @field:Email
     @field:NotEmpty
     @field:NotNull
-    @field:Length(min = 3, max = 30)
+    @field:Length(max = 255)
     val email: String,
 
     @field:NotEmpty
