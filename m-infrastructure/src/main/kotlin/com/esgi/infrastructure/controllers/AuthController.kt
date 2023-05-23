@@ -45,11 +45,11 @@ class AuthController(
 
         val user = User(
             payload.email,
-            nickname = payload.email,
-            password = hashService.hashBcrypt(payload.password),
-            coins = 0,
-            updatedAt = Instant.now(),
-            createdAt = Instant.now(),
+            payload.username,
+            hashService.hashBcrypt(payload.password),
+            0,
+            Instant.now(),
+            Instant.now(),
         )
 
         return LoginResponseDto(
