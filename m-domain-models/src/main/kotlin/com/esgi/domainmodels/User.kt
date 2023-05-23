@@ -3,6 +3,7 @@ package com.esgi.domainmodels
 import java.time.Instant
 
 data class User(
+    val id: String,
     val email: String,
     val nickname: String,
     val password: String,

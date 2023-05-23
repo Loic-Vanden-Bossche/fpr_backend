@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 class UsersController(
     private val findingAllUsersUseCase: FindingAllUsersUseCase,
 ) {
-    @GetMapping("")
+    @GetMapping
     @ResponseBody
     fun getUsers(): List<UserResponseDto> {
         val users = findingAllUsersUseCase.execute()

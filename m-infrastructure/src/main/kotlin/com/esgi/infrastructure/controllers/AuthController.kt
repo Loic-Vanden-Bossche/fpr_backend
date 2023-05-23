@@ -8,6 +8,7 @@ import com.esgi.infrastructure.dto.input.RegisterDto
 import com.esgi.infrastructure.dto.output.LoginResponseDto
 import com.esgi.infrastructure.services.HashService
 import com.esgi.infrastructure.services.TokensService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -25,7 +26,11 @@ class AuthController(
     private val registeringUserUseCase: RegisteringUserUseCase,
 ) {
     @PostMapping("/login")
-    fun login(@RequestBody payload: LoginDto): LoginResponseDto {
+    fun login(
+        @RequestBody
+        @Valid
+        payload: LoginDto
+    ): LoginResponseDto {
         val user = findingOneUserByEmailUseCase.execute(payload.email) ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed")
 
         if (!hashService.checkBcrypt(payload.password, user.password)) {
@@ -38,7 +43,11 @@ class AuthController(
     }
 
     @PostMapping("/register")
-    fun register(@RequestBody payload: RegisterDto): LoginResponseDto {
+    fun register(
+        @RequestBody
+        @Valid
+        payload: RegisterDto
+    ): LoginResponseDto {
         if (userExistingByEmailUseCase.execute(payload.email)) {
             throw ResponseStatusException(HttpStatus.CONFLICT, "Email already exists")
         }
