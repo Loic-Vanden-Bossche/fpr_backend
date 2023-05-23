@@ -21,4 +21,24 @@
     <changeSet author="loloi (generated)" id="1684836630258-2">
         <addNotNullConstraint columnDataType="timestamp(6)" columnName="USER_UPDATED_AT" tableName="T_USERS" validate="true"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1684838393535-1">
+        <addColumn tableName="T_USERS">
+            <column name="CREATED_AT" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1684838393535-2">
+        <addColumn tableName="T_USERS">
+            <column name="UPDATED_AT" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1684838393535-3">
+        <dropColumn columnName="USER_CREATED_AT" tableName="T_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1684838393535-4">
+        <dropColumn columnName="USER_UPDATED_AT" tableName="T_USERS"/>
+    </changeSet>
 </databaseChangeLog>

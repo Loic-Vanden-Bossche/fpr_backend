@@ -10,7 +10,9 @@ import org.mapstruct.factory.Mappers
 class UsersPersistenceAdapter(private val userRepository: UsersRepository): UsersPersistence {
     override fun create(email: String, nickname: String, password: String): User {
         val mapper = Mappers.getMapper(UserMapper::class.java)
-        return mapper.toDomain(userRepository.save(UserEntity(email = email, nickname = nickname, password = password)))
+        val createdUser = userRepository.save(UserEntity(email = email, nickname = nickname, password = password))
+        println(createdUser)
+        return mapper.toDomain(createdUser)
     }
 
     override fun findAll(): MutableList<User> {
@@ -30,6 +32,7 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository): User
     override fun findByEmail(email: String): User? {
         val mapper = Mappers.getMapper(UserMapper::class.java)
         return userRepository.findByEmail(email)?.let { userEntity ->
+            println(userEntity)
             mapper.toDomain(userEntity)
         }
     }

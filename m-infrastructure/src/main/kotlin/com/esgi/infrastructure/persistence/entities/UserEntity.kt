@@ -1,14 +1,12 @@
 package com.esgi.infrastructure.persistence.entities
 
+import com.esgi.infrastructure.persistence.listeners.AuditableDates
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import java.time.Instant
 import java.util.UUID
 
 @Entity
 @Table(name = "T_USERS")
-class UserEntity (
+class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
@@ -25,12 +23,4 @@ class UserEntity (
 
     @Column(name = "USER_PASSWORD", nullable = false)
     val password: String,
-
-    @LastModifiedDate
-    @Column(name = "USER_UPDATED_AT", nullable = false)
-    val updatedAt: Instant? = null,
-
-    @CreatedDate
-    @Column(name = "USER_CREATED_AT", nullable = false)
-    val createdAt: Instant? = null,
-)
+): AuditableDates()
