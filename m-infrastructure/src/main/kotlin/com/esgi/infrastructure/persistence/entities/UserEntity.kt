@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.persistence.entities
 
+import com.esgi.domainmodels.Role
 import com.esgi.infrastructure.persistence.listeners.AuditableDates
 import jakarta.persistence.*
 import java.util.UUID
@@ -14,6 +15,10 @@ class UserEntity(
 
     @Column(name = "USER_EMAIL", nullable = false, unique = true)
     val email: String,
+
+    @Column(name = "USER_ROLE", nullable = false, columnDefinition = "VARCHAR(255) default 'USER'")
+    @Enumerated(EnumType.STRING)
+    val role: Role = Role.USER,
 
     @Column(name = "USER_NICKNAME", nullable = false)
     val nickname: String,

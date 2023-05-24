@@ -7,6 +7,7 @@ data class User(
     val email: String,
     val nickname: String,
     val password: String,
+    val role: Role,
     val coins: Int,
     val updatedAt: Instant,
     val createdAt: Instant,

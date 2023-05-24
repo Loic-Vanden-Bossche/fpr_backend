@@ -41,4 +41,11 @@
     <changeSet author="loloi (generated)" id="1684838393535-4">
         <dropColumn columnName="USER_UPDATED_AT" tableName="T_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1684917432928-1">
+        <addColumn tableName="T_USERS">
+            <column defaultValue="USER" name="USER_ROLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

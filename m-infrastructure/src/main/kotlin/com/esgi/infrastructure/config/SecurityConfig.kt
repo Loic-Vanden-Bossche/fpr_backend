@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -18,6 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 class SecurityConfig (
     private val tokenService: TokensService,
 ) {
@@ -36,7 +38,15 @@ class SecurityConfig (
         http.authenticationManager { auth ->
             val jwt = auth as BearerTokenAuthenticationToken
             val user = tokenService.parseToken(jwt.token) ?: throw InvalidBearerTokenException("Invalid token")
-            UsernamePasswordAuthenticationToken(user, null, listOf(SimpleGrantedAuthority("USER")))
+            UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                listOf(SimpleGrantedAuthority(
+                    user.role
+                        .toString()
+                        .uppercase()
+                ))
+            )
         }
 
         http.cors()

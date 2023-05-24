@@ -6,6 +6,7 @@ import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.dto.output.UserResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.mapstruct.factory.Mappers
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -16,6 +17,7 @@ class UsersController(
 ) {
     @GetMapping
     @ResponseBody
+    @Secured("ADMIN")
     fun getUsers(): List<UserResponseDto> {
         val users = findingAllUsersUseCase.execute()
         val mapper = Mappers.getMapper(UserMapper::class.java)
