@@ -1,6 +1,6 @@
 package com.esgi.infrastructure.services
 
-import com.esgi.applicationservices.FindingOneUserByEmailUseCase
+import com.esgi.applicationservices.usecases.users.FindingOneUserByEmailUseCase
 import com.esgi.domainmodels.User
 import org.springframework.security.oauth2.jwt.*
 import java.time.Instant

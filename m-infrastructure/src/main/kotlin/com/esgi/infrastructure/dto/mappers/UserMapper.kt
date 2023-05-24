@@ -10,4 +10,5 @@ import org.mapstruct.ReportingPolicy
 interface UserMapper {
     fun toDomain(user: UserEntity): User
     fun toDto(user: User): UserResponseDto
+    fun toEntity(user: User): UserEntity
 }

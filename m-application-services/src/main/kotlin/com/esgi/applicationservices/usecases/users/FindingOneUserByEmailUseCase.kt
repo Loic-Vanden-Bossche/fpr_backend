@@ -1,4 +1,4 @@
-package com.esgi.applicationservices
+package com.esgi.applicationservices.usecases.users
 
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.User

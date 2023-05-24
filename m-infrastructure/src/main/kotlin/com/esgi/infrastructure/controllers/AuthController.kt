@@ -1,8 +1,8 @@
 package com.esgi.infrastructure.controllers
 
-import com.esgi.applicationservices.FindingOneUserByEmailUseCase
-import com.esgi.applicationservices.RegisteringUserUseCase
-import com.esgi.applicationservices.UserExistingByEmailUseCase
+import com.esgi.applicationservices.usecases.users.FindingOneUserByEmailUseCase
+import com.esgi.applicationservices.usecases.users.RegisteringUserUseCase
+import com.esgi.applicationservices.usecases.users.UserExistingByEmailUseCase
 import com.esgi.infrastructure.dto.input.LoginDto
 import com.esgi.infrastructure.dto.input.RegisterDto
 import com.esgi.infrastructure.dto.output.LoginResponseDto

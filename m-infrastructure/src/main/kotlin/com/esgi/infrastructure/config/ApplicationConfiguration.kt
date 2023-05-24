@@ -1,6 +1,6 @@
 package com.esgi.infrastructure.config
 
-import com.esgi.applicationservices.*
+import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import com.esgi.infrastructure.services.TokensService
@@ -57,6 +57,27 @@ class ApplicationConfiguration(
     @Bean
     fun registeringUserUseCase(): RegisteringUserUseCase {
         return RegisteringUserUseCase(
+            usersPersistence()
+        )
+    }
+
+    @Bean
+    fun updatingUserUseCase(): UpdatingUserUseCase {
+        return UpdatingUserUseCase(
+            usersPersistence()
+        )
+    }
+
+    @Bean
+    fun deletingUserUseCase(): DeletingUserUseCase {
+        return DeletingUserUseCase(
+            usersPersistence()
+        )
+    }
+
+    @Bean
+    fun creatingUserUseCase(): CreatingUserUseCase {
+        return CreatingUserUseCase(
             usersPersistence()
         )
     }

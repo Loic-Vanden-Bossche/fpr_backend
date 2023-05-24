@@ -3,11 +3,13 @@ package com.esgi.infrastructure.persistence.entities
 import com.esgi.domainmodels.Role
 import com.esgi.infrastructure.persistence.listeners.AuditableDates
 import jakarta.persistence.*
+import org.hibernate.annotations.DynamicUpdate
 import java.util.UUID
 
 @Entity
+@DynamicUpdate
 @Table(name = "T_USERS")
-class UserEntity(
+data class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
