@@ -22,6 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity(securedEnabled = true)
 class SecurityConfig(
     private val tokenService: TokensService,
+    private val authFailedEntryPointJwt: AuthFailedEntryPointJwt,
+    private val roleAccessDeniedHandler: RoleAccessDeniedHandler,
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -33,6 +35,10 @@ class SecurityConfig(
             .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
             .requestMatchers("/api/**").authenticated()
+
+        http.exceptionHandling()
+            .authenticationEntryPoint(authFailedEntryPointJwt)
+            .accessDeniedHandler(roleAccessDeniedHandler)
 
         http.oauth2ResourceServer().jwt()
         http.authenticationManager { auth ->

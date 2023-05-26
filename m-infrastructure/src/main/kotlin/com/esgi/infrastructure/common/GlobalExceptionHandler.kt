@@ -1,13 +1,10 @@
 package com.esgi.infrastructure.common
 
-import com.esgi.domainmodels.exceptions.EmailAlreadyExistsException
-import com.esgi.domainmodels.exceptions.LoginFailedException
-import com.esgi.domainmodels.exceptions.NotFoundException
+import com.esgi.domainmodels.exceptions.*
 import com.esgi.infrastructure.services.DevToolsChecker
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
@@ -37,17 +34,23 @@ class GlobalExceptionHandler(
     fun handleEmailAlreadyExistsException(
         ex: EmailAlreadyExistsException,
         req: HttpServletRequest
-    ): ResponseEntity<ErrorResponse> { return handleDomainException(ex, req, HttpStatus.CONFLICT) }
+    ): ResponseEntity<ErrorResponse> {
+        return handleDomainException(ex, req, HttpStatus.CONFLICT)
+    }
 
     @ExceptionHandler(NotFoundException::class)
     fun handleNotFoundException(
         ex: NotFoundException,
         req: HttpServletRequest
-    ): ResponseEntity<ErrorResponse> { return handleDomainException(ex, req, HttpStatus.NOT_FOUND) }
+    ): ResponseEntity<ErrorResponse> {
+        return handleDomainException(ex, req, HttpStatus.NOT_FOUND)
+    }
 
     @ExceptionHandler(LoginFailedException::class)
-    fun handleInvalidBearerTokenException(
-        ex: LoginFailedException,
+    fun handleUnauthorizedException(
+        ex: DomainException,
         req: HttpServletRequest
-    ): ResponseEntity<ErrorResponse> { return handleDomainException(ex, req, HttpStatus.UNAUTHORIZED) }
+    ): ResponseEntity<ErrorResponse> {
+        return handleDomainException(ex, req, HttpStatus.UNAUTHORIZED)
+    }
 }
