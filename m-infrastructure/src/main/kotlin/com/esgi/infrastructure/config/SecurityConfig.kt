@@ -57,12 +57,10 @@ class SecurityConfig(
             )
         }
 
+        http.csrf().disable()
+
         http.cors()
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        http.csrf().disable()
-        http.headers().frameOptions().disable()
-        http.headers().xssProtection().disable()
-
         return http.build()
     }
 

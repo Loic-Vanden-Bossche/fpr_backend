@@ -14,7 +14,6 @@ repositories {
 
 dependencies {
     implementation(project(":m-domain-models"))
-    implementation(project(":m-domain-services"))
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 }
 
