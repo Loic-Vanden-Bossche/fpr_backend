@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20-RC")
 }
 
 tasks.withType<KotlinCompile> {

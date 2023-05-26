@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     implementation(project(":m-domain-models"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20-RC")
 }
 
 tasks.withType<KotlinCompile> {
