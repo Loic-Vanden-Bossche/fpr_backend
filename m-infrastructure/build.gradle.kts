@@ -3,7 +3,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import java.util.*
 
 plugins {
-    id("org.springframework.boot") version "3.0.6"
+    id("org.springframework.boot") version "3.1.0"
     id("io.spring.dependency-management") version "1.1.0"
     id("org.liquibase.gradle") version "2.0.4"
     kotlin("jvm") version "1.7.22"
@@ -35,12 +35,12 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.0.4")
-    implementation("org.springframework.boot:spring-boot-starter-web:3.0.4")
-    implementation("org.springframework.boot:spring-boot-starter-security:3.0.4")
-    implementation("org.springframework.boot:spring-boot-starter-actuator:3.0.4")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.0.4")
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.1.0")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
@@ -48,17 +48,17 @@ dependencies {
     implementation("org.liquibase:liquibase-core:4.20.0")
     implementation(project(mapOf("path" to ":m-application-services")))
     implementation(project(mapOf("path" to ":m-domain-models")))
-    developmentOnly("org.springframework.boot:spring-boot-devtools:3.0.4")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.0")
     runtimeOnly("org.postgresql:postgresql:42.5.4")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:3.0.4")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:3.1.0")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.4")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
     liquibaseRuntime("org.liquibase:liquibase-core:4.20.0")
     liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:3.0.3")
     liquibaseRuntime("info.picocli:picocli:4.7.1")
     liquibaseRuntime("org.postgresql:postgresql:42.5.4")
     liquibaseRuntime("org.liquibase.ext:liquibase-hibernate6:4.21.1")
-    liquibaseRuntime("org.springframework.boot:spring-boot-starter-data-jpa:3.0.4")
+    liquibaseRuntime("org.springframework.boot:spring-boot-starter-data-jpa:3.1.0")
     liquibaseRuntime(sourceSets.getByName("main").output)
     liquibaseRuntime(sourceSets.getByName("main").compileClasspath)
     liquibaseRuntime(sourceSets.getByName("main").runtimeClasspath)
