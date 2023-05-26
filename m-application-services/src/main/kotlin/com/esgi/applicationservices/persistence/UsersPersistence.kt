@@ -12,6 +12,7 @@ interface UsersPersistence {
         nickname: String,
         password: String
     ): User
+
     fun create(
         email: String,
         nickname: String,
@@ -19,6 +20,7 @@ interface UsersPersistence {
         role: Role,
         coins: Int
     ): User
+
     fun update(
         id: String,
         email: String?,
@@ -27,5 +29,6 @@ interface UsersPersistence {
         role: Role?,
         coins: Int?
     ): User
+
     fun delete(id: String): User
 }

@@ -6,6 +6,7 @@ import com.esgi.domainmodels.User
 
 class UpdatingUserUseCase(
     private val persistence: UsersPersistence,
+    private val findingOneUserByIdUseCase: FindingOneUserByIdUseCase,
 ) {
     fun execute(
         id: String,
@@ -15,6 +16,8 @@ class UpdatingUserUseCase(
         role: Role? = null,
         coins: Int? = null,
     ): User {
+        findingOneUserByIdUseCase.execute(id) ?: throw Exception("User with id $id not found")
+
         return persistence.update(
             id,
             email,

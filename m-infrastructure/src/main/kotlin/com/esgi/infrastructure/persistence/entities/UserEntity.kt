@@ -4,7 +4,7 @@ import com.esgi.domainmodels.Role
 import com.esgi.infrastructure.persistence.listeners.AuditableDates
 import jakarta.persistence.*
 import org.hibernate.annotations.DynamicUpdate
-import java.util.UUID
+import java.util.*
 
 @Entity
 @DynamicUpdate
@@ -30,4 +30,4 @@ data class UserEntity(
 
     @Column(name = "USER_PASSWORD", nullable = false)
     val password: String,
-): AuditableDates()
+) : AuditableDates()

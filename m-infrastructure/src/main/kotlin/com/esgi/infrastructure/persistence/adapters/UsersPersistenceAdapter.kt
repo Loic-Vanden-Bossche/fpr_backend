@@ -9,7 +9,7 @@ import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.mapstruct.factory.Mappers
 import java.util.*
 
-class UsersPersistenceAdapter(private val userRepository: UsersRepository): UsersPersistence {
+class UsersPersistenceAdapter(private val userRepository: UsersRepository) : UsersPersistence {
     override fun create(email: String, nickname: String, password: String): User {
         val mapper = Mappers.getMapper(UserMapper::class.java)
         val userToCreate = UserEntity(
@@ -86,7 +86,8 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository): User
 
     override fun delete(id: String): User {
         val mapper = Mappers.getMapper(UserMapper::class.java)
-        val userToDelete = userRepository.findById(UUID.fromString(id)).orElse(null) ?: throw Exception("User not found")
+        val userToDelete =
+            userRepository.findById(UUID.fromString(id)).orElse(null) ?: throw Exception("User not found")
         userRepository.delete(userToDelete)
         return mapper.toDomain(userToDelete)
     }

@@ -3,7 +3,10 @@ package com.esgi.infrastructure.dto.input
 import com.esgi.domainmodels.Role
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
-import jakarta.validation.constraints.*
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.Length
 
 data class CreateUserDto(

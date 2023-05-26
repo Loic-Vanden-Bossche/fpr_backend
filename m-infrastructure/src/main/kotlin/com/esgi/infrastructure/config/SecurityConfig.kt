@@ -20,7 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-class SecurityConfig (
+class SecurityConfig(
     private val tokenService: TokensService,
 ) {
     @Bean
@@ -41,11 +41,13 @@ class SecurityConfig (
             UsernamePasswordAuthenticationToken(
                 user,
                 null,
-                listOf(SimpleGrantedAuthority(
-                    user.role
-                        .toString()
-                        .uppercase()
-                ))
+                listOf(
+                    SimpleGrantedAuthority(
+                        user.role
+                            .toString()
+                            .uppercase()
+                    )
+                )
             )
         }
 

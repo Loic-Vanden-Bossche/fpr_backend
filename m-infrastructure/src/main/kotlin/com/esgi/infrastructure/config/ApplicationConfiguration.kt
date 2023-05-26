@@ -48,37 +48,34 @@ class ApplicationConfiguration(
     }
 
     @Bean
-    fun userExistingByEmailUseCase(): UserExistingByEmailUseCase {
-        return UserExistingByEmailUseCase(
-            usersPersistence()
-        )
-    }
-
-    @Bean
     fun registeringUserUseCase(): RegisteringUserUseCase {
         return RegisteringUserUseCase(
-            usersPersistence()
+            usersPersistence(),
+            findingOneUserByEmailUseCase()
         )
     }
 
     @Bean
     fun updatingUserUseCase(): UpdatingUserUseCase {
         return UpdatingUserUseCase(
-            usersPersistence()
+            usersPersistence(),
+            findingUserByIdUseCase()
         )
     }
 
     @Bean
     fun deletingUserUseCase(): DeletingUserUseCase {
         return DeletingUserUseCase(
-            usersPersistence()
+            usersPersistence(),
+            findingUserByIdUseCase()
         )
     }
 
     @Bean
     fun creatingUserUseCase(): CreatingUserUseCase {
         return CreatingUserUseCase(
-            usersPersistence()
+            usersPersistence(),
+            findingOneUserByEmailUseCase()
         )
     }
 }

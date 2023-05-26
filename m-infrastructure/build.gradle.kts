@@ -53,7 +53,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    liquibaseRuntime( "org.liquibase:liquibase-core:4.16.1")
+    liquibaseRuntime("org.liquibase:liquibase-core:4.16.1")
     liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:3.0.2")
     liquibaseRuntime("info.picocli:picocli:4.6.1")
     liquibaseRuntime("org.postgresql:postgresql:42.2.27")
@@ -82,7 +82,10 @@ configurations {
     liquibase {
         activities.register("main") {
             this.arguments = mapOf(
-                "changeLogFile" to (projectProperties["change-log"] as String).replace("classpath:", "$rootDir/m-infrastructure/src/main/resources"),
+                "changeLogFile" to (projectProperties["change-log"] as String).replace(
+                    "classpath:",
+                    "$rootDir/m-infrastructure/src/main/resources"
+                ),
                 "url" to projectProperties["url"],
                 "referenceUrl" to "hibernate:spring:com.esgi.infrastructure.persistence.entities?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=${projectProperties["physical-strategy"]}&hibernate.implicit_naming_strategy=${projectProperties["implicit-strategy"]}",
                 "driver" to projectProperties["driver-class-name"],
