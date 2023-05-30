@@ -52,4 +52,30 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1685109254506-1">
+        <createTable tableName="TJ_GROUPS_USERS">
+            <column defaultValueComputed="gen_random_uuid()" name="USER_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="GROUP_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1685109254506-2">
+        <createTable tableName="T_GROUPS">
+            <column defaultValueComputed="gen_random_uuid()" name="GROUP_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="T_GROUPSPK"/>
+            </column>
+            <column name="GROUP_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1685109254506-3">
+        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="TJ_GROUPS_USERS" constraintName="FK3jh6vg5pjx9k3b47at3pa0rtk" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1685109254506-4">
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="TJ_GROUPS_USERS" constraintName="FKovq3fbk5lm1uafu2ffnqf7uqq" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -1,11 +1,15 @@
 package com.esgi.infrastructure.config
 
+import com.esgi.applicationservices.services.GameInstantiator
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
-import com.esgi.infrastructure.services.TokensService
+import com.esgi.infrastructure.services.*
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.jwt.JwtEncoder
 
@@ -17,8 +21,24 @@ class ApplicationConfiguration(
     private val jwtEncoder: JwtEncoder,
 ) {
     @Bean
-    fun tokensService(): TokensService {
-        return TokensService(jwtDecoder, jwtEncoder, findingOneUserByEmailUseCase())
+    fun tokensService(@Autowired service: FindingOneUserByEmailUseCase): TokensService {
+        return TokensService(jwtDecoder, jwtEncoder, service)
+    }
+
+    @Profile("dev")
+    @Bean
+    fun gameInstantiatorDev(@Autowired dockerService: DockerService, @Autowired tcpService: TcpService): GameInstantiator {
+        return GameInstantiatorDev(
+            dockerService,
+            tcpService
+        )
+    }
+
+    @Profile("prod")
+    @Bean
+    @Primary
+    fun gameInstantiator(): GameInstantiator {
+        return GameInstantiatorProd()
     }
 
     @Bean
@@ -41,17 +61,18 @@ class ApplicationConfiguration(
     }
 
     @Bean
-    fun findingOneUserByEmailUseCase(): FindingOneUserByEmailUseCase {
+    fun findingOneUserByEmailUseCase(@Autowired service: GameInstantiator): FindingOneUserByEmailUseCase {
         return FindingOneUserByEmailUseCase(
-            usersPersistence()
+            usersPersistence(),
+            service
         )
     }
 
     @Bean
-    fun registeringUserUseCase(): RegisteringUserUseCase {
+    fun registeringUserUseCase(@Autowired service: FindingOneUserByEmailUseCase): RegisteringUserUseCase {
         return RegisteringUserUseCase(
             usersPersistence(),
-            findingOneUserByEmailUseCase()
+            service
         )
     }
 
@@ -72,10 +93,10 @@ class ApplicationConfiguration(
     }
 
     @Bean
-    fun creatingUserUseCase(): CreatingUserUseCase {
+    fun creatingUserUseCase(@Autowired service: FindingOneUserByEmailUseCase): CreatingUserUseCase {
         return CreatingUserUseCase(
             usersPersistence(),
-            findingOneUserByEmailUseCase()
+            service
         )
     }
 }
