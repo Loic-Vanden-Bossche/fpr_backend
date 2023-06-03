@@ -61,10 +61,9 @@ class ApplicationConfiguration(
     }
 
     @Bean
-    fun findingOneUserByEmailUseCase(@Autowired service: GameInstantiator): FindingOneUserByEmailUseCase {
+    fun findingOneUserByEmailUseCase(): FindingOneUserByEmailUseCase {
         return FindingOneUserByEmailUseCase(
             usersPersistence(),
-            service
         )
     }
 
