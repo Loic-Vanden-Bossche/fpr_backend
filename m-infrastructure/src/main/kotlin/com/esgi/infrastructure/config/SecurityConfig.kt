@@ -14,8 +14,6 @@ import org.springframework.security.oauth2.server.resource.InvalidBearerTokenExc
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -27,51 +25,61 @@ class SecurityConfig(
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests()
-            .requestMatchers("/swagger-ui/**").permitAll()
-            .requestMatchers("/v3/api-docs/**").permitAll()
-            .requestMatchers("/error").permitAll()
-            .requestMatchers("/actuator/health").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-            .requestMatchers("/api/**").authenticated()
-
-        http.exceptionHandling()
-            .authenticationEntryPoint(authFailedEntryPointJwt)
-            .accessDeniedHandler(roleAccessDeniedHandler)
-
-        http.oauth2ResourceServer().jwt()
-        http.authenticationManager { auth ->
-            val jwt = auth as BearerTokenAuthenticationToken
-            val user = tokenService.parseToken(jwt.token) ?: throw InvalidBearerTokenException("Invalid token")
-            UsernamePasswordAuthenticationToken(
-                user,
-                null,
-                listOf(
-                    SimpleGrantedAuthority(
-                        user.role
-                            .toString()
-                            .uppercase()
-                    )
-                )
-            )
+        http.authorizeHttpRequests {
+            it
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                .requestMatchers("/api/**").authenticated()
         }
 
-        http.csrf().disable()
+        http.exceptionHandling {
+            it
+                .authenticationEntryPoint(authFailedEntryPointJwt)
+                .accessDeniedHandler(roleAccessDeniedHandler)
+        }
 
-        http.cors()
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.oauth2ResourceServer { oauth2ResourceServer ->
+            oauth2ResourceServer.jwt {
+                it.authenticationManager { auth ->
+                    val jwt = auth as BearerTokenAuthenticationToken
+                    val user = tokenService.parseToken(jwt.token) ?: throw InvalidBearerTokenException("Invalid token")
+                    UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        listOf(
+                            SimpleGrantedAuthority(
+                                user.role
+                                    .toString()
+                                    .uppercase()
+                            )
+                        )
+                    )
+                }
+            }
+        }
+
+        http.csrf { csrf ->
+            csrf.disable()
+        }
+
+        http.cors { cors ->
+            cors.configurationSource {
+                val configuration = CorsConfiguration()
+                configuration.allowedOrigins = listOf("http://localhost:8080")
+                configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+                configuration.allowedHeaders = listOf("authorization", "content-type")
+                configuration
+            }
+        }
+
+        http.sessionManagement {
+            it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        }
+
         return http.build()
-    }
-
-    @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:8080")
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
-        configuration.allowedHeaders = listOf("authorization", "content-type")
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
     }
 }
