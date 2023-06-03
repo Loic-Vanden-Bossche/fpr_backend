@@ -38,31 +38,38 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Build jar file for image
-        run: |
-          java --version
-          chmod +x gradlew
-          ./gradlew bootBuildImage --imageName=${{ secrets.DOCKER_USERNAME }}/fpr-backend:latest
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ secrets.DOCKER_USERNAME }}/fpr-backend
           tags: |
-            ${{ github.event.pull_request.head.sha || github.sha }}
+            latest
+            type=sha
 
-      - name: Push Docker image
-        id: push-image
+      - name: Build bootJar image
         run: |
-          docker tag ${{ secrets.DOCKER_USERNAME }}/fpr-backend ${{ steps.meta.outputs.tags }}
-          docker image ls
-          docker push ${{ secrets.DOCKER_USERNAME }}/fpr-backend -a
+          java --version
+          chmod +x gradlew
+          ./gradlew bootBuildImage --imageName=fpr-backend-temp
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Extract second tag (sha)
+        id: extract-tag
+        run: |
+          TAGS=(${{ steps.meta.outputs.tags }})
+          echo "::set-output name=second-tag::${TAGS[1]}"
 
       - name: Download task def
         run: |
           aws ecs describe-task-definition --task-definition fpr-backend-task --query taskDefinition > task-definition.json
-          echo ${{ steps.meta.outputs.tags }}
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
@@ -70,7 +77,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.meta.outputs.tags }}
+          image: ${{ steps.extract-tag.outputs.second-tag }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -78,4 +85,4 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: false
+          wait-for-service-stability: true
