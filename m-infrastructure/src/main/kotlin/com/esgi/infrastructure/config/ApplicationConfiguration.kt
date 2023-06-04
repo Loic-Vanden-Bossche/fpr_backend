@@ -1,6 +1,7 @@
 package com.esgi.infrastructure.config
 
 import com.esgi.applicationservices.services.GameInstantiator
+import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
@@ -95,6 +96,13 @@ class ApplicationConfiguration(
     fun creatingUserUseCase(@Autowired service: FindingOneUserByEmailUseCase): CreatingUserUseCase {
         return CreatingUserUseCase(
             usersPersistence(),
+            service
+        )
+    }
+
+    @Bean
+    fun createSessionUseCase(@Autowired service: GameInstantiator): StartingSessionUseCase {
+        return StartingSessionUseCase(
             service
         )
     }
