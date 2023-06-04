@@ -4,9 +4,32 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.ecs.AmazonECS
 import com.amazonaws.services.ecs.AmazonECSClientBuilder
+import com.amazonaws.services.ecs.model.*
 import com.esgi.applicationservices.services.GameInstantiator
 
-class GameInstantiatorProd : GameInstantiator {
+class GameInstantiatorProd(
+    private val tcpService: TcpService
+): GameInstantiator {
+    private fun waitForTaskToBeRunning(ecsClient: AmazonECS, clusterName: String, taskArn: String): String {
+        val timeout = 60 * 1000
+
+        val startTime = System.currentTimeMillis()
+
+        while (System.currentTimeMillis() - startTime < timeout) {
+            val describeTasksRequest = DescribeTasksRequest()
+                .withCluster(clusterName)
+                .withTasks(taskArn)
+            val describeTasksResult = ecsClient.describeTasks(describeTasksRequest)
+            val task = describeTasksResult.tasks[0]
+            if (task.lastStatus == "RUNNING") {
+                return task.containers[0].networkInterfaces[0].privateIpv4Address
+            }
+            Thread.sleep(1000)
+        }
+
+        throw Exception("Timeout while waiting for task to be running")
+    }
+
     override fun instanciateGame() {
         // Create an instance of the Amazon ECS client
         val ecsClient: AmazonECS = AmazonECSClientBuilder.standard()
@@ -14,44 +37,76 @@ class GameInstantiatorProd : GameInstantiator {
             .withRegion(Regions.EU_WEST_3)
             .build()
 
-        // print all the clusters in the account
-        val clusters = ecsClient.listClusters()
-        for (cluster in clusters.clusterArns) {
-            println(cluster)
+        val clusterName = "fpr-backend-cluster"
+
+        val describeServicesRequest = DescribeServicesRequest()
+            .withCluster(clusterName)
+            .withServices("fpr-backend-service")
+        val describeServicesResult = ecsClient.describeServices(describeServicesRequest)
+
+        val networkConfiguration = describeServicesResult.services[0].networkConfiguration
+
+        val subnetId = networkConfiguration.awsvpcConfiguration.subnets[0]
+        val securityGroupId = networkConfiguration.awsvpcConfiguration.securityGroups[0]
+
+        val containerImage = "075626265631.dkr.ecr.eu-west-3.amazonaws.com/fpr-games-repository:latest"
+
+        val containerName = "fpr-game-default-task"
+
+        val describeTaskDefinitionRequest = DescribeTaskDefinitionRequest()
+            .withTaskDefinition("fpr-game-task")
+
+        val describeTaskDefinitionResult = ecsClient.describeTaskDefinition(describeTaskDefinitionRequest)
+        val taskDefinition = describeTaskDefinitionResult.taskDefinition
+
+        val containerDefinition = taskDefinition.containerDefinitions.find { it.name == containerName }
+        if (containerDefinition != null) {
+            // Update the container image
+            containerDefinition.image = containerImage
+
+            // Register the updated task definition
+            val registerTaskDefinitionRequest = RegisterTaskDefinitionRequest()
+                .withFamily("fpr-game-test")
+                .withContainerDefinitions(containerDefinition)
+                .withCpu(taskDefinition.cpu)
+                .withMemory(taskDefinition.memory)
+                .withRequiresCompatibilities(taskDefinition.requiresCompatibilities)
+                .withExecutionRoleArn(taskDefinition.executionRoleArn)
+                .withTaskRoleArn(taskDefinition.taskRoleArn)
+                .withNetworkMode(taskDefinition.networkMode)
+                .withVolumes(taskDefinition.volumes)
+            val registerTaskDefinitionResult = ecsClient.registerTaskDefinition(registerTaskDefinitionRequest)
+            val updatedTaskDefinitionArn = registerTaskDefinitionResult.taskDefinition.taskDefinitionArn
+
+//         Create a task request
+            val request = RunTaskRequest()
+                .withCluster(clusterName)
+                .withTaskDefinition(updatedTaskDefinitionArn)
+                .withLaunchType("FARGATE")
+                .withNetworkConfiguration(
+                    NetworkConfiguration()
+                        .withAwsvpcConfiguration(
+                            AwsVpcConfiguration()
+                                .withSubnets(subnetId)
+                                .withAssignPublicIp("ENABLED")
+                                .withSecurityGroups(securityGroupId)
+                        )
+                )
+
+            // Run the task
+            val runTaskResult: RunTaskResult = ecsClient.runTask(request)
+
+            println(runTaskResult)
+
+            val taskArn = runTaskResult.tasks[0].taskArn
+
+            val ipAddress = waitForTaskToBeRunning(ecsClient, clusterName, taskArn)
+
+            println("Container IP address: $ipAddress")
+
+            tcpService.init_test(ipAddress)
+        } else {
+            throw Exception("Container definition not found")
         }
-
-        // Specify the ECS task details
-//        val clusterName = "your-cluster-name"
-//        val taskDefinition = "your-task-definition"
-//        val containerName = "your-container-name"
-//        val subnetId = "your-subnet-id"
-//        val securityGroupId = "your-security-group-id"
-
-        // Create a task request
-//        val request = RunTaskRequest()
-//            .withCluster(clusterName)
-//            .withTaskDefinition(taskDefinition)
-//            .withLaunchType("FARGATE")
-//            .withNetworkConfiguration(
-//                NetworkConfiguration()
-//                .withAwsvpcConfiguration(
-//                    AwsVpcConfiguration()
-//                    .withSubnets(subnetId)
-//                    .withSecurityGroups(securityGroupId)
-//                )
-//            )
-//            .withOverrides(
-//                TaskOverride().withContainerOverrides(
-//                ContainerOverride()
-//                    .withName(containerName)
-//                // Add any additional container configuration if required
-//            ))
-//
-//        // Run the task
-//        val runTaskResult: RunTaskResult = ecsClient.runTask(request)
-//
-//        // Retrieve the IP address of the created container
-//        val ipAddress: String = runTaskResult.tasks[0].containers[0].networkInterfaces[0].privateIpv4Address
-//        println("Container IP address: $ipAddress")
     }
 }

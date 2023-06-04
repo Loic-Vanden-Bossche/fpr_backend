@@ -38,8 +38,10 @@ class ApplicationConfiguration(
     @Profile("prod")
     @Bean
     @Primary
-    fun gameInstantiator(): GameInstantiator {
-        return GameInstantiatorProd()
+    fun gameInstantiator(@Autowired tcpService: TcpService): GameInstantiator {
+        return GameInstantiatorProd(
+            tcpService
+        )
     }
 
     @Bean
