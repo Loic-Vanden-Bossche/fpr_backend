@@ -22,6 +22,7 @@ class GameInstantiatorProd(
             val describeTasksResult = ecsClient.describeTasks(describeTasksRequest)
             val task = describeTasksResult.tasks[0]
             if (task.lastStatus == "RUNNING") {
+                Thread.sleep(10000)
                 return task.containers[0].networkInterfaces[0].privateIpv4Address
             }
             Thread.sleep(1000)
