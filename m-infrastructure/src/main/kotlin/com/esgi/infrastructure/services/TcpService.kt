@@ -9,7 +9,7 @@ import java.nio.channels.CompletionHandler
 @Service
 class TcpService {
     fun init_test(ip: String) {
-        val address = InetSocketAddress("localhost", 8070)
+        val address = InetSocketAddress(ip, 8070)
         val client = AsynchronousSocketChannel.open()
 
         client.connect(address, null, object : CompletionHandler<Void?, Void?> {
