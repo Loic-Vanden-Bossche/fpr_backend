@@ -11,12 +11,3 @@ services:
       - "5432:5432"
     volumes:
       - /var/lib/postgresql/data
-  backend:
-    image: fpr-backend:dev-env-test
-    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      - database
-    environment:
-      spring.datasource.url: jdbc:postgresql://database:5432/jpr
