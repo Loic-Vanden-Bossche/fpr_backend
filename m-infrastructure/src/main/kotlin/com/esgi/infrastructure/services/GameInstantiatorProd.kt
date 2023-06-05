@@ -2,6 +2,8 @@ package com.esgi.infrastructure.services
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.regions.Regions
+import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
+import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest
 import com.amazonaws.services.ecs.AmazonECS
 import com.amazonaws.services.ecs.AmazonECSClientBuilder
 import com.amazonaws.services.ecs.model.*
@@ -10,6 +12,24 @@ import com.esgi.applicationservices.services.GameInstantiator
 class GameInstantiatorProd(
     private val tcpService: TcpService
 ): GameInstantiator {
+    private fun getGameSecurityGroup(): String {
+        val name = "game-security-group"
+
+        val ec2Client = AmazonEC2ClientBuilder.standard()
+            .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
+            .withRegion(Regions.EU_WEST_3)
+            .build()
+
+        val describeSecurityGroupsRequest = DescribeSecurityGroupsRequest()
+            .withGroupNames(name)
+        val describeSecurityGroupsResult = ec2Client.describeSecurityGroups(describeSecurityGroupsRequest)
+        if (describeSecurityGroupsResult.securityGroups.isNotEmpty()) {
+            return describeSecurityGroupsResult.securityGroups[0].groupId
+        }
+
+        throw Exception("GameSecurityGroup not found")
+    }
+
     private fun waitForTaskToBeRunning(ecsClient: AmazonECS, clusterName: String, taskArn: String): String {
         val timeout = 60 * 1000
 
@@ -48,7 +68,7 @@ class GameInstantiatorProd(
         val networkConfiguration = describeServicesResult.services[0].networkConfiguration
 
         val subnetId = networkConfiguration.awsvpcConfiguration.subnets[0]
-        val securityGroupId = networkConfiguration.awsvpcConfiguration.securityGroups[0]
+        val securityGroupId = getGameSecurityGroup()
 
         val containerImage = "075626265631.dkr.ecr.eu-west-3.amazonaws.com/fpr-games-repository:latest"
 
