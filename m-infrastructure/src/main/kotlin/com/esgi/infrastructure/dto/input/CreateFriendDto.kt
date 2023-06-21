@@ -1,7 +1,6 @@
 package com.esgi.infrastructure.dto.input
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
 import java.util.*
 

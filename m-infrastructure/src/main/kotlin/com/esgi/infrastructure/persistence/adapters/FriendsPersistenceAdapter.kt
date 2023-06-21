@@ -16,8 +16,6 @@ class FriendsPersistenceAdapter(
     override fun findAll(user: User): List<User> = friendsRepository.getAllFriendsOf(UUID.fromString(user.id)).map(mapper::toDomain)
 
     override fun createFriend(friend: User, user: User): Boolean = try{
-        println(friend)
-        println(user)
         friendsRepository.save(FriendsEntity(user1 = mapper.toEntity(user), user2 = mapper.toEntity(friend)))
         true
     }catch (e: Exception){
