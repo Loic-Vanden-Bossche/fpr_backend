@@ -37,5 +37,5 @@ data class UserEntity(
         joinColumns = [JoinColumn(name = "USER_ID")],
         inverseJoinColumns = [JoinColumn(name = "GROUP_ID")]
     )
-    val groups: List<GroupEntity> = emptyList()
+    val groups: List<GroupEntity>? = emptyList()
 ) : AuditableDates()

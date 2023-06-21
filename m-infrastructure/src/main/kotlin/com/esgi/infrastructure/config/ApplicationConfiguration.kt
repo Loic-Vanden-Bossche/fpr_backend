@@ -2,8 +2,13 @@ package com.esgi.infrastructure.config
 
 import com.esgi.applicationservices.services.GameInstantiator
 import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
+import com.esgi.applicationservices.persistence.FriendsPersistence
+import com.esgi.applicationservices.usecases.friends.CreateFriendsUseCase
+import com.esgi.applicationservices.usecases.friends.FindingAllFriendsUseCase
 import com.esgi.applicationservices.usecases.users.*
+import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
+import com.esgi.infrastructure.persistence.repositories.FriendsRepository
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import com.esgi.infrastructure.services.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +23,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder
 @Configuration
 class ApplicationConfiguration(
     private val usersRepository: UsersRepository,
+    private val friendsRepository: FriendsRepository,
     private val jwtDecoder: JwtDecoder,
     private val jwtEncoder: JwtEncoder,
 ) {
@@ -47,6 +53,11 @@ class ApplicationConfiguration(
     @Bean
     fun usersPersistence(): UsersPersistenceAdapter {
         return UsersPersistenceAdapter(usersRepository)
+    }
+
+    @Bean
+    fun friendsPersistence(): FriendsPersistence {
+        return FriendsPersistenceAdapter(friendsRepository)
     }
 
     @Bean
@@ -108,4 +119,18 @@ class ApplicationConfiguration(
             service
         )
     }
+
+    @Bean
+    fun findingAllFriendsUseCase(): FindingAllFriendsUseCase {
+        return FindingAllFriendsUseCase(
+                friendsPersistence()
+        )
+    }
+
+    @Bean
+    fun createFriendUseCase(): CreateFriendsUseCase =
+            CreateFriendsUseCase(
+                    friendsPersistence(),
+                    usersPersistence()
+            )
 }

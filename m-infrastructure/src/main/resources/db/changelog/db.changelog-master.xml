@@ -78,4 +78,23 @@
     <changeSet author="loloi (generated)" id="1685109254506-4">
         <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="TJ_GROUPS_USERS" constraintName="FKovq3fbk5lm1uafu2ffnqf7uqq" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1685808759999-1">
+        <createTable tableName="T_FRIENDS">
+            <column name="FRIENDS_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="T_FRIENDSPK"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="USER_1" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="USER_2" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1685808759999-2">
+        <addForeignKeyConstraint baseColumnNames="USER_1" baseTableName="T_FRIENDS" constraintName="FKcevc84wkiwna145d9fk9b7dnt" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1685808759999-3">
+        <addForeignKeyConstraint baseColumnNames="USER_2" baseTableName="T_FRIENDS" constraintName="FKcjrqsbba56pwktq7mr1u39dwl" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
