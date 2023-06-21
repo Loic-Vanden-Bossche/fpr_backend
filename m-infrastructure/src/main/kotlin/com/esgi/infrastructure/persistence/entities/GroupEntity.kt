@@ -16,11 +16,11 @@ data class GroupEntity(
     @Column(name = "GROUP_NAME", nullable = false)
     val name: String = "",
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "TJ_GROUPS_USERS",
         joinColumns = [JoinColumn(name = "GROUP_ID")],
         inverseJoinColumns = [JoinColumn(name = "USER_ID")]
     )
-    var users: List<UserEntity> = emptyList()
+    var users: List<UserEntity>? = emptyList()
 )

@@ -3,12 +3,16 @@ package com.esgi.infrastructure.config
 import com.esgi.applicationservices.services.GameInstantiator
 import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
 import com.esgi.applicationservices.persistence.FriendsPersistence
+import com.esgi.applicationservices.persistence.GroupsPersistence
 import com.esgi.applicationservices.usecases.friends.CreateFriendsUseCase
 import com.esgi.applicationservices.usecases.friends.FindingAllFriendsUseCase
+import com.esgi.applicationservices.usecases.groups.FindingAllGroupsUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
+import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import com.esgi.infrastructure.persistence.repositories.FriendsRepository
+import com.esgi.infrastructure.persistence.repositories.GroupsRepository
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import com.esgi.infrastructure.services.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +28,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder
 class ApplicationConfiguration(
     private val usersRepository: UsersRepository,
     private val friendsRepository: FriendsRepository,
+    private val groupsRepository: GroupsRepository,
     private val jwtDecoder: JwtDecoder,
     private val jwtEncoder: JwtEncoder,
 ) {
@@ -58,6 +63,10 @@ class ApplicationConfiguration(
     @Bean
     fun friendsPersistence(): FriendsPersistence {
         return FriendsPersistenceAdapter(friendsRepository)
+    }
+
+    fun groupsPersistence(): GroupsPersistence {
+        return GroupPersistenceAdapter(groupsRepository, usersRepository)
     }
 
     @Bean
@@ -133,4 +142,10 @@ class ApplicationConfiguration(
                     friendsPersistence(),
                     usersPersistence()
             )
+
+    @Bean
+    fun findingAllGroupsUseCase(): FindingAllGroupsUseCase =
+        FindingAllGroupsUseCase(
+            groupsPersistence()
+        )
 }
