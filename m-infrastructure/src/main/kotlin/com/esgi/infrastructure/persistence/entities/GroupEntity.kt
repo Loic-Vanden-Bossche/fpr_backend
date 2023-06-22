@@ -27,5 +27,5 @@ data class GroupEntity(
         joinColumns = [JoinColumn(name = "GROUP_ID")],
         inverseJoinColumns = [JoinColumn(name = "USER_ID")]
     )
-    var users: List<UserEntity> = emptyList()
+    var users: MutableList<UserEntity> = mutableListOf()
 )

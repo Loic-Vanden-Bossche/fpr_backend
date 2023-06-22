@@ -22,13 +22,23 @@ class GroupPersistenceAdapter(
 
     override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(UUID.fromString(user.id)).map(mapper::toDomain)
 
+    override fun find(id: String): Group? = groupsRepository.findByIdOrNull(UUID.fromString(id))?.let { mapper.toDomain(it) }
+
     override fun create(users: List<User>, name: String): Group {
         val group = GroupEntity().apply {
             this.name = name
             type = GroupType.GROUP
-            this.users = users.map{ usersRepository.findByIdOrNull(UUID.fromString(it.id))!! }
+            this.users = users.map { usersRepository.findByIdOrNull(UUID.fromString(it.id))!! }.toMutableList()
         }
         groupsRepository.save(group)
         return mapper.toDomain(group)
+    }
+
+    override fun addUser(group: Group, users: List<User>): Group {
+        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val usersEntity = users.map { usersRepository.findByIdOrNull(UUID.fromString(it.id))!! }
+        groupEntity.users.addAll(usersEntity)
+        groupsRepository.save(groupEntity)
+        return mapper.toDomain(groupEntity)
     }
 }

@@ -1,4 +1,4 @@
-package com.esgi.applicationservices.usecases.users
+package com.esgi.applicationservices.usecases.groups
 
 import com.esgi.applicationservices.persistence.GroupsPersistence
 import com.esgi.applicationservices.persistence.UsersPersistence

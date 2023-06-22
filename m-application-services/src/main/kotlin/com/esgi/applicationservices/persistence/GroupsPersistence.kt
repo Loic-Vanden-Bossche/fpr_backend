@@ -7,4 +7,8 @@ interface GroupsPersistence {
     fun findAll(user: User): List<Group>
 
     fun create(users: List<User>, name: String): Group
+
+    fun find(id: String): Group?
+
+    fun addUser(group: Group, users: List<User>): Group
 }
