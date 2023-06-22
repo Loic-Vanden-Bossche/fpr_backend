@@ -25,3 +25,6 @@ security:
 
 server:
   forward-headers-strategy: framework
+
+games-bucket:
+  name: game-uploads20230621151151019500000001
