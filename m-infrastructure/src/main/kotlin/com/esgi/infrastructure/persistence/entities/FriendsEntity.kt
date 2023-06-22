@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.persistence.entities
 
+import com.esgi.domainmodels.Status
 import jakarta.persistence.*
 import org.hibernate.annotations.DynamicUpdate
 import java.util.*
@@ -19,5 +20,9 @@ data class FriendsEntity(
 
     @ManyToOne
     @JoinColumn(name = "USER_2", nullable = false)
-    val user2: UserEntity
+    val user2: UserEntity,
+
+    @Column(name = "STATUS", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
+    @Enumerated(EnumType.STRING)
+    var status: Status
 )

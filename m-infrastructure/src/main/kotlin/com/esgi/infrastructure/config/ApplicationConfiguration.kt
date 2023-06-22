@@ -4,8 +4,7 @@ import com.esgi.applicationservices.services.GameInstantiator
 import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
 import com.esgi.applicationservices.services.GameBuilder
 import com.esgi.applicationservices.services.GameUploader
-import com.esgi.applicationservices.usecases.friends.CreateFriendsUseCase
-import com.esgi.applicationservices.usecases.friends.FindingAllFriendsUseCase
+import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.groups.FindingAllGroupsUseCase
 import com.esgi.applicationservices.usecases.users.*
@@ -90,10 +89,30 @@ class ApplicationConfiguration(
     }
 
     @Bean
+    fun findingAllPendingFriendUseCase(): FindingAllPendingFriendsUseCase =
+            FindingAllPendingFriendsUseCase(
+                    friendsPersistence
+            )
+
+    @Bean
     fun createFriendUseCase(): CreateFriendsUseCase =
             CreateFriendsUseCase(
                 friendsPersistence,
                 usersPersistence
+            )
+
+    @Bean
+    fun approveFriendUseCase(): ApproveFriendUseCase =
+            ApproveFriendUseCase(
+                    usersPersistence,
+                    friendsPersistence
+            )
+
+    @Bean
+    fun denyFriendUseCase(): DenyFriendUseCase =
+            DenyFriendUseCase(
+                    usersPersistence,
+                    friendsPersistence
             )
 
     @Bean

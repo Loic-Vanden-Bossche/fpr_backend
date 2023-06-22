@@ -97,4 +97,17 @@
     <changeSet author="macaron (generated)" id="1685808759999-3">
         <addForeignKeyConstraint baseColumnNames="USER_2" baseTableName="T_FRIENDS" constraintName="FKcjrqsbba56pwktq7mr1u39dwl" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1687344941809-3">
+        <addColumn tableName="T_FRIENDS">
+            <column defaultValue="PENDING" name="STATUS" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1687344941809-1">
+        <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1687344941809-2">
+        <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()" tableName="T_FRIENDS"/>
+    </changeSet>
 </databaseChangeLog>
