@@ -43,6 +43,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation:3.1.0")
     implementation("com.amazonaws:aws-java-sdk-ecs:1.12.481")
     implementation("com.amazonaws:aws-java-sdk-ec2:1.12.481")
+    implementation("com.amazonaws:aws-java-sdk-ecr:1.12.481")
     implementation("com.amazonaws:aws-java-sdk-s3:1.12.481")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
