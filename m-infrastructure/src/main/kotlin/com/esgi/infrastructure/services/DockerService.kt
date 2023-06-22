@@ -4,10 +4,12 @@ import com.github.dockerjava.api.model.*
 import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.core.DockerClientBuilder
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
+import org.springframework.context.annotation.Profile
 
 import org.springframework.stereotype.Service
 import java.net.URI
 
+@Profile("dev")
 @Service
 class DockerService {
     private val dockerClient: DockerClient
@@ -28,7 +30,7 @@ class DockerService {
         }
     }
 
-    fun runContainer(gameId: String, imageName: String): String {
+    fun runGameContainer(gameId: String, imageName: String): String {
         val exposedPort = ExposedPort.tcp(8070)
         val portBindings = Ports()
         portBindings.bind(exposedPort, Ports.Binding.bindPort(8070))
@@ -46,14 +48,5 @@ class DockerService {
         dockerClient.startContainerCmd(container.id).exec()
 
         return container.id
-    }
-
-    fun getContainerIpAddress(containerId: String): String {
-        val containerInfo = dockerClient.inspectContainerCmd(containerId).exec()
-        val networkSettings: NetworkSettings = containerInfo.networkSettings
-        val networks = networkSettings.networks
-        val networkName = networks.keys.firstOrNull() ?: ""
-        return "127.0.0.1"
-//        return networks[networkName]?.ipAddress ?: ""
     }
 }
