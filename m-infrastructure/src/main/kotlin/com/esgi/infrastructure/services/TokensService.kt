@@ -3,9 +3,11 @@ package com.esgi.infrastructure.services
 import com.esgi.applicationservices.usecases.users.FindingOneUserByEmailUseCase
 import com.esgi.domainmodels.User
 import org.springframework.security.oauth2.jwt.*
+import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+@Service
 class TokensService(
     private val jwtDecoder: JwtDecoder,
     private val jwtEncoder: JwtEncoder,

@@ -2,98 +2,51 @@ package com.esgi.infrastructure.config
 
 import com.esgi.applicationservices.services.GameInstantiator
 import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
-import com.esgi.applicationservices.persistence.FriendsPersistence
-import com.esgi.applicationservices.persistence.GroupsPersistence
+import com.esgi.applicationservices.services.GameBuilder
+import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.CreateFriendsUseCase
 import com.esgi.applicationservices.usecases.friends.FindingAllFriendsUseCase
+import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.groups.FindingAllGroupsUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
-import com.esgi.infrastructure.persistence.repositories.FriendsRepository
-import com.esgi.infrastructure.persistence.repositories.GroupsRepository
-import com.esgi.infrastructure.persistence.repositories.UsersRepository
-import com.esgi.infrastructure.services.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
-import org.springframework.context.annotation.Profile
-import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.jwt.JwtEncoder
-
 
 @Configuration
 class ApplicationConfiguration(
-    private val usersRepository: UsersRepository,
-    private val friendsRepository: FriendsRepository,
-    private val groupsRepository: GroupsRepository,
-    private val jwtDecoder: JwtDecoder,
-    private val jwtEncoder: JwtEncoder,
+    private val usersPersistence: UsersPersistenceAdapter,
+    private val friendsPersistence: FriendsPersistenceAdapter,
+    private val groupsPersistence: GroupPersistenceAdapter
 ) {
-    @Bean
-    fun tokensService(@Autowired service: FindingOneUserByEmailUseCase): TokensService {
-        return TokensService(jwtDecoder, jwtEncoder, service)
-    }
-
-    @Profile("dev")
-    @Bean
-    fun gameInstantiatorDev(@Autowired dockerService: DockerService, @Autowired tcpService: TcpService): GameInstantiator {
-        return GameInstantiatorDev(
-            dockerService,
-            tcpService
-        )
-    }
-
-    @Profile("prod")
-    @Bean
-    @Primary
-    fun gameInstantiator(@Autowired tcpService: TcpService): GameInstantiator {
-        return GameInstantiatorProd(
-            tcpService
-        )
-    }
-
-    @Bean
-    fun usersPersistence(): UsersPersistenceAdapter {
-        return UsersPersistenceAdapter(usersRepository)
-    }
-
-    @Bean
-    fun friendsPersistence(): FriendsPersistence {
-        return FriendsPersistenceAdapter(friendsRepository)
-    }
-
-    fun groupsPersistence(): GroupsPersistence {
-        return GroupPersistenceAdapter(groupsRepository, usersRepository)
-    }
-
     @Bean
     fun findingAllUsersUseCase(): FindingAllUsersUseCase {
         return FindingAllUsersUseCase(
-            usersPersistence()
+            usersPersistence
         )
     }
 
     @Bean
     fun findingUserByIdUseCase(): FindingOneUserByIdUseCase {
         return FindingOneUserByIdUseCase(
-            usersPersistence()
+            usersPersistence
         )
     }
 
     @Bean
     fun findingOneUserByEmailUseCase(): FindingOneUserByEmailUseCase {
         return FindingOneUserByEmailUseCase(
-            usersPersistence(),
+            usersPersistence,
         )
     }
 
     @Bean
     fun registeringUserUseCase(@Autowired service: FindingOneUserByEmailUseCase): RegisteringUserUseCase {
         return RegisteringUserUseCase(
-            usersPersistence(),
+            usersPersistence,
             service
         )
     }
@@ -101,7 +54,7 @@ class ApplicationConfiguration(
     @Bean
     fun updatingUserUseCase(): UpdatingUserUseCase {
         return UpdatingUserUseCase(
-            usersPersistence(),
+            usersPersistence,
             findingUserByIdUseCase()
         )
     }
@@ -109,7 +62,7 @@ class ApplicationConfiguration(
     @Bean
     fun deletingUserUseCase(): DeletingUserUseCase {
         return DeletingUserUseCase(
-            usersPersistence(),
+            usersPersistence,
             findingUserByIdUseCase()
         )
     }
@@ -117,7 +70,7 @@ class ApplicationConfiguration(
     @Bean
     fun creatingUserUseCase(@Autowired service: FindingOneUserByEmailUseCase): CreatingUserUseCase {
         return CreatingUserUseCase(
-            usersPersistence(),
+            usersPersistence,
             service
         )
     }
@@ -132,20 +85,30 @@ class ApplicationConfiguration(
     @Bean
     fun findingAllFriendsUseCase(): FindingAllFriendsUseCase {
         return FindingAllFriendsUseCase(
-                friendsPersistence()
+            friendsPersistence
         )
     }
 
     @Bean
     fun createFriendUseCase(): CreateFriendsUseCase =
             CreateFriendsUseCase(
-                    friendsPersistence(),
-                    usersPersistence()
+                friendsPersistence,
+                usersPersistence
             )
 
     @Bean
     fun findingAllGroupsUseCase(): FindingAllGroupsUseCase =
         FindingAllGroupsUseCase(
-            groupsPersistence()
+            groupsPersistence
+        )
+
+    @Bean
+    fun buildGameUseCase(
+        @Autowired gameBuilder: GameBuilder,
+        @Autowired gameUploader: GameUploader
+    ): BuildGameUseCase =
+        BuildGameUseCase(
+            gameUploader,
+            gameBuilder
         )
 }

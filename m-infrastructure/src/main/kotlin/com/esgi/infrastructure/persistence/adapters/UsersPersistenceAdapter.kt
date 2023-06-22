@@ -7,8 +7,10 @@ import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.UserEntity
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.mapstruct.factory.Mappers
+import org.springframework.stereotype.Component
 import java.util.*
 
+@Component
 class UsersPersistenceAdapter(private val userRepository: UsersRepository) : UsersPersistence {
     override fun create(email: String, nickname: String, password: String): User {
         val mapper = Mappers.getMapper(UserMapper::class.java)

@@ -6,8 +6,10 @@ import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.FriendsEntity
 import com.esgi.infrastructure.persistence.repositories.FriendsRepository
 import org.mapstruct.factory.Mappers
+import org.springframework.stereotype.Component
 import java.util.*
 
+@Component
 class FriendsPersistenceAdapter(
         private val friendsRepository: FriendsRepository
 ): FriendsPersistence {

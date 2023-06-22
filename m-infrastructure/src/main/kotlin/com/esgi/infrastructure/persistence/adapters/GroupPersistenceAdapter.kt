@@ -7,8 +7,10 @@ import com.esgi.infrastructure.dto.mappers.GroupMapper
 import com.esgi.infrastructure.persistence.repositories.GroupsRepository
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.mapstruct.factory.Mappers
+import org.springframework.stereotype.Component
 import java.util.*
 
+@Component
 class GroupPersistenceAdapter(
     private val groupsRepository: GroupsRepository,
     private val usersRepository: UsersRepository
