@@ -110,4 +110,11 @@
     <changeSet author="macaron (generated)" id="1687344941809-2">
         <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()" tableName="T_FRIENDS"/>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1687467088460-1">
+        <addColumn tableName="T_GROUPS">
+            <column defaultValue="FRIEND" name="TYPE" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

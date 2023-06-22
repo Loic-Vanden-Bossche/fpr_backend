@@ -122,6 +122,13 @@ class ApplicationConfiguration(
         )
 
     @Bean
+    fun createGroupUseCase(): CreateGroupUseCase =
+            CreateGroupUseCase(
+                    usersPersistence,
+                    groupsPersistence
+            )
+
+    @Bean
     fun buildGameUseCase(
         @Autowired gameBuilder: GameBuilder,
         @Autowired gameUploader: GameUploader

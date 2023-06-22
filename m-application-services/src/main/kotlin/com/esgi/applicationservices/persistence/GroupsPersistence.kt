@@ -5,4 +5,6 @@ import com.esgi.domainmodels.User
 
 interface GroupsPersistence {
     fun findAll(user: User): List<Group>
+
+    fun create(users: List<User>, name: String): Group
 }

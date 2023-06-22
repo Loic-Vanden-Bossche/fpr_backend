@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.persistence.entities
 
+import com.esgi.domainmodels.GroupType
 import jakarta.persistence.*
 import org.hibernate.annotations.DynamicUpdate
 import java.util.*
@@ -14,7 +15,11 @@ data class GroupEntity(
     val id: UUID? = null,
 
     @Column(name = "GROUP_NAME", nullable = false)
-    val name: String = "",
+    var name: String = "",
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'FRIEND'")
+    var type: GroupType = GroupType.FRIEND,
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
