@@ -6,10 +6,7 @@ import com.esgi.applicationservices.services.GameBuilder
 import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
-import com.esgi.applicationservices.usecases.groups.AddUserToGroupUseCase
-import com.esgi.applicationservices.usecases.groups.CreateGroupUseCase
-import com.esgi.applicationservices.usecases.groups.FindingAllGroupsUseCase
-import com.esgi.applicationservices.usecases.groups.FindingGroupUseCase
+import com.esgi.applicationservices.usecases.groups.*
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
@@ -141,6 +138,12 @@ class ApplicationConfiguration(
     fun addUserToGroupUseCase(): AddUserToGroupUseCase =
             AddUserToGroupUseCase(
                     usersPersistence,
+                    groupsPersistence
+            )
+
+    @Bean
+    fun renameGroupUseCase(): RenameGroupUseCase =
+            RenameGroupUseCase(
                     groupsPersistence
             )
 

@@ -11,4 +11,6 @@ interface GroupsPersistence {
     fun find(id: String): Group?
 
     fun addUser(group: Group, users: List<User>): Group
+
+    fun updateGroupName(group: Group, name: String): Group
 }

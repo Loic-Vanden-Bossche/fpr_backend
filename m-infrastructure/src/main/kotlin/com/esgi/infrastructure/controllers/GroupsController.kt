@@ -1,11 +1,9 @@
 package com.esgi.infrastructure.controllers
 
-import com.esgi.applicationservices.usecases.groups.AddUserToGroupUseCase
-import com.esgi.applicationservices.usecases.groups.FindingAllGroupsUseCase
-import com.esgi.applicationservices.usecases.groups.CreateGroupUseCase
-import com.esgi.applicationservices.usecases.groups.FindingGroupUseCase
+import com.esgi.applicationservices.usecases.groups.*
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.AddUserToGroupDto
+import com.esgi.infrastructure.dto.input.ChangeGroupNameDto
 import com.esgi.infrastructure.dto.input.CreateGroupDto
 import com.esgi.infrastructure.dto.mappers.GroupMapper
 import com.esgi.infrastructure.dto.output.GroupResponseDto
@@ -14,6 +12,7 @@ import jakarta.validation.Valid
 import org.mapstruct.factory.Mappers
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -30,7 +29,8 @@ class GroupsController(
     private val findingAllGroupsUseCase: FindingAllGroupsUseCase,
     private val findingGroupUseCase: FindingGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
-    private val addUserToGroupUseCase: AddUserToGroupUseCase
+    private val addUserToGroupUseCase: AddUserToGroupUseCase,
+    private val renameGroupUseCase: RenameGroupUseCase
 ) {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
 
@@ -39,13 +39,21 @@ class GroupsController(
     fun getGroups(principal: UsernamePasswordAuthenticationToken): List<GroupResponseDto> = findingAllGroupsUseCase.execute((principal.principal as User)).map(mapper::toDto)
 
     @PostMapping
+    @ResponseBody
     fun createGroup(@RequestBody @Valid body: CreateGroupDto, principal: UsernamePasswordAuthenticationToken): GroupResponseDto = mapper.toDto(createGroupUseCase.execute(body.users, principal.principal as User, body.name))
 
     @GetMapping("/{id}")
+    @ResponseBody
     fun getGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): GroupResponseDto =
             mapper.toDto(findingGroupUseCase.execute(id, principal.principal as User))
 
+    @PatchMapping("/{id}")
+    @ResponseBody
+    fun patchGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, @RequestBody @Valid body: ChangeGroupNameDto): GroupResponseDto =
+            mapper.toDto(renameGroupUseCase.execute(principal.principal as User, id, body.name))
+
     @PutMapping("/{id}")
+    @ResponseBody
     fun putMemberInGroup(@RequestBody @Valid body: AddUserToGroupDto, principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): GroupResponseDto =
             mapper.toDto(addUserToGroupUseCase.execute(principal.principal as User, id, body.users))
 }

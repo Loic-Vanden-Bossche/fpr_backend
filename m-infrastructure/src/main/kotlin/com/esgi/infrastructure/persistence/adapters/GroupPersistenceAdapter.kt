@@ -34,6 +34,13 @@ class GroupPersistenceAdapter(
         return mapper.toDomain(group)
     }
 
+    override fun updateGroupName(group: Group, name: String): Group {
+        val entity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        entity.name = name
+        groupsRepository.save(entity)
+        return mapper.toDomain(entity)
+    }
+
     override fun addUser(group: Group, users: List<User>): Group {
         val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
         val usersEntity = users.map { usersRepository.findByIdOrNull(UUID.fromString(it.id))!! }
