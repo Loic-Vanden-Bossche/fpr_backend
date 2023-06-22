@@ -8,6 +8,8 @@ interface GroupsPersistence {
 
     fun create(users: List<User>, name: String): Group
 
+    fun createFriendGroup(user1: User, user2: User): Group
+
     fun find(id: String): Group?
 
     fun addUser(group: Group, users: List<User>): Group

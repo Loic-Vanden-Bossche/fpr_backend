@@ -1,19 +1,24 @@
 package com.esgi.applicationservices.usecases.friends
 
 import com.esgi.applicationservices.persistence.FriendsPersistence
+import com.esgi.applicationservices.persistence.GroupsPersistence
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.User
 import java.util.UUID
 
 class ApproveFriendUseCase(
         private val usersPersistence: UsersPersistence,
-        private val friendsPersistence: FriendsPersistence
+        private val friendsPersistence: FriendsPersistence,
+        private val groupsPersistence: GroupsPersistence
 ) {
     fun execute(user: User, friend: UUID): Boolean{
         val friendUser = usersPersistence.findById(friend.toString()) ?: run {
             return false
         }
-        println("friend : $friendUser")
-        return friendsPersistence.setApprove(user, friendUser)
+        val res = friendsPersistence.setApprove(user, friendUser)
+        if(res){
+            groupsPersistence.createFriendGroup(user, friendUser)
+        }
+        return res
     }
 }

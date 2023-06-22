@@ -105,7 +105,8 @@ class ApplicationConfiguration(
     fun approveFriendUseCase(): ApproveFriendUseCase =
             ApproveFriendUseCase(
                     usersPersistence,
-                    friendsPersistence
+                    friendsPersistence,
+                    groupsPersistence
             )
 
     @Bean

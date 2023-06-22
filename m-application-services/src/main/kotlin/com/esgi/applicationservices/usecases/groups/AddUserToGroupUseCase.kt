@@ -21,7 +21,7 @@ class AddUserToGroupUseCase(
         if(user !in group.members){
             throw NotFoundException("Group not found")
         }
-        val users = usersId.map { usersPersistence.findById(it.toString()) ?: throw NotFoundException("User not found") }
+        val users = usersId.distinct().map { usersPersistence.findById(it.toString()) ?: throw NotFoundException("User not found") }.filter { it !in group.members }
         return groupsPersistence.addUser(group, users)
     }
 }
