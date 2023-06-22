@@ -53,4 +53,10 @@ class GlobalExceptionHandler(
     ): ResponseEntity<ErrorResponse> {
         return handleDomainException(ex, req, HttpStatus.UNAUTHORIZED)
     }
+
+    @ExceptionHandler(BadRequestException::class)
+    fun handleBadRequestException(
+        ex: BadRequestException,
+        req: HttpServletRequest
+    ) = handleDomainException(ex, req, HttpStatus.BAD_REQUEST)
 }
