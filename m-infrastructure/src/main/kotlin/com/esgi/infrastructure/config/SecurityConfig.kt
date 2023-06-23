@@ -31,6 +31,7 @@ class SecurityConfig(
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers("/socket/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/sessions").permitAll()
@@ -70,9 +71,10 @@ class SecurityConfig(
         http.cors { cors ->
             cors.configurationSource {
                 val configuration = CorsConfiguration()
-                configuration.allowedOrigins = listOf("http://localhost:8080")
+                configuration.allowedOrigins = listOf("http://localhost:8080", "http://localhost:1234")
                 configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
                 configuration.allowedHeaders = listOf("authorization", "content-type")
+                configuration.allowCredentials = true
                 configuration
             }
         }
