@@ -15,6 +15,6 @@ class WebSocketConfig: WebSocketMessageBrokerConfigurer {
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/socket").setAllowedOrigins("http://localhost:1234")
+        registry.addEndpoint("/socket").setAllowedOrigins("https://jxy.me")
     }
 }

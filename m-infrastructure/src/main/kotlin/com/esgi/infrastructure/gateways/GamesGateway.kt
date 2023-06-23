@@ -1,31 +1,31 @@
 package com.esgi.infrastructure.gateways
 
+import com.esgi.applicationservices.services.GameInstantiator
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.Socket
-import java.nio.charset.StandardCharsets
-
+import java.io.*
+import java.net.InetSocketAddress
+import java.nio.ByteBuffer
+import java.nio.channels.AsynchronousSocketChannel
 
 @Controller
-@CrossOrigin(origins = ["http://localhost:1234"], allowCredentials = "true")
-class GamesGateway {
+@CrossOrigin(origins = ["https://jxy.me"], allowCredentials = "true")
+class GamesGateway(
+    val gameInstantiator: GameInstantiator,
+) {
     private var currentRoom: String? = null
     private var gameStarted = false
-    private var gameSocket: Socket? = null
-    private var gameInputStream: InputStream? = null
-    private var gameOutputStream: OutputStream? = null
+    private var client: AsynchronousSocketChannel? = null
 
     @MessageMapping("/joinRoom")
     @SendToUser("/queue/reply")
     fun joinRoom(message: String?): String? {
-        // Create or join the room based on the message and return the room object
-        // Logic to create/join room
+        println("Joining room $message")
         currentRoom = message
         val room: String? = currentRoom
         gameStarted = false
@@ -33,43 +33,66 @@ class GamesGateway {
     }
 
     @MessageMapping("/startGame")
-    @SendTo("/queue/reply")
     fun startGame(): String {
-        if (currentRoom != null && !gameStarted) {
-            try {
-                gameSocket = Socket(SERVER_IP, TCP_PORT)
-                gameInputStream = gameSocket!!.getInputStream()
-                gameOutputStream = gameSocket!!.getOutputStream()
+        try {
+            gameInstantiator.instanciateGame("448a82c3-d29c-4921-8b45-480ae59a7cf1")
 
-                // Start the game and send an init message
-                gameStarted = true
-                val initMessage = "{\"init\": { \"players\": 2 }}"
-                sendTcpMessage(initMessage)
-                return initMessage
-            } catch (e: IOException) {
-                e.printStackTrace()
+            Thread.sleep(5000)
+
+            val address = InetSocketAddress(SERVER_IP, TCP_PORT)
+            client = AsynchronousSocketChannel.open()
+
+            client!!.connect(address)
+
+            runBlocking {
+                launch {
+                    while (true) {
+                        val jsonMessage: String = receiveTcpMessage()
+                        println("Received: $jsonMessage")
+                    }
+                }
+
+                sendTcpMessage("{\"init\": { \"players\": 2 }}\n")
             }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+
         return "Game not started"
     }
 
     @MessageMapping("/play")
     @SendTo("/queue/reply")
     fun play(message: String): String {
-        if (currentRoom != null && gameStarted) {
-            // Process the play message and send it to the game server
-            val playMessage: String = message
-            sendTcpMessage(playMessage)
-            return playMessage
+        val playMessage: String = message
+        sendTcpMessage("$playMessage\n")
+        return playMessage
+    }
+
+    private fun receiveTcpMessage(): String {
+        try {
+            val readBuffer = ByteBuffer.allocate(2048)
+
+            client!!.read(readBuffer).get()
+
+            readBuffer.flip()
+
+            val response = ByteArray(readBuffer.remaining())
+
+            readBuffer.get(response)
+
+            return String(response)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-        return "Invalid play"
+
+        return "Invalid message"
     }
 
     private fun sendTcpMessage(message: String) {
         try {
-            val data: ByteArray = message.toByteArray(StandardCharsets.UTF_8)
-            gameOutputStream!!.write(data)
-            gameOutputStream!!.flush()
+            val writeBuffer = ByteBuffer.wrap(message.toByteArray())
+            client!!.write(writeBuffer).get()
         } catch (e: IOException) {
             e.printStackTrace()
         }

@@ -20,13 +20,10 @@ class GameInstantiatorDev(
             gameId,
             "$registryId.dkr.ecr.eu-west-3.amazonaws.com/fpr-games-repository:${gameId}",
         )
+
         println("Container created")
         println("Container id: $containerId")
 
         println("Waiting for container to be ready")
-
-        Thread.sleep(5000)
-
-        tcpService.init_test("localhost")
     }
 }
