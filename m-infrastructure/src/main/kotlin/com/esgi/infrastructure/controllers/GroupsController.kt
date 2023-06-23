@@ -1,12 +1,15 @@
 package com.esgi.infrastructure.controllers
 
 import com.esgi.applicationservices.usecases.groups.*
+import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.AddUserToGroupDto
 import com.esgi.infrastructure.dto.input.ChangeGroupNameDto
 import com.esgi.infrastructure.dto.input.CreateGroupDto
 import com.esgi.infrastructure.dto.mappers.GroupMapper
+import com.esgi.infrastructure.dto.mappers.MessageMapper
 import com.esgi.infrastructure.dto.output.GroupResponseDto
+import com.esgi.infrastructure.dto.output.MessageResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
@@ -34,9 +37,11 @@ class GroupsController(
     private val createGroupUseCase: CreateGroupUseCase,
     private val addUserToGroupUseCase: AddUserToGroupUseCase,
     private val renameGroupUseCase: RenameGroupUseCase,
-    private val quitGroupUseCase: QuitGroupUseCase
+    private val quitGroupUseCase: QuitGroupUseCase,
+    private val findingAllGroupMessageUseCase: FindingAllGroupMessageUseCase
 ) {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
+    private val messageMapper = Mappers.getMapper(MessageMapper::class.java)
 
     @GetMapping
     @ResponseBody
@@ -68,4 +73,9 @@ class GroupsController(
             response.status = HttpStatus.SC_NO_CONTENT
             null
         }
+
+    @GetMapping("/{id}/messages")
+    @ResponseBody
+    fun getAllMessages(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): List<MessageResponseDto> =
+        findingAllGroupMessageUseCase.execute(principal.principal as User, id).map(messageMapper::toDto)
 }

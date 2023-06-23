@@ -12,7 +12,7 @@ class QuitGroupUseCase(
     private val groupsPersistence: GroupsPersistence
 ) {
     fun execute(user: User, groupId: UUID): Group? {
-        val group = groupsPersistence.find(groupId.toString()) ?: throw NotFoundException("Group not found")
+        val group = groupsPersistence.find(groupId) ?: throw NotFoundException("Group not found")
         if(group.type == GroupType.FRIEND){
             throw BadRequestException("Cannot leave friend group")
         }

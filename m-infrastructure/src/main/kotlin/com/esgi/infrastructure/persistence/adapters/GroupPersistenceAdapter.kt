@@ -22,7 +22,7 @@ class GroupPersistenceAdapter(
 
     override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(UUID.fromString(user.id)).map(mapper::toDomain)
 
-    override fun find(id: String): Group? = groupsRepository.findByIdOrNull(UUID.fromString(id))?.let { mapper.toDomain(it) }
+    override fun find(id: UUID): Group? = groupsRepository.findByIdOrNull(id)?.let { mapper.toDomain(it) }
 
     override fun create(users: List<User>, name: String): Group {
         val group = GroupEntity().apply {

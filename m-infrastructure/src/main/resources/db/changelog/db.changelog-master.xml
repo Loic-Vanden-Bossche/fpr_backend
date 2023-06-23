@@ -117,4 +117,26 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1687525140834-1">
+        <createTable tableName="T_MESSAGE">
+            <column defaultValueComputed="gen_random_uuid()" name="GROUP_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="T_MESSAGEPK"/>
+            </column>
+            <column name="MESSAGE" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="GROUP" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="USER" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1687525140834-2">
+        <addForeignKeyConstraint baseColumnNames="GROUP" baseTableName="T_MESSAGE" constraintName="FK4udcndo2n3c4qw28va0gq8qkc" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1687525140834-3">
+        <addForeignKeyConstraint baseColumnNames="USER" baseTableName="T_MESSAGE" constraintName="FKctan5iq6oou28x9bcu9f5uv45" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

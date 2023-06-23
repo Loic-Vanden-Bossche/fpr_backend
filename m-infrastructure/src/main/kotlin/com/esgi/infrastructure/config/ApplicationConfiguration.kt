@@ -7,9 +7,11 @@ import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.groups.*
+import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
+import com.esgi.infrastructure.persistence.adapters.MessagesPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -19,7 +21,8 @@ import org.springframework.context.annotation.Configuration
 class ApplicationConfiguration(
     private val usersPersistence: UsersPersistenceAdapter,
     private val friendsPersistence: FriendsPersistenceAdapter,
-    private val groupsPersistence: GroupPersistenceAdapter
+    private val groupsPersistence: GroupPersistenceAdapter,
+    private val messagesPersistence: MessagesPersistenceAdapter
 ) {
     @Bean
     fun findingAllUsersUseCase(): FindingAllUsersUseCase {
@@ -152,6 +155,13 @@ class ApplicationConfiguration(
     fun quitGroupUseCase(): QuitGroupUseCase =
         QuitGroupUseCase(
             groupsPersistence
+        )
+
+    @Bean
+    fun findingAllGroupMessagesUseCase(): FindingAllGroupMessageUseCase =
+        FindingAllGroupMessageUseCase(
+            groupsPersistence,
+            messagesPersistence
         )
 
     @Bean
