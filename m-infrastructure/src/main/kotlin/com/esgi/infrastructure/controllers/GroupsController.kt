@@ -8,9 +8,12 @@ import com.esgi.infrastructure.dto.input.CreateGroupDto
 import com.esgi.infrastructure.dto.mappers.GroupMapper
 import com.esgi.infrastructure.dto.output.GroupResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
+import org.apache.http.HttpStatus
 import org.mapstruct.factory.Mappers
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -30,7 +33,8 @@ class GroupsController(
     private val findingGroupUseCase: FindingGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val addUserToGroupUseCase: AddUserToGroupUseCase,
-    private val renameGroupUseCase: RenameGroupUseCase
+    private val renameGroupUseCase: RenameGroupUseCase,
+    private val quitGroupUseCase: QuitGroupUseCase
 ) {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
 
@@ -56,4 +60,12 @@ class GroupsController(
     @ResponseBody
     fun putMemberInGroup(@RequestBody @Valid body: AddUserToGroupDto, principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): GroupResponseDto =
             mapper.toDto(addUserToGroupUseCase.execute(principal.principal as User, id, body.users))
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    fun quitGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, response: HttpServletResponse): GroupResponseDto? =
+        quitGroupUseCase.execute(principal.principal as User, id)?.let { mapper.toDto(it) } ?: run {
+            response.status = HttpStatus.SC_NO_CONTENT
+            null
+        }
 }

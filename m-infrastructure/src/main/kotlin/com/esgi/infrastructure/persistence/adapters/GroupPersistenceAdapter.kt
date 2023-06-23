@@ -58,4 +58,16 @@ class GroupPersistenceAdapter(
         groupsRepository.save(groupEntity)
         return mapper.toDomain(groupEntity)
     }
+
+    override fun removeUserFromGroup(user: User, group: Group): Group? {
+        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        return if(groupEntity.users.size == 1){
+            groupsRepository.delete(groupEntity)
+            null
+        }else{
+            groupEntity.users.removeIf{ it.id == UUID.fromString(user.id) }
+            groupsRepository.save(groupEntity)
+            mapper.toDomain(groupEntity)
+        }
+    }
 }

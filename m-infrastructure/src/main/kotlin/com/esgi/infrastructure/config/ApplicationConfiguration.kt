@@ -90,31 +90,31 @@ class ApplicationConfiguration(
 
     @Bean
     fun findingAllPendingFriendUseCase(): FindingAllPendingFriendsUseCase =
-            FindingAllPendingFriendsUseCase(
-                    friendsPersistence
-            )
+        FindingAllPendingFriendsUseCase(
+            friendsPersistence
+        )
 
     @Bean
     fun createFriendUseCase(): CreateFriendsUseCase =
-            CreateFriendsUseCase(
-                friendsPersistence,
-                usersPersistence
-            )
+        CreateFriendsUseCase(
+            friendsPersistence,
+            usersPersistence
+        )
 
     @Bean
     fun approveFriendUseCase(): ApproveFriendUseCase =
-            ApproveFriendUseCase(
-                    usersPersistence,
-                    friendsPersistence,
-                    groupsPersistence
-            )
+        ApproveFriendUseCase(
+            usersPersistence,
+            friendsPersistence,
+            groupsPersistence
+        )
 
     @Bean
     fun denyFriendUseCase(): DenyFriendUseCase =
-            DenyFriendUseCase(
-                    usersPersistence,
-                    friendsPersistence
-            )
+        DenyFriendUseCase(
+            usersPersistence,
+            friendsPersistence
+        )
 
     @Bean
     fun findingAllGroupsUseCase(): FindingAllGroupsUseCase =
@@ -124,29 +124,35 @@ class ApplicationConfiguration(
 
     @Bean
     fun findingGroupUseCase(): FindingGroupUseCase =
-            FindingGroupUseCase(
-                groupsPersistence
-            )
+        FindingGroupUseCase(
+            groupsPersistence
+        )
 
     @Bean
     fun createGroupUseCase(): CreateGroupUseCase =
-            CreateGroupUseCase(
-                    usersPersistence,
-                    groupsPersistence
-            )
+        CreateGroupUseCase(
+            usersPersistence,
+            groupsPersistence
+        )
 
     @Bean
     fun addUserToGroupUseCase(): AddUserToGroupUseCase =
-            AddUserToGroupUseCase(
-                    usersPersistence,
-                    groupsPersistence
-            )
+        AddUserToGroupUseCase(
+            usersPersistence,
+            groupsPersistence
+        )
 
     @Bean
     fun renameGroupUseCase(): RenameGroupUseCase =
-            RenameGroupUseCase(
-                    groupsPersistence
-            )
+        RenameGroupUseCase(
+                groupsPersistence
+        )
+
+    @Bean
+    fun quitGroupUseCase(): QuitGroupUseCase =
+        QuitGroupUseCase(
+            groupsPersistence
+        )
 
     @Bean
     fun buildGameUseCase(

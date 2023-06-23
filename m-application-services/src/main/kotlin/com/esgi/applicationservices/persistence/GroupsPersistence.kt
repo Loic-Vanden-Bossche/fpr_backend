@@ -15,4 +15,6 @@ interface GroupsPersistence {
     fun addUser(group: Group, users: List<User>): Group
 
     fun updateGroupName(group: Group, name: String): Group
+
+    fun removeUserFromGroup(user: User, group: Group): Group?
 }
