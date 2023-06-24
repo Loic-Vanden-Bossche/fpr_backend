@@ -42,6 +42,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.0")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.1.0")
     implementation("org.springframework.boot:spring-boot-starter-websocket:3.1.0")
+    implementation("org.springframework.security:spring-security-messaging:6.1.1")
     implementation("com.amazonaws:aws-java-sdk-ecs:1.12.481")
     implementation("com.amazonaws:aws-java-sdk-ec2:1.12.481")
     implementation("com.amazonaws:aws-java-sdk-ecr:1.12.481")
