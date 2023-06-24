@@ -4,6 +4,6 @@ import java.util.UUID
 
 data class MessageResponseDto(
     val id: UUID,
-    val user: UserResponseDto,
+    val user: UserMessageResponseDto,
     val message: String
 )

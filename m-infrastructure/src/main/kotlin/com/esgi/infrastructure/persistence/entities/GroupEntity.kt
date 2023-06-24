@@ -27,5 +27,8 @@ data class GroupEntity(
         joinColumns = [JoinColumn(name = "GROUP_ID")],
         inverseJoinColumns = [JoinColumn(name = "USER_ID")]
     )
-    var users: MutableList<UserEntity> = mutableListOf()
+    var users: MutableList<UserEntity> = mutableListOf(),
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    val messages: List<MessageEntity> = mutableListOf()
 )

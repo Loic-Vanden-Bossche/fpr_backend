@@ -17,16 +17,16 @@ data class MessageEntity(
     @Id
     @GeneratedValue
     @Column(name = "GROUP_ID", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
-    val id: UUID,
+    val id: UUID? = null,
 
     @Column(name = "MESSAGE", nullable = false, columnDefinition = "TEXT")
-    val message: String,
+    var message: String = "",
 
     @ManyToOne
     @JoinColumn(name = "GROUP", nullable = false)
-    val group: GroupEntity,
+    val group: GroupEntity? = null,
 
     @ManyToOne
     @JoinColumn(name = "USER", nullable = false)
-    val user: UserEntity
+    val user: UserEntity? = null
 )

@@ -7,7 +7,9 @@ import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.groups.*
+import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
+import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
@@ -160,6 +162,20 @@ class ApplicationConfiguration(
     @Bean
     fun findingAllGroupMessagesUseCase(): FindingAllGroupMessageUseCase =
         FindingAllGroupMessageUseCase(
+            groupsPersistence,
+            messagesPersistence
+        )
+
+    @Bean
+    fun writeMessageToGroupUseCase(): WriteMessageToGroupUseCase =
+        WriteMessageToGroupUseCase(
+            groupsPersistence,
+            messagesPersistence
+        )
+
+    @Bean
+    fun editMessageInGroupUseCase(): EditMessageInGroupUseCase =
+        EditMessageInGroupUseCase(
             groupsPersistence,
             messagesPersistence
         )
