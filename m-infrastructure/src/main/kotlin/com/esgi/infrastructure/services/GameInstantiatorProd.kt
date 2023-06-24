@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service
 @Service
 @Primary
 class GameInstantiatorProd(
-    private val tcpService: TcpService,
     private val taskService: TaskService
 ): GameInstantiator {
     private fun getGameSecurityGroup(): String {
@@ -55,7 +54,5 @@ class GameInstantiatorProd(
         val containerIpAddress = taskService.waitForTaskToBeRunning(task.taskArn)
 
         println("Container IP address: $containerIpAddress")
-
-        tcpService.init_test(containerIpAddress)
     }
 }

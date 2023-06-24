@@ -8,8 +8,7 @@ import java.util.*
 @Profile("dev")
 @Service
 class GameInstantiatorDev(
-    private val dockerService: DockerService,
-    private val tcpService: TcpService
+    private val dockerService: DockerService
 ): GameInstantiator {
     override fun instanciateGame(gameId: String) {
         println("Game instantiated dev")
@@ -25,5 +24,7 @@ class GameInstantiatorDev(
         println("Container id: $containerId")
 
         println("Waiting for container to be ready")
+
+        Thread.sleep(5000)
     }
 }
