@@ -9,12 +9,14 @@ import com.esgi.applicationservices.services.GameInstantiator
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
+import java.nio.channels.AsynchronousSocketChannel
 
 @Profile("prod")
 @Service
 @Primary
 class GameInstantiatorProd(
-    private val taskService: TaskService
+    private val taskService: TaskService,
+    private val tcpService: TcpService
 ): GameInstantiator {
     private fun getGameSecurityGroup(): String {
         val name = "game-security-group"
@@ -36,7 +38,7 @@ class GameInstantiatorProd(
         throw Exception("GameSecurityGroup not found")
     }
 
-    override fun instanciateGame(gameId: String) {
+    override fun instanciateGame(gameId: String): AsynchronousSocketChannel {
         val networkConfiguration = taskService.getNetworkConfigFromService()
 
         val subnetId = networkConfiguration.awsvpcConfiguration.subnets[0]
@@ -54,5 +56,7 @@ class GameInstantiatorProd(
         val containerIpAddress = taskService.waitForTaskToBeRunning(task.taskArn)
 
         println("Container IP address: $containerIpAddress")
+
+        return tcpService.createClient(containerIpAddress)
     }
 }
