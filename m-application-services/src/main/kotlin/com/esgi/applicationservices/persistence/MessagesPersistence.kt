@@ -14,4 +14,6 @@ interface MessagesPersistence {
     fun writeMessageToGroup(from: User, group: Group, message: String): Message
 
     fun editMessage(message: Message, text: String): Message
+
+    fun deleteMessage(message: Message)
 }

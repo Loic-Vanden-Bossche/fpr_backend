@@ -48,4 +48,9 @@ class MessagesPersistenceAdapter(
         messageEntity.message = text
         return mapper.toDomain(messagesRepository.save(messageEntity))
     }
+
+    override fun deleteMessage(message: Message) {
+        val messageEntity = messagesRepository.findByIdOrNull(message.id)!!
+        messagesRepository.delete(messageEntity)
+    }
 }

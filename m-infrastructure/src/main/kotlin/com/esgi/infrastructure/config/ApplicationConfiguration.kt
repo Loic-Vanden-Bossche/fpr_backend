@@ -7,6 +7,7 @@ import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.groups.*
+import com.esgi.applicationservices.usecases.groups.message.DeleteMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
@@ -176,6 +177,13 @@ class ApplicationConfiguration(
     @Bean
     fun editMessageInGroupUseCase(): EditMessageInGroupUseCase =
         EditMessageInGroupUseCase(
+            groupsPersistence,
+            messagesPersistence
+        )
+
+    @Bean
+    fun deleteMessageInGroupUseCase(): DeleteMessageInGroupUseCase =
+        DeleteMessageInGroupUseCase(
             groupsPersistence,
             messagesPersistence
         )
