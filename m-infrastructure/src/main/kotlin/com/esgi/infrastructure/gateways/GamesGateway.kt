@@ -1,82 +1,98 @@
 package com.esgi.infrastructure.gateways
 
+import com.esgi.applicationservices.services.GameInstantiator
+import com.esgi.infrastructure.services.TcpService
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
-import org.springframework.messaging.simp.annotation.SendToUser
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.Socket
-import java.nio.charset.StandardCharsets
-
+import java.io.*
+import java.nio.channels.AsynchronousSocketChannel
 
 @Controller
-@CrossOrigin(origins = ["http://localhost:1234"], allowCredentials = "true")
-class GamesGateway {
-    private var currentRoom: String? = null
-    private var gameStarted = false
-    private var gameSocket: Socket? = null
-    private var gameInputStream: InputStream? = null
-    private var gameOutputStream: OutputStream? = null
+@CrossOrigin(origins = ["https://jxy.me"], allowCredentials = "true")
+class GamesGateway(
+    val gameInstantiator: GameInstantiator,
+    val tcpService: TcpService,
+    val simpMessagingTemplate: SimpMessagingTemplate
+) {
+    private val rooms: MutableMap<String, Room> = HashMap()
 
-    @MessageMapping("/joinRoom")
-    @SendToUser("/queue/reply")
-    fun joinRoom(message: String?): String? {
-        // Create or join the room based on the message and return the room object
-        // Logic to create/join room
-        currentRoom = message
-        val room: String? = currentRoom
-        gameStarted = false
-        return room
+    @MessageMapping("/joinRoom/{roomId}")
+    @SendTo("/topic/room/{roomId}")
+    fun joinRoom(@DestinationVariable roomId: String, message: String): String? {
+        println("Joining room $roomId")
+        val room = rooms.computeIfAbsent(roomId) { Room(roomId) }
+        room.addPlayer(message)
+        return "Joined room $roomId"
     }
 
-    @MessageMapping("/startGame")
-    @SendTo("/queue/reply")
-    fun startGame(): String {
-        if (currentRoom != null && !gameStarted) {
-            try {
-                gameSocket = Socket(SERVER_IP, TCP_PORT)
-                gameInputStream = gameSocket!!.getInputStream()
-                gameOutputStream = gameSocket!!.getOutputStream()
-
-                // Start the game and send an init message
-                gameStarted = true
-                val initMessage = "{\"init\": { \"players\": 2 }}"
-                sendTcpMessage(initMessage)
-                return initMessage
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return "Game not started"
-    }
-
-    @MessageMapping("/play")
-    @SendTo("/queue/reply")
-    fun play(message: String): String {
-        if (currentRoom != null && gameStarted) {
-            // Process the play message and send it to the game server
-            val playMessage: String = message
-            sendTcpMessage(playMessage)
-            return playMessage
-        }
-        return "Invalid play"
-    }
-
-    private fun sendTcpMessage(message: String) {
+    @MessageMapping("/startGame/{roomId}")
+    @SendTo("/topic/room/{roomId}")
+    fun startGame(@DestinationVariable roomId: String) {
         try {
-            val data: ByteArray = message.toByteArray(StandardCharsets.UTF_8)
-            gameOutputStream!!.write(data)
-            gameOutputStream!!.flush()
+            val room = rooms[roomId]
+            if (room != null) {
+                room.client = gameInstantiator.instanciateGame("448a82c3-d29c-4921-8b45-480ae59a7cf1")
+
+                runBlocking {
+                    launch {
+                        while (true) {
+                            val jsonMessage: String? = room.receiveResponse()
+
+                            if (jsonMessage != null) {
+                                println("Received: $jsonMessage")
+                                room.broadcast(jsonMessage)
+                            } else {
+                                println("Received null or empty message")
+                            }
+                        }
+                    }
+
+                    room.sendInstruction("{\"init\": { \"players\": 2 }}\n")
+                }
+            } else {
+                println("Room $roomId not found")
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
-    companion object {
-        private const val TCP_PORT = 8070
-        private const val SERVER_IP = "127.0.0.1"
+    @MessageMapping("/play/{roomId}")
+    fun play(@DestinationVariable roomId: String, instruction: String) {
+        val room = rooms[roomId]
+
+        if (room != null) {
+            println("Sending instruction $instruction to room $roomId")
+            room.sendInstruction(instruction)
+        } else {
+            println("Room $roomId not found")
+        }
+    }
+
+    inner class Room(private val roomId: String) {
+        private val players: MutableSet<String> = HashSet()
+        var client: AsynchronousSocketChannel? = null
+
+        fun addPlayer(playerId: String) {
+            players.add(playerId)
+        }
+
+        fun sendInstruction(message: String) {
+            tcpService.sendTcpMessage(client!!, "$message\n")
+        }
+
+        fun receiveResponse(): String? {
+            return tcpService.receiveTcpMessage(client!!)
+        }
+
+        fun broadcast(message: String) {
+            simpMessagingTemplate.convertAndSend("/topic/room/$roomId", message)
+        }
     }
 }

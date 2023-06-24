@@ -1,76 +1,48 @@
 package com.esgi.infrastructure.services
 
 import org.springframework.stereotype.Service
+import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.channels.AsynchronousSocketChannel
-import java.nio.channels.CompletionHandler
 
 @Service
 class TcpService {
-    fun init_test(ip: String) {
-        val address = InetSocketAddress(ip, 8070)
+    fun createClient(ipAddress: String): AsynchronousSocketChannel {
+        val address = InetSocketAddress(ipAddress, 8070)
         val client = AsynchronousSocketChannel.open()
 
-        client.connect(address, null, object : CompletionHandler<Void?, Void?> {
-            override fun completed(result: Void?, attachment: Void?) {
-                // Connection successful, start sending/receiving data
-                val message = "{\"init\": { \"players\": 2 }}\n"
-                val writeBuffer = ByteBuffer.wrap(message.toByteArray())
+        client!!.connect(address).get()
 
-                // Write data to the server
-                client.write(writeBuffer, null, object : CompletionHandler<Int, Void?> {
-                    override fun completed(bytesWritten: Int, attachment: Void?) {
-                        if (writeBuffer.hasRemaining()) {
-                            // Not all data has been written, continue writing
-                            client.write(writeBuffer, null, this)
-                        } else {
-                            // All data has been written, start reading response
-                            val readBuffer = ByteBuffer.allocate(2048)
-                            client.read(readBuffer, null, object : CompletionHandler<Int, Void?> {
-                                override fun completed(bytesRead: Int, attachment: Void?) {
-                                    if (bytesRead == -1) {
-                                        // Server closed the connection
-                                        client.close()
-                                        return
-                                    }
+        return client
+    }
 
-                                    readBuffer.flip()
-                                    val response = ByteArray(readBuffer.remaining())
-                                    readBuffer.get(response)
-                                    val responseData = String(response)
-                                    println("Received: $responseData")
+    fun sendTcpMessage(client: AsynchronousSocketChannel, message: String) {
+        try {
+            val writeBuffer = ByteBuffer.wrap(message.toByteArray())
+            client.write(writeBuffer).get()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
-                                    // Continue reading if necessary
-                                    readBuffer.clear()
-                                    client.read(readBuffer, null, this)
-                                }
+    fun receiveTcpMessage(client: AsynchronousSocketChannel): String? {
+        try {
+            val readBuffer = ByteBuffer.allocate(2048)
 
-                                override fun failed(exc: Throwable?, attachment: Void?) {
-                                    // Handle read failure
-                                    exc?.printStackTrace()
-                                    client.close()
-                                }
-                            })
-                        }
-                    }
+            client.read(readBuffer).get()
 
-                    override fun failed(exc: Throwable?, attachment: Void?) {
-                        // Handle write failure
-                        exc?.printStackTrace()
-                        client.close()
-                    }
-                })
-            }
+            readBuffer.flip()
 
-            override fun failed(exc: Throwable?, attachment: Void?) {
-                // Handle connection failure
-                exc?.printStackTrace()
-                client.close()
-            }
-        })
+            val response = ByteArray(readBuffer.remaining())
 
-        // Keep the main thread alive to allow asynchronous operations to complete
-        Thread.currentThread().join()
+            readBuffer.get(response)
+
+            return String(response)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return null
     }
 }
