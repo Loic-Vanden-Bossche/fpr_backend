@@ -139,4 +139,18 @@
     <changeSet author="macaron (generated)" id="1687525140834-3">
         <addForeignKeyConstraint baseColumnNames="USER" baseTableName="T_MESSAGE" constraintName="FKctan5iq6oou28x9bcu9f5uv45" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1687614373879-1">
+        <addColumn tableName="T_MESSAGE">
+            <column name="CREATED_AT" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1687614373879-2">
+        <addColumn tableName="T_MESSAGE">
+            <column name="UPDATED_AT" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

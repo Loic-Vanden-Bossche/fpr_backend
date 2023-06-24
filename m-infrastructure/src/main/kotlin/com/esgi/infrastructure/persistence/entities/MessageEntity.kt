@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.persistence.entities
 
+import com.esgi.infrastructure.persistence.listeners.AuditableDates
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -29,4 +30,4 @@ data class MessageEntity(
     @ManyToOne
     @JoinColumn(name = "USER", nullable = false)
     val user: UserEntity? = null
-)
+): AuditableDates()
