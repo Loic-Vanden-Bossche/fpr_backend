@@ -7,7 +7,7 @@ import java.util.UUID
 
 interface MessagesPersistence {
 
-    fun findAllInGroup(group: Group): List<Message>
+    fun findAllInGroup(group: Group, page: Int = 0, size: Int = 20): List<Message>
 
     fun findById(message: UUID): Message?
 

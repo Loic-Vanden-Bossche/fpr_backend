@@ -11,11 +11,11 @@ class FindingAllGroupMessageUseCase(
     private val groupsPersistence: GroupsPersistence,
     private val messagesPersistence: MessagesPersistence
 ) {
-    fun execute(user: User, groupId: UUID): List<Message>{
+    fun execute(user: User, groupId: UUID, page: Int = 0, size: Int = 20): List<Message>{
         val group = groupsPersistence.find(groupId) ?: throw NotFoundException("Group not found")
         if(user !in group.members){
             throw NotFoundException("Group not found")
         }
-        return messagesPersistence.findAllInGroup(group)
+        return messagesPersistence.findAllInGroup(group, page, size)
     }
 }

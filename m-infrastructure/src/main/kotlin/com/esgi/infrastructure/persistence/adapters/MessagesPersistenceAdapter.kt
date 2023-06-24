@@ -10,6 +10,9 @@ import com.esgi.infrastructure.persistence.repositories.GroupsRepository
 import com.esgi.infrastructure.persistence.repositories.MessagesRepository
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.mapstruct.factory.Mappers
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*
@@ -23,9 +26,11 @@ class MessagesPersistenceAdapter(
 
     private val mapper = Mappers.getMapper(MessageMapper::class.java)
 
-    override fun findAllInGroup(group: Group): List<Message> {
+    override fun findAllInGroup(group: Group, page: Int, size: Int): List<Message> {
         val entity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
-        return messagesRepository.findAllByGroup(entity).map(mapper::toDomain)
+        val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
+        println(messagesRepository.findAllByGroup(entity, pageable).totalPages)
+        return messagesRepository.findAllByGroup(entity, pageable).map(mapper::toDomain).toList()
     }
 
     override fun findById(message: UUID): Message? {

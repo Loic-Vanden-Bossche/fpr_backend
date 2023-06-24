@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -76,6 +77,6 @@ class GroupsController(
 
     @GetMapping("/{id}/messages")
     @ResponseBody
-    fun getAllMessages(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): List<MessageResponseDto> =
-        findingAllGroupMessageUseCase.execute(principal.principal as User, id).map(messageMapper::toDto)
+    fun getAllMessages(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, @RequestParam page: Int? = null, @RequestParam size: Int? = null): List<MessageResponseDto> =
+        findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map(messageMapper::toDto)
 }
