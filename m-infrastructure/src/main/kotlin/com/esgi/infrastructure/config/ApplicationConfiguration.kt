@@ -11,6 +11,7 @@ import com.esgi.applicationservices.usecases.groups.message.DeleteMessageInGroup
 import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
+import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
@@ -187,6 +188,9 @@ class ApplicationConfiguration(
             groupsPersistence,
             messagesPersistence
         )
+
+    @Bean
+    fun getProfileUseCase(): GetProfileUseCase = GetProfileUseCase()
 
     @Bean
     fun buildGameUseCase(
