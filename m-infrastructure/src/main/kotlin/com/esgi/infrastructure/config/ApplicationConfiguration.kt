@@ -124,6 +124,13 @@ class ApplicationConfiguration(
         )
 
     @Bean
+    fun deleteFriendUseCase(): DeleteFriendUseCase =
+            DeleteFriendUseCase(
+                    usersPersistence,
+                    friendsPersistence
+            )
+
+    @Bean
     fun findingAllGroupsUseCase(): FindingAllGroupsUseCase =
         FindingAllGroupsUseCase(
             groupsPersistence

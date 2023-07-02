@@ -24,7 +24,8 @@ class FriendsController(
         private val findingAllPendingFriendsUseCase: FindingAllPendingFriendsUseCase,
         private val createFriendsUseCase: CreateFriendsUseCase,
         private val approveFriendUseCase: ApproveFriendUseCase,
-        private val denyFriendUseCase: DenyFriendUseCase
+        private val denyFriendUseCase: DenyFriendUseCase,
+        private val deleteFriendUseCase: DeleteFriendUseCase
 ) {
     private val mapper = Mappers.getMapper(UserMapper::class.java)
 
@@ -61,5 +62,12 @@ class FriendsController(
         if(!denyFriendUseCase.execute(principal.principal as User, id)){
             response.status = HttpStatus.NOT_FOUND.value()
         }
+    }
+
+    @DeleteMapping("/{id}")
+    @Secured("USER")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteFriend(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID){
+        deleteFriendUseCase(principal.principal as User, id)
     }
 }
