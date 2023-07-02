@@ -11,6 +11,6 @@ import java.util.*
 interface UsersRepository : CrudRepository<UserEntity, UUID> {
     fun findByEmail(email: String): UserEntity?
 
-    @Query("SELECT u.groups FROM UserEntity u WHERE :id = u.id")
+    @Query("SELECT u.groups FROM UserEntity u INNER JOIN UserGroupEntity ug ON u.id = ug.user.id WHERE :id = u.id ORDER BY ug.lastRead DESC")
     fun findUserGroups(id: UUID): List<UserGroupEntity>
 }

@@ -24,7 +24,7 @@ class GroupPersistenceAdapter(
 ): GroupsPersistence {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
 
-    override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(UUID.fromString(user.id)).map{ mapper.toDomain(it.group)}
+    override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(UUID.fromString(user.id)).map{ mapper.toDomain(it.group) }.sortedByDescending { it.members.find { it.user.id == user.id }!!.lastRead }
 
     override fun find(id: UUID): Group? = groupsRepository.findByIdOrNull(id)?.let { mapper.toDomain(it) }
 
@@ -38,6 +38,9 @@ class GroupPersistenceAdapter(
             }.toMutableList()
         }
         groupsRepository.save(group)
+        group.users.forEach {
+            usersGroupsRepository.save(it)
+        }
         return mapper.toDomain(group)
     }
 
