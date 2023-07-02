@@ -16,7 +16,7 @@ class QuitGroupUseCase(
         if(group.type == GroupType.FRIEND){
             throw BadRequestException("Cannot leave friend group")
         }
-        if(user !in group.members){
+        if(user !in group.members.map { it.user }){
             throw NotFoundException("Group not found")
         }
         return groupsPersistence.removeUserFromGroup(user, group)

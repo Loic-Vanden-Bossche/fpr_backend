@@ -6,5 +6,5 @@ data class GroupResponseDto(
     val id: String,
     val name: String,
     val type: GroupType,
-    val members: List<UserResponseDto>
+    val members: List<UserGroupResponseDto>
 )

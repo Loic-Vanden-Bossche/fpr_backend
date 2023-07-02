@@ -18,10 +18,10 @@ class AddUserToGroupUseCase(
         if(group.type == GroupType.FRIEND){
             throw BadRequestException("Cannot add user to friend group")
         }
-        if(user !in group.members){
+        if(user !in group.members.map { it.user }){
             throw NotFoundException("Group not found")
         }
-        val users = usersId.distinct().map { usersPersistence.findById(it.toString()) ?: throw NotFoundException("User not found") }.filter { it !in group.members }
+        val users = usersId.distinct().map { usersPersistence.findById(it.toString()) ?: throw NotFoundException("User not found") }.filter { it !in group.members.map { it.user } }
         return groupsPersistence.addUser(group, users)
     }
 }

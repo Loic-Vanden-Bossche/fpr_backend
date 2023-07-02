@@ -4,6 +4,6 @@ data class Group(
     val id: String,
     val name: String,
     val type: GroupType,
-    val members: List<User>,
-    val messages: List<Message>
+    val members: List<UserGroup>,
+    val messages: List<Message>,
 )

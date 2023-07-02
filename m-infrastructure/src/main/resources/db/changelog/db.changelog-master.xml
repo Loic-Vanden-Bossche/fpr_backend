@@ -153,4 +153,18 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1688327012936-1">
+        <addColumn tableName="TJ_GROUPS_USERS">
+            <column name="LAST_READ" type="timestamp(6)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1688327012936-2">
+        <addPrimaryKey columnNames="GROUP_ID, USER_ID" constraintName="TJ_GROUPS_USERSPK" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1688329373964-1">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1688329373964-2">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

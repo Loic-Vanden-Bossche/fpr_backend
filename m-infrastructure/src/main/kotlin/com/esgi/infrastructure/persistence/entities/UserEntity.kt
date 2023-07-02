@@ -31,11 +31,6 @@ data class UserEntity(
     @Column(name = "USER_PASSWORD", nullable = false)
     val password: String,
 
-    @ManyToMany
-    @JoinTable(
-        name = "TJ_GROUPS_USERS",
-        joinColumns = [JoinColumn(name = "USER_ID")],
-        inverseJoinColumns = [JoinColumn(name = "GROUP_ID")]
-    )
-    val groups: List<GroupEntity>? = emptyList()
+    @OneToMany(mappedBy = "user")
+    val groups: List<UserGroupEntity> = emptyList()
 ) : AuditableDates()

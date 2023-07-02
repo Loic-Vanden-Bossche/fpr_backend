@@ -12,7 +12,7 @@ class DeleteMessageInGroupUseCase(
 ) {
     operator fun invoke(user: User, groupId: UUID, messageId: UUID){
         val group = groupsPersistence.find(groupId) ?: throw NotFoundException("Group not found")
-        if(user !in group.members){
+        if(user !in group.members.map { it.user }){
             throw  NotFoundException("Group not Found")
         }
         val message = messagesPersistence.findById(messageId) ?: throw NotFoundException("Message not found")

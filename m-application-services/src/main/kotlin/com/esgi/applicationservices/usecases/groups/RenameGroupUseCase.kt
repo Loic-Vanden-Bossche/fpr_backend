@@ -17,7 +17,7 @@ class RenameGroupUseCase(
         if(group.type == GroupType.FRIEND){
             throw BadRequestException("Cannot change name of friend group")
         }
-        if(user !in group.members && user.role !== Role.ADMIN){
+        if(user !in group.members.map { it.user } && user.role !== Role.ADMIN){
             throw NotFoundException("Group not found")
         }
         return groupsPersistence.updateGroupName(group, name)

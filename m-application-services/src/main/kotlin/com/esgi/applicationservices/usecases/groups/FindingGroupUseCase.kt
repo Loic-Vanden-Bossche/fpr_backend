@@ -12,7 +12,7 @@ class FindingGroupUseCase (
 ){
     fun execute(groupId: UUID, user: User): Group {
         val group = groupsPersistence.find(groupId) ?: throw NotFoundException("Group not found")
-        if(user !in group.members && user.role != Role.ADMIN){
+        if(user !in group.members.map { it.user } && user.role != Role.ADMIN){
             throw NotFoundException("Group not found")
         }
         return group

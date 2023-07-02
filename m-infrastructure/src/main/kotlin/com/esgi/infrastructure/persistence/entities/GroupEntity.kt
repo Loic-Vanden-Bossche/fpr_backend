@@ -21,13 +21,8 @@ data class GroupEntity(
     @Column(name = "TYPE", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'FRIEND'")
     var type: GroupType = GroupType.FRIEND,
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "TJ_GROUPS_USERS",
-        joinColumns = [JoinColumn(name = "GROUP_ID")],
-        inverseJoinColumns = [JoinColumn(name = "USER_ID")]
-    )
-    var users: MutableList<UserEntity> = mutableListOf(),
+    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    var users: MutableList<UserGroupEntity> = mutableListOf(),
 
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
     val messages: List<MessageEntity> = mutableListOf()
