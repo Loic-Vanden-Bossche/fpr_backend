@@ -42,7 +42,6 @@ class AuthChannelInterceptorAdapter @Inject constructor(
                                 }
                         )
                 )
-                println(accessor)
             }
         }
         return message

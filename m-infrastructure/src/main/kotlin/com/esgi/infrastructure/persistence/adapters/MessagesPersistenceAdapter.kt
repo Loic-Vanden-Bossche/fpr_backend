@@ -28,7 +28,6 @@ class MessagesPersistenceAdapter(
     override fun findAllInGroup(group: Group, page: Int, size: Int): List<Message> {
         val entity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
-        println(messagesRepository.findAllByGroup(entity, pageable).totalPages)
         return messagesRepository.findAllByGroup(entity, pageable).map(mapper::toDomain).toList()
     }
 
