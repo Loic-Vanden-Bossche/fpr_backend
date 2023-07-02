@@ -12,8 +12,9 @@ import java.util.*
 
 @Component
 class UsersPersistenceAdapter(private val userRepository: UsersRepository) : UsersPersistence {
+    private val mapper: UserMapper = Mappers.getMapper(UserMapper::class.java)
+
     override fun create(email: String, nickname: String, password: String): User {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         val userToCreate = UserEntity(
             email = email,
             nickname = nickname,
@@ -25,7 +26,6 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository) : Use
     }
 
     override fun create(email: String, nickname: String, password: String, role: Role, coins: Int): User {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         val userToCreate = UserEntity(
             email = email,
             nickname = nickname,
@@ -39,21 +39,20 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository) : Use
     }
 
     override fun findAll(): MutableList<User> {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         return userRepository.findAll().map { userEntity ->
             mapper.toDomain(userEntity)
         }.toMutableList()
     }
 
+    override fun search(search: String): List<User> = userRepository.findAllByEmailNickname("%$search%").map(mapper::toDomain)
+
     override fun findById(id: String): User? {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         return userRepository.findById(UUID.fromString(id)).orElse(null)?.let { userEntity ->
             mapper.toDomain(userEntity)
         }
     }
 
     override fun findByEmail(email: String): User? {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         return userRepository.findByEmail(email)?.let { userEntity ->
             mapper.toDomain(userEntity)
         }
@@ -67,7 +66,6 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository) : Use
         role: Role?,
         coins: Int?,
     ): User {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         val user = userRepository.findById(UUID.fromString(id)).orElse(null) ?: throw Exception("User not found")
 
         val userToUpdate = UserEntity(
@@ -87,7 +85,6 @@ class UsersPersistenceAdapter(private val userRepository: UsersRepository) : Use
     }
 
     override fun delete(id: String): User {
-        val mapper = Mappers.getMapper(UserMapper::class.java)
         val userToDelete =
             userRepository.findById(UUID.fromString(id)).orElse(null) ?: throw Exception("User not found")
         userRepository.delete(userToDelete)

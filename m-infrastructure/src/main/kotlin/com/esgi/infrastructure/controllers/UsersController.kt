@@ -9,6 +9,8 @@ import com.esgi.infrastructure.dto.output.UserResponseDto
 import com.esgi.infrastructure.services.HashService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.UUID
 import org.mapstruct.factory.Mappers
 import org.springframework.security.access.annotation.Secured
@@ -24,16 +26,22 @@ class UsersController(
     private val hashService: HashService,
     private val deletingUserUseCase: DeletingUserUseCase,
     private val creatingUserUseCase: CreatingUserUseCase,
+    private val searchUserUseCase: SearchUserUseCase
 ) {
+    private val mapper: UserMapper = Mappers.getMapper(UserMapper::class.java)
+
     @GetMapping
     @ResponseBody
     @Secured("ADMIN")
     fun getUsers(): List<UserResponseDto> {
         val users = findingAllUsersUseCase.execute()
-        val mapper = Mappers.getMapper(UserMapper::class.java)
-
         return users.map { user -> mapper.toDto(user) }
     }
+
+    @GetMapping("/search/{search}")
+    @ResponseBody
+    @Secured("USER")
+    fun searchUsers(@PathVariable @NotNull @NotEmpty search: String): List<UserResponseDto> = searchUserUseCase(search).map(mapper::toDto)
 
     @GetMapping("/{id}")
     @ResponseBody

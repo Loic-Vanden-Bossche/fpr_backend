@@ -36,6 +36,12 @@ class ApplicationConfiguration(
     }
 
     @Bean
+    fun searchUserUseCase(): SearchUserUseCase =
+        SearchUserUseCase(
+            usersPersistence
+        )
+
+    @Bean
     fun findingUserByIdUseCase(): FindingOneUserByIdUseCase {
         return FindingOneUserByIdUseCase(
             usersPersistence
