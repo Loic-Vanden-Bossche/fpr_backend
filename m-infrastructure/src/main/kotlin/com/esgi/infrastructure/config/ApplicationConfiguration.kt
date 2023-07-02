@@ -206,6 +206,12 @@ class ApplicationConfiguration(
     fun getProfileUseCase(): GetProfileUseCase = GetProfileUseCase()
 
     @Bean
+    fun readGroupUseCase(): ReadGroupUseCase =
+        ReadGroupUseCase(
+            groupsPersistence
+        )
+
+    @Bean
     fun buildGameUseCase(
         @Autowired gameBuilder: GameBuilder,
         @Autowired gameUploader: GameUploader

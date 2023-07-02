@@ -20,5 +20,5 @@ data class UserGroupEntity(
 
         @Column(name = "LAST_READ", columnDefinition = "TIMESTAMP(6) default NOW()")
         @Temporal(TemporalType.TIMESTAMP)
-        val lastRead: Date = Date.from(Instant.now())
+        var lastRead: Date = Date.from(Instant.now())
 )

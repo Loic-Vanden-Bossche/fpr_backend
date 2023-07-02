@@ -14,8 +14,10 @@ import com.esgi.infrastructure.dto.output.MessageResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
 import org.apache.http.HttpStatus
 import org.mapstruct.factory.Mappers
+import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -42,7 +44,8 @@ class GroupsController(
     private val renameGroupUseCase: RenameGroupUseCase,
     private val quitGroupUseCase: QuitGroupUseCase,
     private val findingAllGroupMessageUseCase: FindingAllGroupMessageUseCase,
-    private val deleteMessageInGroupUseCase: DeleteMessageInGroupUseCase
+    private val deleteMessageInGroupUseCase: DeleteMessageInGroupUseCase,
+    private val readGroupUseCase: ReadGroupUseCase
 ) {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
     private val messageMapper = Mappers.getMapper(MessageMapper::class.java)
@@ -69,6 +72,12 @@ class GroupsController(
     @ResponseBody
     fun putMemberInGroup(@RequestBody @Valid body: AddUserToGroupDto, principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): GroupResponseDto =
             mapper.toDto(addUserToGroupUseCase.execute(principal.principal as User, id, body.users))
+
+    @PatchMapping("/{id}/read")
+    @Secured("USER")
+    fun readGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID){
+        readGroupUseCase(principal.principal as User, id)
+    }
 
     @DeleteMapping("/{id}")
     @ResponseBody

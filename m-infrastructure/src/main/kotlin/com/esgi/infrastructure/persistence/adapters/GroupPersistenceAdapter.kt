@@ -89,4 +89,12 @@ class GroupPersistenceAdapter(
             mapper.toDomain(groupEntity)
         }
     }
+
+    override fun updateRead(user: User, group: Group) {
+        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val userEntity = usersRepository.findByIdOrNull(UUID.fromString(user.id))!!
+        val ug = usersGroupsRepository.findByGroupAndUser(groupEntity, userEntity)
+        ug.lastRead = Date.from(Instant.now())
+        usersGroupsRepository.save(ug)
+    }
 }

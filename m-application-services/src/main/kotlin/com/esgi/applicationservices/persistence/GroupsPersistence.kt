@@ -18,4 +18,6 @@ interface GroupsPersistence {
     fun updateGroupName(group: Group, name: String): Group
 
     fun removeUserFromGroup(user: User, group: Group): Group?
+
+    fun updateRead(user: User, group: Group)
 }
