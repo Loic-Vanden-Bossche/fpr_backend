@@ -13,7 +13,7 @@ class DeleteFriendUseCase(
     private val groupsPersistence: GroupsPersistence
 ) {
     operator fun invoke(user: User, friendId: UUID){
-        val friend = usersPersistence.findById(friendId.toString()) ?: throw NotFoundException("User not found")
+        val friend = usersPersistence.findById(friendId) ?: throw NotFoundException("User not found")
         friendsPersistence.deleteFriend(user, friend)
         groupsPersistence.deleteFriendGroup(user, friend)
     }

@@ -10,7 +10,7 @@ class DenyFriendUseCase(
         private val friendsPersistence: FriendsPersistence
 ) {
     fun execute(user: User, friend: UUID): Boolean{
-        val friendUser = usersPersistence.findById(friend.toString()) ?: run {
+        val friendUser = usersPersistence.findById(friend) ?: run {
             return false
         }
         return friendsPersistence.setDeny(user, friendUser)

@@ -4,12 +4,13 @@ import com.esgi.applicationservices.persistence.FriendsPersistence
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
+import java.util.UUID
 
 class CreateFriendsUseCase(
         private val persistence: FriendsPersistence,
         private val userPersistence: UsersPersistence
 ) {
-    fun execute(friendId: String, user: User): Boolean {
+    fun execute(friendId: UUID, user: User): Boolean {
         if(friendId == user.id){
             return false
         }

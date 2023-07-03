@@ -1,9 +1,10 @@
 package com.esgi.domainmodels
 
 import java.time.Instant
+import java.util.UUID
 
 data class User(
-    val id: String,
+    val id: UUID,
     val email: String,
     val nickname: String,
     val password: String,
@@ -11,4 +12,5 @@ data class User(
     val coins: Int,
     val updatedAt: Instant,
     val createdAt: Instant,
+    val status: Status?
 )

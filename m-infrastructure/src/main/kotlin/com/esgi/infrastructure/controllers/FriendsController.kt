@@ -38,7 +38,7 @@ class FriendsController(
     @ResponseBody
     @Secured("USER")
     fun createFriends(@RequestBody @Valid createFriendDto: CreateFriendDto, principal: UsernamePasswordAuthenticationToken, response: HttpServletResponse){
-        if(!createFriendsUseCase.execute(createFriendDto.friend.toString(), principal.principal as User)){
+        if(!createFriendsUseCase.execute(createFriendDto.friend, principal.principal as User)){
             response.status = HttpStatus.NO_CONTENT.value()
         }
     }

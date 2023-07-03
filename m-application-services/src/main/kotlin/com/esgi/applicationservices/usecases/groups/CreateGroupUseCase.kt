@@ -14,8 +14,8 @@ class CreateGroupUseCase(
     fun execute(usersId: List<UUID>, currentUser: User, name: String): Group {
         var hasUser = false
         val users = usersId.distinct().map {
-            if(it.toString() != currentUser.id){
-                usersPersistence.findById(it.toString()) ?: throw NotFoundException("User Not Found")
+            if(it != currentUser.id){
+                usersPersistence.findById(it) ?: throw NotFoundException("User Not Found")
             }else {
                 hasUser = true
                 currentUser

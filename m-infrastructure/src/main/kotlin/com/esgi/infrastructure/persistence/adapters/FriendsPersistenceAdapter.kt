@@ -20,9 +20,23 @@ class FriendsPersistenceAdapter(
 ): FriendsPersistence {
     private val mapper = Mappers.getMapper(UserMapper::class.java)
 
-    override fun findAll(user: User): List<User> = friendsRepository.getAllFriendsOf(UUID.fromString(user.id)).map(mapper::toDomain)
+    override fun findAll(user: User): List<User> = friendsRepository.getAllFriendsOf(user.id).map {
+        val userEntity = if(it.user1.id == user.id){
+            it.user2
+        }else {
+            it.user1
+        }
+        mapper.toDomain(userEntity, it.status)
+    }
 
-    override fun findAllPending(user: User): List<User> = friendsRepository.getAllPendingOf(UUID.fromString(user.id)).map(mapper::toDomain)
+    override fun findAllPending(user: User): List<User> = friendsRepository.getAllPendingOf(user.id).map {
+        val userEntity = if(it.user1.id == user.id){
+            it.user2
+        }else {
+            it.user1
+        }
+        mapper.toDomain(userEntity, it.status)
+    }
 
     override fun createFriend(friend: User, user: User): Boolean = try{
         friendsRepository.save(FriendsEntity(user1 = mapper.toEntity(user), user2 = mapper.toEntity(friend), status = Status.PENDING))
@@ -33,29 +47,29 @@ class FriendsPersistenceAdapter(
     }
 
     override fun setApprove(user: User, friend: User): Boolean {
-        val friendPending = friendsRepository.getPendingFromFor(UUID.fromString(user.id), UUID.fromString(friend.id)) ?: return false
+        val friendPending = friendsRepository.getPendingFromFor(user.id, friend.id) ?: return false
         friendPending.status = Status.APPROVED
         friendsRepository.save(friendPending)
         return true
     }
 
     override fun setDeny(user: User, friend: User): Boolean {
-        val friendPending = friendsRepository.getPendingFromFor(UUID.fromString(user.id), UUID.fromString(friend.id)) ?: return false
+        val friendPending = friendsRepository.getPendingFromFor(user.id, friend.id) ?: return false
         friendPending.status = Status.REJECTED
         friendsRepository.save(friendPending)
         return true
     }
 
     override fun deleteFriend(user: User, friend: User): Boolean {
-        val friendPending = friendsRepository.getFromFor(UUID.fromString(user.id), UUID.fromString(friend.id)) ?: return false
+        val friendPending = friendsRepository.getFromFor(user.id, friend.id) ?: return false
         friendPending.status = Status.REJECTED
         friendsRepository.save(friendPending)
         return true
     }
 
     override fun addGroup(user: User, friend: User, group: Group) {
-        val friendEntity = friendsRepository.getFromFor(UUID.fromString(user.id), UUID.fromString(friend.id))!!
-        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val friendEntity = friendsRepository.getFromFor(user.id, friend.id)!!
+        val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
         friendEntity.group = groupEntity
         friendsRepository.save(friendEntity)
     }

@@ -26,7 +26,7 @@ class GroupPersistenceAdapter(
 ): GroupsPersistence {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
 
-    override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(UUID.fromString(user.id)).map{ mapper.toDomain(it.group) }.sortedByDescending { it.members.find { it.user.id == user.id }!!.lastRead }
+    override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(user.id).map{ mapper.toDomain(it.group) }.sortedByDescending { it.members.find { it.user.id == user.id }!!.lastRead }
 
     override fun find(id: UUID): Group? = groupsRepository.findByIdOrNull(id)?.let { mapper.toDomain(it) }
 
@@ -35,7 +35,7 @@ class GroupPersistenceAdapter(
             this.name = name
             type = GroupType.GROUP
             this.users = users.map {
-                val user = usersRepository.findByIdOrNull(UUID.fromString(it.id))!!
+                val user = usersRepository.findByIdOrNull(it.id)!!
                 UserGroupEntity(user, this, Date.from(Instant.now()))
             }.toMutableList()
         }
@@ -51,7 +51,7 @@ class GroupPersistenceAdapter(
             this.name = "${user1.nickname} ${user2.nickname}"
             type = GroupType.FRIEND
             this.users = listOf(user1, user2).map {
-                val user = usersRepository.findByIdOrNull(UUID.fromString(it.id))!!
+                val user = usersRepository.findByIdOrNull(it.id)!!
                 UserGroupEntity(user, this, Date.from(Instant.now()))
             }.toMutableList()
         }
@@ -63,16 +63,16 @@ class GroupPersistenceAdapter(
     }
 
     override fun updateGroupName(group: Group, name: String): Group {
-        val entity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val entity = groupsRepository.findByIdOrNull(group.id)!!
         entity.name = name
         groupsRepository.save(entity)
         return mapper.toDomain(entity)
     }
 
     override fun addUser(group: Group, users: List<User>): Group {
-        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
         val usersEntity = users.map {
-            val user = usersRepository.findByIdOrNull(UUID.fromString(it.id))!!
+            val user = usersRepository.findByIdOrNull(it.id)!!
             UserGroupEntity(user, groupEntity, Date.from(Instant.now()))
         }
         groupEntity.users.addAll(usersEntity)
@@ -81,27 +81,27 @@ class GroupPersistenceAdapter(
     }
 
     override fun removeUserFromGroup(user: User, group: Group): Group? {
-        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
         return if(groupEntity.users.size == 1){
             groupsRepository.delete(groupEntity)
             null
         }else{
-            groupEntity.users.removeIf{ it.user.id == UUID.fromString(user.id) }
+            groupEntity.users.removeIf{ it.user.id == user.id }
             groupsRepository.save(groupEntity)
             mapper.toDomain(groupEntity)
         }
     }
 
     override fun updateRead(user: User, group: Group) {
-        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
-        val userEntity = usersRepository.findByIdOrNull(UUID.fromString(user.id))!!
+        val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
+        val userEntity = usersRepository.findByIdOrNull(user.id)!!
         val ug = usersGroupsRepository.findByGroupAndUser(groupEntity, userEntity)
         ug.lastRead = Date.from(Instant.now())
         usersGroupsRepository.save(ug)
     }
 
     override fun deleteFriendGroup(user: User, friend: User) {
-        val friendEntity = friendsRepository.getDeniedFromFor(UUID.fromString(user.id), UUID.fromString(friend.id))!!
+        val friendEntity = friendsRepository.getDeniedFromFor(user.id, friend.id)!!
         val group = friendEntity.group!!
         friendEntity.group = null
         friendsRepository.save(friendEntity)

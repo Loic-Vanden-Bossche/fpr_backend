@@ -26,7 +26,7 @@ class MessagesPersistenceAdapter(
     private val mapper = Mappers.getMapper(MessageMapper::class.java)
 
     override fun findAllInGroup(group: Group, page: Int, size: Int): List<Message> {
-        val entity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
+        val entity = groupsRepository.findByIdOrNull(group.id)!!
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
         return messagesRepository.findAllByGroup(entity, pageable).map(mapper::toDomain).toList()
     }
@@ -36,8 +36,8 @@ class MessagesPersistenceAdapter(
     }
 
     override fun writeMessageToGroup(from: User, group: Group, message: String): Message {
-        val groupEntity = groupsRepository.findByIdOrNull(UUID.fromString(group.id))!!
-        val userEntity = usersRepository.findByIdOrNull(UUID.fromString(from.id))
+        val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
+        val userEntity = usersRepository.findByIdOrNull(from.id)
         val messageEntity = MessageEntity(message = message, group = groupEntity, user = userEntity)
         return mapper.toDomain(messagesRepository.save(messageEntity))
     }

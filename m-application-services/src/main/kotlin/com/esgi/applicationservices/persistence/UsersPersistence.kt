@@ -2,13 +2,14 @@ package com.esgi.applicationservices.persistence
 
 import com.esgi.domainmodels.Role
 import com.esgi.domainmodels.User
+import java.util.*
 
 interface UsersPersistence {
     fun findAll(): MutableList<User>
-    fun findById(id: String): User?
+    fun findById(id: UUID): User?
     fun findByEmail(email: String): User?
 
-    fun search(search: String): List<User>
+    fun search(search: String, user: User): List<User>
 
     fun create(
         email: String,
@@ -25,7 +26,7 @@ interface UsersPersistence {
     ): User
 
     fun update(
-        id: String,
+        id: UUID,
         email: String?,
         nickname: String?,
         password: String?,
@@ -33,5 +34,5 @@ interface UsersPersistence {
         coins: Int?
     ): User
 
-    fun delete(id: String): User
+    fun delete(id: UUID): User
 }

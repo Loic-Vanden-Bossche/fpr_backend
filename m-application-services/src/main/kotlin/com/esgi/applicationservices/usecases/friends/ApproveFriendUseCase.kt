@@ -12,7 +12,7 @@ class ApproveFriendUseCase(
         private val groupsPersistence: GroupsPersistence
 ) {
     fun execute(user: User, friend: UUID): Boolean{
-        val friendUser = usersPersistence.findById(friend.toString()) ?: run {
+        val friendUser = usersPersistence.findById(friend) ?: run {
             return false
         }
         val res = friendsPersistence.setApprove(user, friendUser)

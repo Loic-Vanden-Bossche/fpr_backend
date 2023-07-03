@@ -3,13 +3,14 @@ package com.esgi.applicationservices.usecases.users
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.Role
 import com.esgi.domainmodels.User
+import java.util.UUID
 
 class UpdatingUserUseCase(
     private val persistence: UsersPersistence,
     private val findingOneUserByIdUseCase: FindingOneUserByIdUseCase,
 ) {
     fun execute(
-        id: String,
+        id: UUID,
         email: String? = null,
         nickname: String? = null,
         password: String? = null,
