@@ -8,7 +8,6 @@ import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.FriendsEntity
 import com.esgi.infrastructure.persistence.repositories.FriendsRepository
 import com.esgi.infrastructure.persistence.repositories.GroupsRepository
-import com.esgi.infrastructure.persistence.repositories.UsersGroupsRepository
 import org.mapstruct.factory.Mappers
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component

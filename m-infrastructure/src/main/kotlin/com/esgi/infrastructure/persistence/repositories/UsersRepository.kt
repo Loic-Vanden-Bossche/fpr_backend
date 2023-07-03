@@ -14,6 +14,6 @@ interface UsersRepository : CrudRepository<UserEntity, UUID> {
     @Query("SELECT u FROM UserEntity u WHERE LOWER(u.email) like LOWER(:search) OR LOWER(u.nickname) like LOWER(:search)")
     fun findAllByEmailNickname(search: String): List<UserEntity>
 
-    @Query("SELECT u.groups FROM UserEntity u INNER JOIN UserGroupEntity ug ON u.id = ug.user.id WHERE :id = u.id ORDER BY ug.lastRead DESC")
+    @Query("SELECT ug FROM GroupEntity g INNER JOIN UserGroupEntity ug ON g.id = ug.group.id WHERE :id = ug.user.id ORDER BY ug.lastRead DESC")
     fun findUserGroups(id: UUID): List<UserGroupEntity>
 }

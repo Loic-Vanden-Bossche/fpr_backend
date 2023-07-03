@@ -29,8 +29,5 @@ data class UserEntity(
     val coins: Int = 0,
 
     @Column(name = "USER_PASSWORD", nullable = false)
-    val password: String,
-
-    @OneToMany(mappedBy = "user")
-    val groups: List<UserGroupEntity> = emptyList()
+    val password: String
 ) : AuditableDates()
