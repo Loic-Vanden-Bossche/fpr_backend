@@ -1,7 +1,6 @@
 package com.esgi.infrastructure.persistence.repositories
 
 import com.esgi.infrastructure.persistence.entities.FriendsEntity
-import com.esgi.infrastructure.persistence.entities.UserEntity
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository

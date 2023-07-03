@@ -11,7 +11,6 @@ import com.esgi.infrastructure.persistence.repositories.GroupsRepository
 import org.mapstruct.factory.Mappers
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class FriendsPersistenceAdapter(
