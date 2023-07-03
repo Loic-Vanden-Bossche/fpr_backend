@@ -25,5 +25,8 @@ data class GroupEntity(
     var users: MutableList<UserGroupEntity> = mutableListOf(),
 
     @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
-    val messages: List<MessageEntity> = mutableListOf()
+    val messages: List<MessageEntity> = mutableListOf(),
+
+    @OneToMany(mappedBy = "group")
+    val friendsEntity: List<FriendsEntity> = emptyList()
 )

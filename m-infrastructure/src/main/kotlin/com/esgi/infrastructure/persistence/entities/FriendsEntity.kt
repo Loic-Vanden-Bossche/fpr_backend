@@ -24,5 +24,9 @@ data class FriendsEntity(
 
     @Column(name = "STATUS", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
     @Enumerated(EnumType.STRING)
-    var status: Status
+    var status: Status,
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "GROUP", nullable = true, columnDefinition = "UUID DEFAULT NULL")
+    var group: GroupEntity? = null
 )

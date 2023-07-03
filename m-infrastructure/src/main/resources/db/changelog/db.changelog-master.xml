@@ -173,4 +173,18 @@
     <changeSet author="macaron (generated)" id="1688330690994-2">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1688397256009-3">
+        <addColumn tableName="T_FRIENDS">
+            <column defaultValueComputed="NULL" name="GROUP" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1688397256009-4">
+        <addForeignKeyConstraint baseColumnNames="GROUP" baseTableName="T_FRIENDS" constraintName="FKqfalpyfs5yqmief26iwuo8ubd" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1688397256009-1">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1688397256009-2">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

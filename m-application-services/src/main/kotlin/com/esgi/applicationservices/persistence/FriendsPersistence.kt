@@ -1,5 +1,6 @@
 package com.esgi.applicationservices.persistence
 
+import com.esgi.domainmodels.Group
 import com.esgi.domainmodels.User
 
 interface FriendsPersistence {
@@ -12,4 +13,8 @@ interface FriendsPersistence {
     fun setApprove(user: User, friend: User): Boolean
 
     fun setDeny(user: User, friend: User): Boolean
+
+    fun deleteFriend(user: User, friend: User): Boolean
+
+    fun addGroup(user: User, friend: User, group: Group)
 }

@@ -17,7 +17,8 @@ class ApproveFriendUseCase(
         }
         val res = friendsPersistence.setApprove(user, friendUser)
         if(res){
-            groupsPersistence.createFriendGroup(user, friendUser)
+            val group = groupsPersistence.createFriendGroup(user, friendUser)
+            friendsPersistence.addGroup(user, friendUser, group)
         }
         return res
     }

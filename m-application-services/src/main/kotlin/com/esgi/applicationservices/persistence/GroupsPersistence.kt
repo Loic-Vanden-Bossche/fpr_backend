@@ -20,4 +20,6 @@ interface GroupsPersistence {
     fun removeUserFromGroup(user: User, group: Group): Group?
 
     fun updateRead(user: User, group: Group)
+
+    fun deleteFriendGroup(user: User, friend: User)
 }

@@ -132,8 +132,9 @@ class ApplicationConfiguration(
     @Bean
     fun deleteFriendUseCase(): DeleteFriendUseCase =
             DeleteFriendUseCase(
-                    usersPersistence,
-                    friendsPersistence
+                usersPersistence,
+                friendsPersistence,
+                groupsPersistence
             )
 
     @Bean

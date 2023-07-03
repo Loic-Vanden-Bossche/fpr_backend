@@ -16,6 +16,12 @@ interface FriendsRepository: CrudRepository<FriendsEntity, UUID> {
     @Query("SELECT u FROM UserEntity u INNER JOIN FriendsEntity f on f.user1.id = u.id or f.user2.id = u.id WHERE u.id <> :id AND f.user2.id = :id AND f.status = 'PENDING'")
     fun getAllPendingOf(id: UUID): List<UserEntity>
 
-    @Query("SELECT f FROM FriendsEntity f WHERE f.user1.id = :from AND f.user2.id = :user")
+    @Query("SELECT f FROM FriendsEntity f WHERE f.user1.id = :from AND f.user2.id = :user AND f.status = 'PENDING'")
     fun getPendingFromFor(user: UUID, from: UUID): FriendsEntity?
+
+    @Query("SELECT f FROM FriendsEntity f WHERE ((f.user1.id = :from AND f.user2.id = :user) OR (f.user1.id = :user AND f.user2.id = :from)) AND f.status = 'APPROVED'")
+    fun getFromFor(user: UUID, from: UUID): FriendsEntity?
+
+    @Query("SELECT f FROM FriendsEntity f WHERE ((f.user1.id = :from AND f.user2.id = :user) OR (f.user1.id = :user AND f.user2.id = :from)) AND f.status = 'REJECTED'")
+    fun getDeniedFromFor(user: UUID, from: UUID): FriendsEntity?
 }
