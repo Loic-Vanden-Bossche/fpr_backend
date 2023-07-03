@@ -2,6 +2,8 @@ package com.esgi.infrastructure.controllers
 
 import com.esgi.*
 import com.esgi.applicationservices.usecases.users.*
+import com.esgi.domainmodels.User
+import com.esgi.infrastructure.config.toUser
 import com.esgi.infrastructure.dto.input.CreateUserDto
 import com.esgi.infrastructure.dto.input.UpdateUserDto
 import com.esgi.infrastructure.dto.mappers.UserMapper
@@ -14,6 +16,7 @@ import jakarta.validation.constraints.NotNull
 import org.hibernate.validator.constraints.UUID
 import org.mapstruct.factory.Mappers
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -41,7 +44,11 @@ class UsersController(
     @GetMapping("/search/{search}")
     @ResponseBody
     @Secured("USER")
-    fun searchUsers(@PathVariable @NotNull @NotEmpty search: String): List<UserResponseDto> = searchUserUseCase(search).map(mapper::toDto)
+    fun searchUsers(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable @NotNull @NotEmpty search: String
+    ): List<UserResponseDto> =
+        searchUserUseCase(search, principal.principal as User).map(mapper::toDto)
 
     @GetMapping("/{id}")
     @ResponseBody

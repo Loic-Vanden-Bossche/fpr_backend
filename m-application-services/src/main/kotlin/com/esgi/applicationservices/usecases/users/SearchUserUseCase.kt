@@ -6,5 +6,5 @@ import com.esgi.domainmodels.User
 class SearchUserUseCase(
     private val usersPersistence: UsersPersistence
 ) {
-    operator fun invoke(search: String): List<User> = usersPersistence.search(search)
+    operator fun invoke(search: String, user: User): List<User> = usersPersistence.search(search).toMutableList().apply { remove(user) }
 }
