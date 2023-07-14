@@ -17,30 +17,31 @@ import org.springframework.stereotype.Component
 
 @Component
 class AuthChannelInterceptorAdapter @Inject constructor(
-        private val jwtDecoder: JwtDecoder,
-        private val tokensService: TokensService
-): ChannelInterceptor {
+    private val jwtDecoder: JwtDecoder,
+    private val tokensService: TokensService
+) : ChannelInterceptor {
     override fun preSend(message: Message<*>, channel: MessageChannel): Message<*>? {
         val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
-        if(accessor?.command == StompCommand.CONNECT){
+        if (accessor?.command == StompCommand.CONNECT) {
             val auth = accessor.getNativeHeader("Authorization") ?: throw InvalidBearerTokenException("Invalid token")
-            if(auth.isEmpty()){
+            if (auth.isEmpty()) {
                 throw InvalidBearerTokenException("Invalid token")
             }
             val token = jwtDecoder.decode(auth[0].removePrefix("Bearer "))
             JwtAuthenticationConverter().let {
                 val jwt = it.convert(token) as JwtAuthenticationToken
-                val user = tokensService.parseToken(jwt.token.tokenValue) ?: throw InvalidBearerTokenException("Invalid token")
+                val user =
+                    tokensService.parseToken(jwt.token.tokenValue) ?: throw InvalidBearerTokenException("Invalid token")
                 accessor.user = UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        listOf(
-                                GrantedAuthority {
-                                    user.role
-                                            .toString()
-                                            .uppercase()
-                                }
-                        )
+                    user,
+                    null,
+                    listOf(
+                        GrantedAuthority {
+                            user.role
+                                .toString()
+                                .uppercase()
+                        }
+                    )
                 )
             }
         }

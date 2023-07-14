@@ -23,7 +23,7 @@ class GamesGateway(
     private val rooms: MutableMap<String, Room> = HashMap()
 
     @MessageMapping("/joinRoom/{roomId}")
-    @SendTo("/topic/room/{roomId}")
+    @SendTo("/rooms/{roomId}")
     fun joinRoom(@DestinationVariable roomId: String, message: String): String? {
         println("Joining room $roomId")
         val room = rooms.computeIfAbsent(roomId) { Room(roomId) }
@@ -32,7 +32,7 @@ class GamesGateway(
     }
 
     @MessageMapping("/startGame/{roomId}")
-    @SendTo("/topic/room/{roomId}")
+    @SendTo("/rooms/{roomId}")
     fun startGame(@DestinationVariable roomId: String) {
         try {
             val room = rooms[roomId]
@@ -41,16 +41,15 @@ class GamesGateway(
 
                 runBlocking {
                     launch {
-                        while (true) {
-                            val jsonMessage: String? = room.receiveResponse()
-
-                            if (jsonMessage != null) {
-                                println("Received: $jsonMessage")
-                                room.broadcast(jsonMessage)
-                            } else {
-                                println("Received null or empty message")
-                            }
-                        }
+//                        while (true) {
+//                            val jsonMessage: String? = room.receiveResponse()
+//
+//                            if (jsonMessage != null) {
+//                                room.broadcast(jsonMessage)
+//                            } else {
+//                                println("Received null or empty message")
+//                            }
+//                        }
                     }
 
                     room.sendInstruction("{\"init\": { \"players\": 2 }}\n")
@@ -92,7 +91,7 @@ class GamesGateway(
         }
 
         fun broadcast(message: String) {
-            simpMessagingTemplate.convertAndSend("/topic/room/$roomId", message)
+            simpMessagingTemplate.convertAndSend("/rooms/$roomId", message)
         }
     }
 }
