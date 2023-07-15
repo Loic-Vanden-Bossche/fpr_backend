@@ -12,8 +12,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
         registry.setApplicationDestinationPrefixes("/app")
-        registry.enableSimpleBroker("/groups")
-        registry.enableSimpleBroker("/rooms")
+        registry.enableSimpleBroker("/rooms", "/groups")
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
