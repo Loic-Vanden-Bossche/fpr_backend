@@ -11,6 +11,7 @@ import com.esgi.infrastructure.dto.mappers.GroupMapper
 import com.esgi.infrastructure.dto.mappers.MessageMapper
 import com.esgi.infrastructure.dto.output.GroupResponseDto
 import com.esgi.infrastructure.dto.output.MessageResponseDto
+import com.esgi.infrastructure.dto.output.MessageResponseType
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
@@ -90,7 +91,9 @@ class GroupsController(
     @GetMapping("/{id}/messages")
     @ResponseBody
     fun getAllMessages(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, @RequestParam page: Int? = null, @RequestParam size: Int? = null): List<MessageResponseDto> =
-        findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map(messageMapper::toDto)
+        findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map {
+            messageMapper.toDto(it, MessageResponseType.NEW)
+        }
 
     @DeleteMapping("/{id}/messages/{messageId}")
     @ResponseStatus(value = org.springframework.http.HttpStatus.NO_CONTENT)
