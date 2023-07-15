@@ -1,7 +1,6 @@
 package com.esgi.infrastructure.controllers
 
 import com.esgi.applicationservices.usecases.groups.*
-import com.esgi.applicationservices.usecases.groups.message.DeleteMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.AddUserToGroupDto
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
@@ -45,7 +43,6 @@ class GroupsController(
     private val renameGroupUseCase: RenameGroupUseCase,
     private val quitGroupUseCase: QuitGroupUseCase,
     private val findingAllGroupMessageUseCase: FindingAllGroupMessageUseCase,
-    private val deleteMessageInGroupUseCase: DeleteMessageInGroupUseCase,
     private val readGroupUseCase: ReadGroupUseCase
 ) {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
@@ -94,10 +91,4 @@ class GroupsController(
         findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map {
             messageMapper.toDto(it, MessageResponseType.NEW)
         }
-
-    @DeleteMapping("/{id}/messages/{messageId}")
-    @ResponseStatus(value = org.springframework.http.HttpStatus.NO_CONTENT)
-    fun deleteMessage(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, @PathVariable messageId: UUID){
-        deleteMessageInGroupUseCase(principal.principal as User, id, messageId)
-    }
 }
