@@ -2,6 +2,7 @@ package com.esgi.applicationservices.usecases.groups.message
 
 import com.esgi.applicationservices.persistence.GroupsPersistence
 import com.esgi.applicationservices.persistence.MessagesPersistence
+import com.esgi.domainmodels.Message
 import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
 import java.util.UUID
@@ -10,7 +11,7 @@ class DeleteMessageInGroupUseCase(
     private val groupsPersistence: GroupsPersistence,
     private val messagesPersistence: MessagesPersistence
 ) {
-    operator fun invoke(user: User, groupId: UUID, messageId: UUID){
+    operator fun invoke(user: User, groupId: UUID, messageId: UUID): Message{
         val group = groupsPersistence.find(groupId) ?: throw NotFoundException("Group not found")
         if(user !in group.members.map { it.user }){
             throw  NotFoundException("Group not Found")
@@ -20,5 +21,6 @@ class DeleteMessageInGroupUseCase(
             throw NotFoundException("Message not found in this group")
         }
         messagesPersistence.deleteMessage(message)
+        return message
     }
 }
