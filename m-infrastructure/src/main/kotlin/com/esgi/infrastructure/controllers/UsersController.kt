@@ -3,7 +3,6 @@ package com.esgi.infrastructure.controllers
 import com.esgi.*
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.domainmodels.User
-import com.esgi.infrastructure.config.toUser
 import com.esgi.infrastructure.dto.input.CreateUserDto
 import com.esgi.infrastructure.dto.input.UpdateUserDto
 import com.esgi.infrastructure.dto.mappers.UserMapper
