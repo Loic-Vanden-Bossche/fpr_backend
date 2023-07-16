@@ -29,5 +29,8 @@ data class UserEntity(
     val coins: Int = 0,
 
     @Column(name = "USER_PASSWORD", nullable = false)
-    val password: String
+    val password: String,
+
+    @Column(name = "PICTURE", columnDefinition = "VARCHAR(255) default null")
+    val picture: String? = null
 ) : AuditableDates()

@@ -187,4 +187,21 @@
     <changeSet author="macaron (generated)" id="1688397256009-2">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="macaron (generated)" id="1689526591022-5">
+        <addColumn tableName="T_USERS">
+            <column name="PICTURE" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1689526591022-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1689526591022-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1689526591022-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="macaron (generated)" id="1689526591022-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>
