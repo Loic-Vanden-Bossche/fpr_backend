@@ -7,5 +7,6 @@ data class UserResponseDto(
     val nickname: String,
     val coins: Int,
     val updatedAt: String,
-    val createdAt: String
+    val createdAt: String,
+    val picture: String? = null
 )

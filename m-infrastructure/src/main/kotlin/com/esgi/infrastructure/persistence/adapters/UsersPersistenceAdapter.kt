@@ -73,6 +73,7 @@ class UsersPersistenceAdapter(
         password: String?,
         role: Role?,
         coins: Int?,
+        picture: String?
     ): User {
         val user = userRepository.findByIdOrNull(id) ?: throw Exception("User not found")
 
@@ -83,6 +84,7 @@ class UsersPersistenceAdapter(
             password = password ?: user.password,
             role = role ?: user.role,
             coins = coins ?: user.coins,
+            picture = picture ?: user.picture
         ).apply {
             this.createdAt = user.createdAt
             this.updatedAt = user.updatedAt

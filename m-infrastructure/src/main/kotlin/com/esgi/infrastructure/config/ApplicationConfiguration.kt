@@ -18,8 +18,10 @@ import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.MessagesPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.filter.HiddenHttpMethodFilter
 
 @Configuration
 class ApplicationConfiguration(
@@ -86,6 +88,16 @@ class ApplicationConfiguration(
             service
         )
     }
+
+    @Bean
+    fun getPicutreUseCase(): GetPictureUseCase =
+        GetPictureUseCase()
+
+    @Bean
+    fun addPictureUseCase(): AddPictureUseCase =
+        AddPictureUseCase(
+            usersPersistence
+        )
 
     @Bean
     fun createSessionUseCase(@Autowired service: GameInstantiator): StartingSessionUseCase {

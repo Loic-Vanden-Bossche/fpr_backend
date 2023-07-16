@@ -27,11 +27,12 @@ interface UsersPersistence {
 
     fun update(
         id: UUID,
-        email: String?,
-        nickname: String?,
-        password: String?,
-        role: Role?,
-        coins: Int?
+        email: String? = null,
+        nickname: String? = null,
+        password: String? = null,
+        role: Role? = null,
+        coins: Int? = null,
+        picture: String? = null
     ): User
 
     fun delete(id: UUID): User

@@ -35,6 +35,7 @@ class SecurityConfig(
                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/sessions").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/users/*/picture").permitAll()
                 .requestMatchers("/api/**").authenticated()
         }
 

@@ -48,6 +48,7 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-ec2:1.12.481")
     implementation("com.amazonaws:aws-java-sdk-ecr:1.12.481")
     implementation("com.amazonaws:aws-java-sdk-s3:1.12.481")
+    implementation("software.amazon.awssdk:s3:2.19.1")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
