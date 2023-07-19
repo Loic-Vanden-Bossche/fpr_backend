@@ -31,6 +31,6 @@ data class UserEntity(
     @Column(name = "USER_PASSWORD", nullable = false)
     val password: String,
 
-    @Column(name = "PICTURE", columnDefinition = "VARCHAR(255) default null")
-    val picture: String? = null
+    @Column(name = "USER_PICTURE", columnDefinition = "BOOLEAN default false")
+    val picture: Boolean = false,
 ) : AuditableDates()

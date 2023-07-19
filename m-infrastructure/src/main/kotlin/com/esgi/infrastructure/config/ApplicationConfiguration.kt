@@ -1,6 +1,6 @@
 package com.esgi.infrastructure.config
 
-import com.esgi.applicationservices.services.GameInstantiator
+import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
 import com.esgi.applicationservices.services.GameBuilder
 import com.esgi.applicationservices.services.GameUploader
@@ -17,11 +17,10 @@ import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.MessagesPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
+import com.esgi.infrastructure.services.ProfilePictureUploadService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.filter.HiddenHttpMethodFilter
 
 @Configuration
 class ApplicationConfiguration(
@@ -90,17 +89,14 @@ class ApplicationConfiguration(
     }
 
     @Bean
-    fun getPicutreUseCase(): GetPictureUseCase =
-        GetPictureUseCase()
-
-    @Bean
-    fun addPictureUseCase(): AddPictureUseCase =
+    fun addPictureUseCase(@Autowired profilePictureUploader: ProfilePictureUploadService): AddPictureUseCase =
         AddPictureUseCase(
-            usersPersistence
+            usersPersistence,
+            profilePictureUploader
         )
 
     @Bean
-    fun createSessionUseCase(@Autowired service: GameInstantiator): StartingSessionUseCase {
+    fun createSessionUseCase(@Autowired service: GameInstanciator): StartingSessionUseCase {
         return StartingSessionUseCase(
             service
         )

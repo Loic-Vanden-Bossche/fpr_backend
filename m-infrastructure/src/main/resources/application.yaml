@@ -19,9 +19,6 @@ spring:
   devtools:
     livereload:
       port: 35730
-  servlet:
-    multipart:
-      enabled: false
 security:
   # minimum 256 bits
   key: 12345678901234567890123456789012
@@ -30,4 +27,7 @@ server:
   forward-headers-strategy: framework
 
 games-bucket:
-  name: game-uploads20230621151151019500000001
+  name: game-uploads20230717200505738400000001
+
+medias-bucket:
+  name: fpr-medias20230717200506511900000003

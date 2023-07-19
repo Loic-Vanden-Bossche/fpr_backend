@@ -216,4 +216,24 @@
     <changeSet author="macaron (generated)" id="1689538036184-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1689718463686-5">
+        <addColumn tableName="T_USERS">
+            <column defaultValueBoolean="false" name="USER_PICTURE" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689718463686-6">
+        <dropColumn columnName="PICTURE" tableName="T_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689718463686-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689718463686-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689718463686-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689718463686-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

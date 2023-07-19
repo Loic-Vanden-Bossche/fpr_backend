@@ -4,8 +4,7 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest
-import com.amazonaws.services.ecs.model.*
-import com.esgi.applicationservices.services.GameInstantiator
+import com.esgi.applicationservices.services.GameInstanciator
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
@@ -17,7 +16,7 @@ import java.nio.channels.AsynchronousSocketChannel
 class GameInstantiatorProd(
     private val taskService: TaskService,
     private val tcpService: TcpService
-): GameInstantiator {
+): GameInstanciator {
     private fun getGameSecurityGroup(): String {
         val name = "game-security-group"
 

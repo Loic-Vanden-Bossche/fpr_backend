@@ -73,7 +73,7 @@ class UsersPersistenceAdapter(
         password: String?,
         role: Role?,
         coins: Int?,
-        picture: String?
+        picture: Boolean?
     ): User {
         val user = userRepository.findByIdOrNull(id) ?: throw Exception("User not found")
 
