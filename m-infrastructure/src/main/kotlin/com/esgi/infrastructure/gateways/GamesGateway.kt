@@ -1,6 +1,6 @@
 package com.esgi.infrastructure.gateways
 
-import com.esgi.applicationservices.services.GameInstantiator
+import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.infrastructure.services.TcpService
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -16,7 +16,7 @@ import java.nio.channels.AsynchronousSocketChannel
 @Controller
 @CrossOrigin(origins = ["https://jxy.me"], allowCredentials = "true")
 class GamesGateway(
-    val gameInstantiator: GameInstantiator,
+    val gameInstanciator: GameInstanciator,
     val tcpService: TcpService,
     val simpMessagingTemplate: SimpMessagingTemplate
 ) {
@@ -37,7 +37,7 @@ class GamesGateway(
         try {
             val room = rooms[roomId]
             if (room != null) {
-                room.client = gameInstantiator.instanciateGame("448a82c3-d29c-4921-8b45-480ae59a7cf1")
+                room.client = gameInstanciator.instanciateGame("448a82c3-d29c-4921-8b45-480ae59a7cf1")
 
                 runBlocking {
                     launch {

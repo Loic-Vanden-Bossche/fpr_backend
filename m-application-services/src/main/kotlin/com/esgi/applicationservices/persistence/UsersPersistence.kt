@@ -32,7 +32,7 @@ interface UsersPersistence {
         password: String? = null,
         role: Role? = null,
         coins: Int? = null,
-        picture: String? = null
+        picture: Boolean? = null
     ): User
 
     fun delete(id: UUID): User

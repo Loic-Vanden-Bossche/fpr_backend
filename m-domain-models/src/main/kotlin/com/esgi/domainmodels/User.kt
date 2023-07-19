@@ -13,5 +13,5 @@ data class User(
     val updatedAt: Instant,
     val createdAt: Instant,
     val status: Status?,
-    val picture: String?
+    val picture: Boolean
 )

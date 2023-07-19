@@ -1,6 +1,5 @@
 package com.esgi.infrastructure.controllers
 
-import com.esgi.*
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateUserDto
@@ -10,17 +9,15 @@ import com.esgi.infrastructure.dto.output.SearchResponseDto
 import com.esgi.infrastructure.dto.output.UserResponseDto
 import com.esgi.infrastructure.services.HashService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
 import org.mapstruct.factory.Mappers
-import org.springframework.core.io.InputStreamResource
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @RestController
@@ -34,7 +31,6 @@ class UsersController(
     private val deletingUserUseCase: DeletingUserUseCase,
     private val creatingUserUseCase: CreatingUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
-    private val getPictureUseCase: GetPictureUseCase,
     private val addPictureUseCase: AddPictureUseCase
 ) {
     private val mapper: UserMapper = Mappers.getMapper(UserMapper::class.java)
@@ -47,33 +43,21 @@ class UsersController(
         return users.map { user -> mapper.toDto(user) }
     }
 
-    @GetMapping("/{id}/picture")
+    @PostMapping(path = ["picture"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ResponseBody
-    fun getUserPicture(@PathVariable id: UUID): ResponseEntity<InputStreamResource> {
-        val user = findingOneUserByIdUseCase.execute(id)
-        val contentType = when (user?.picture?.split(".")?.last()) {
-            "png" -> MediaType.IMAGE_PNG
-            "gif" -> MediaType.IMAGE_GIF
-            "jpeg" -> MediaType.IMAGE_JPEG
-            "jpg" -> MediaType.IMAGE_JPEG
-            else -> return ResponseEntity.notFound().build()
-        }
-        val stream = getPictureUseCase(user) ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok()
-            .contentType(contentType)
-            .body(InputStreamResource(stream))
-    }
-
-    @PostMapping("/picture", consumes = ["image/*"])
-    @ResponseBody
-    @Secured("USER")
-    fun addPicture(principal: UsernamePasswordAuthenticationToken, request: HttpServletRequest): UserResponseDto = mapper.toDto(
-        addPictureUseCase(principal.principal as User, request.inputStream, request.contentType.split("/")[1])
+    fun addPicture(
+        principal: UsernamePasswordAuthenticationToken,
+        @RequestPart("file") file: MultipartFile
+    ): UserResponseDto = mapper.toDto(
+        addPictureUseCase(
+            principal.principal as User,
+            file.inputStream,
+            file.contentType
+        )
     )
 
     @GetMapping("/search/{search}")
     @ResponseBody
-    @Secured("USER")
     fun searchUsers(
         principal: UsernamePasswordAuthenticationToken,
         @PathVariable @NotNull @NotEmpty search: String

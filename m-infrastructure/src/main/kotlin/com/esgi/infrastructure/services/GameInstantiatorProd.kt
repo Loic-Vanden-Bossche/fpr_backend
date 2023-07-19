@@ -4,8 +4,8 @@ import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest
-import com.amazonaws.services.ecs.model.*
-import com.esgi.applicationservices.services.GameInstantiator
+import com.esgi.applicationservices.services.GameInstanciator
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
@@ -17,13 +17,19 @@ import java.nio.channels.AsynchronousSocketChannel
 class GameInstantiatorProd(
     private val taskService: TaskService,
     private val tcpService: TcpService
-): GameInstantiator {
+): GameInstanciator {
+    @Value("\${aws.region}")
+    private val awsRegion: String? = null
+
+    @Value("\${aws.accountId}")
+    private val awsAccountId: String? = null
+
     private fun getGameSecurityGroup(): String {
         val name = "game-security-group"
 
         val ec2Client = AmazonEC2ClientBuilder.standard()
             .withCredentials(DefaultAWSCredentialsProviderChain.getInstance())
-            .withRegion(Regions.EU_WEST_3)
+            .withRegion(awsRegion)
             .build()
 
         val describeSecurityGroupsRequest = DescribeSecurityGroupsRequest()
@@ -48,7 +54,7 @@ class GameInstantiatorProd(
             "fpr-game-task-${gameId}",
             "fpr-game-task",
             "fpr-game-default-task",
-            "075626265631.dkr.ecr.eu-west-3.amazonaws.com/fpr-games-repository:${gameId}"
+            "${awsAccountId}.dkr.ecr.${awsRegion}.amazonaws.com/fpr-games-repository:${gameId}"
         )
 
         val task = taskService.runTask(taskDefinition, subnetId, securityGroupId)
