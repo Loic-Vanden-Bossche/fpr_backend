@@ -36,3 +36,6 @@ games-bucket:
 
 medias-bucket:
   name: fpr-medias20230717200506511900000003
+
+aws:
+  region: eu-west-3

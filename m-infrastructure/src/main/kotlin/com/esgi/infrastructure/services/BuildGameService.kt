@@ -11,6 +11,12 @@ class BuildGameService(
     @Value("\${games-bucket.name}")
     private val bucketName: String? = null
 
+    @Value("\${aws.region}")
+    private val awsRegion: String? = null
+
+    @Value("\${aws.accountId}")
+    private val awsAccountId: String? = null
+
     override fun buildGame(gameId: String) {
         val networkConfiguration = _taskService.getNetworkConfigFromService()
 
@@ -22,15 +28,15 @@ class BuildGameService(
             KeyValuePair().withName("S3_BUCKET").withValue(bucketName),
             KeyValuePair().withName("ECR_GAMES_REPOSITORY").withValue("fpr-games-repository"),
             KeyValuePair().withName("ECR_EXECUTOR_REPOSITORY").withValue("fpr-executor-repository"),
-            KeyValuePair().withName("AWS_ACCOUNT_ID").withValue("075626265631"),
-            KeyValuePair().withName("AWS_REGION").withValue("eu-west-3")
+            KeyValuePair().withName("AWS_ACCOUNT_ID").withValue(awsAccountId),
+            KeyValuePair().withName("AWS_REGION").withValue(awsRegion)
         )
 
         val taskDefinition = _taskService.createTaskDefinitionFromAnother(
             "fpr-games-builder-task:${gameId}",
             "fpr-games-builder-task",
             "fpr-games-builder",
-            "075626265631.dkr.ecr.eu-west-3.amazonaws.com/fpr-executor-repository:builder-latest",
+            "${awsAccountId}.dkr.ecr.${awsRegion}.amazonaws.com/fpr-executor-repository:builder-latest",
             containerEnv
         )
 
@@ -41,6 +47,10 @@ class BuildGameService(
         val taskDetails = _taskService.getTaskDetails(task.taskArn)
 
         val exitCode = taskDetails.tasks?.get(0)?.containers?.get(0)?.exitCode
+
+        if (exitCode == null) {
+            println("Error while building game")
+        }
 
         if (exitCode != null && exitCode != 0) {
             println("Exit Code: $exitCode")
