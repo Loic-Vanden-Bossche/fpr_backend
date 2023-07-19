@@ -1,12 +1,15 @@
 package com.esgi.applicationservices.usecases.rooms
 
+import com.esgi.applicationservices.persistence.RoomsPersistence
 import com.esgi.domainmodels.Room
-import java.util.*
+import com.esgi.domainmodels.User
 
-class CreateRoomUseCase {
-    operator fun invoke(): Room {
+class CreateRoomUseCase(
+    private val roomsPersistence: RoomsPersistence
+) {
+    operator fun invoke(owner: User): Room {
         println("Creating room...")
 
-        return Room(UUID.randomUUID())
+        return roomsPersistence.create(owner)
     }
 }

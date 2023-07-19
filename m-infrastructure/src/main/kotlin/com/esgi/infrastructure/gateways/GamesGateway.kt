@@ -2,14 +2,15 @@ package com.esgi.infrastructure.gateways
 
 import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
+import com.esgi.domainmodels.User
 import com.esgi.infrastructure.services.TcpService
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessagingTemplate
-import org.springframework.messaging.simp.annotation.SendToUser
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
 import java.io.*
@@ -21,16 +22,18 @@ class GamesGateway(
     val gameInstanciator: GameInstanciator,
     val tcpService: TcpService,
     val simpMessagingTemplate: SimpMessagingTemplate,
-    val createSessionUseCase: CreateRoomUseCase,
+    val createRoomUseCase: CreateRoomUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
 
     @MessageMapping("/createRoom")
-    @SendToUser("/rooms/created")
-    fun createRoom(gameId: String): String? {
+    @SendTo("/rooms/created")
+    fun createRoom(principal: UsernamePasswordAuthenticationToken, gameId: String): String? {
         println("Creating room with game $gameId")
 
-        val room = createSessionUseCase()
+        val room = createRoomUseCase(
+            principal.principal as User,
+        )
         val roomId = room.id.toString()
 
         val session = Session(
@@ -38,19 +41,17 @@ class GamesGateway(
             gameInstanciator.instanciateGame(gameId)
         )
 
-        runBlocking {
-            launch {
-                while (true) {
-                    try {
-                        val jsonMessage: String? = session.receiveResponse()
+        GlobalScope.launch {
+            while (true) {
+                try {
+                    val jsonMessage: String? = session.receiveResponse()
 
-                        if (jsonMessage != null) {
-                            session.broadcast(jsonMessage)
-                        }
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        break
+                    if (jsonMessage != null) {
+                        session.broadcast(jsonMessage)
                     }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    break
                 }
             }
         }

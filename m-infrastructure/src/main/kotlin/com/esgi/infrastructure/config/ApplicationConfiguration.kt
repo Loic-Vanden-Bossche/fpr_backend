@@ -12,10 +12,7 @@ import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupU
 import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
 import com.esgi.applicationservices.usecases.users.*
-import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
-import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
-import com.esgi.infrastructure.persistence.adapters.MessagesPersistenceAdapter
-import com.esgi.infrastructure.persistence.adapters.UsersPersistenceAdapter
+import com.esgi.infrastructure.persistence.adapters.*
 import com.esgi.infrastructure.services.ProfilePictureUploadService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
@@ -26,7 +23,8 @@ class ApplicationConfiguration(
     private val usersPersistence: UsersPersistenceAdapter,
     private val friendsPersistence: FriendsPersistenceAdapter,
     private val groupsPersistence: GroupPersistenceAdapter,
-    private val messagesPersistence: MessagesPersistenceAdapter
+    private val messagesPersistence: MessagesPersistenceAdapter,
+    private val roomsPersistence: RoomsPersistenceAdapter,
 ) {
     @Bean
     fun findingAllUsersUseCase(): FindingAllUsersUseCase {
@@ -224,5 +222,7 @@ class ApplicationConfiguration(
 
     @Bean
     fun createRoomUseCase(): CreateRoomUseCase =
-        CreateRoomUseCase()
+        CreateRoomUseCase(
+            roomsPersistence
+        )
 }
