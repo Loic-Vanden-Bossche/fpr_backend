@@ -1,6 +1,5 @@
 package com.esgi.infrastructure.config
 
-import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.services.GameBuilder
 import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*

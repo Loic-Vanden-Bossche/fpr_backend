@@ -12,6 +12,6 @@ data class User(
     val coins: Int,
     val updatedAt: Instant,
     val createdAt: Instant,
-    val status: Status?,
+    val status: FriendRequestStatus?,
     val picture: Boolean
 )

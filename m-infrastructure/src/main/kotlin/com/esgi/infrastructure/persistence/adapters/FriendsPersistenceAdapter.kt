@@ -2,7 +2,7 @@ package com.esgi.infrastructure.persistence.adapters
 
 import com.esgi.applicationservices.persistence.FriendsPersistence
 import com.esgi.domainmodels.Group
-import com.esgi.domainmodels.Status
+import com.esgi.domainmodels.FriendRequestStatus
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.FriendsEntity
@@ -38,7 +38,7 @@ class FriendsPersistenceAdapter(
     }
 
     override fun createFriend(friend: User, user: User): Boolean = try{
-        friendsRepository.save(FriendsEntity(user1 = mapper.toEntity(user), user2 = mapper.toEntity(friend), status = Status.PENDING))
+        friendsRepository.save(FriendsEntity(user1 = mapper.toEntity(user), user2 = mapper.toEntity(friend), status = FriendRequestStatus.PENDING))
         true
     }catch (e: Exception){
         e.printStackTrace()
@@ -47,21 +47,21 @@ class FriendsPersistenceAdapter(
 
     override fun setApprove(user: User, friend: User): Boolean {
         val friendPending = friendsRepository.getPendingFromFor(user.id, friend.id) ?: return false
-        friendPending.status = Status.APPROVED
+        friendPending.status = FriendRequestStatus.APPROVED
         friendsRepository.save(friendPending)
         return true
     }
 
     override fun setDeny(user: User, friend: User): Boolean {
         val friendPending = friendsRepository.getPendingFromFor(user.id, friend.id) ?: return false
-        friendPending.status = Status.REJECTED
+        friendPending.status = FriendRequestStatus.REJECTED
         friendsRepository.save(friendPending)
         return true
     }
 
     override fun deleteFriend(user: User, friend: User): Boolean {
         val friendPending = friendsRepository.getFromFor(user.id, friend.id) ?: return false
-        friendPending.status = Status.REJECTED
+        friendPending.status = FriendRequestStatus.REJECTED
         friendsRepository.save(friendPending)
         return true
     }

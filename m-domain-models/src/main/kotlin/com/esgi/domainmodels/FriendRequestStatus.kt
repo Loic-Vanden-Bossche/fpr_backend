@@ -1,6 +1,6 @@
 package com.esgi.domainmodels
 
-enum class Status {
+enum class FriendRequestStatus {
     APPROVED,
     REJECTED,
     PENDING;
