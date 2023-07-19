@@ -40,7 +40,6 @@ class SocketHandler: WebSocketHandler {
     val sessions: MutableList<WebSocketSession> = CopyOnWriteArrayList()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
-        println("open session")
         sessions.add(session)
     }
 
@@ -57,12 +56,11 @@ class SocketHandler: WebSocketHandler {
     }
 
     override fun afterConnectionClosed(session: WebSocketSession, closeStatus: CloseStatus) {
-        println(closeStatus)
         sessions.remove(session)
     }
 
     override fun supportsPartialMessages(): Boolean {
-        return false
+        return true
     }
 
 }
