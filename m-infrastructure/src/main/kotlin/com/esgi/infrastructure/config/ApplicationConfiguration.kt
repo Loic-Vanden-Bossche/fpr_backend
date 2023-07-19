@@ -1,7 +1,6 @@
 package com.esgi.infrastructure.config
 
 import com.esgi.applicationservices.services.GameInstanciator
-import com.esgi.applicationservices.usecases.sessions.StartingSessionUseCase
 import com.esgi.applicationservices.services.GameBuilder
 import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
@@ -12,6 +11,7 @@ import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUs
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
 import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
+import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.FriendsPersistenceAdapter
 import com.esgi.infrastructure.persistence.adapters.GroupPersistenceAdapter
@@ -94,13 +94,6 @@ class ApplicationConfiguration(
             usersPersistence,
             profilePictureUploader
         )
-
-    @Bean
-    fun createSessionUseCase(@Autowired service: GameInstanciator): StartingSessionUseCase {
-        return StartingSessionUseCase(
-            service
-        )
-    }
 
     @Bean
     fun findingAllFriendsUseCase(): FindingAllFriendsUseCase {
@@ -229,4 +222,8 @@ class ApplicationConfiguration(
             gameUploader,
             gameBuilder
         )
+
+    @Bean
+    fun createRoomUseCase(): CreateRoomUseCase =
+        CreateRoomUseCase()
 }
