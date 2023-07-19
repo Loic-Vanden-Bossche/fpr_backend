@@ -9,8 +9,8 @@ class AddPictureUseCase(
     private val usersPersistence: UsersPersistence,
     private val profilePictureUploader: ProfilePictureUploader
 ) {
-    operator fun invoke(user: User, data: InputStream): User {
-        profilePictureUploader.upload(user.id.toString(), data)
+    operator fun invoke(user: User, data: InputStream, contentType: String): User {
+        profilePictureUploader.upload(user.id.toString(), data, contentType)
 
         return usersPersistence.update(user.id, picture = true)
     }

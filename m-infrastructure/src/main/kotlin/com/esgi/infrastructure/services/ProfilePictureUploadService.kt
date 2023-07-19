@@ -12,9 +12,9 @@ class ProfilePictureUploadService(
     @Value("\${medias-bucket.name}")
     private val bucketName: String? = null
 
-    override fun upload(userId: String, data: InputStream) {
+    override fun upload(userId: String, data: InputStream, contentType: String) {
         if (bucketName == null) throw Exception("Bucket name not specified in configuration")
 
-        s3Service.putFile(bucketName, "profile-pictures/${userId}", data)
+        s3Service.putFile(bucketName, "p/${userId}", data)
     }
 }

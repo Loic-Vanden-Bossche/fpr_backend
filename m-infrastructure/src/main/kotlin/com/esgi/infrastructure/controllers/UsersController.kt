@@ -51,7 +51,8 @@ class UsersController(
     ): UserResponseDto = mapper.toDto(
         addPictureUseCase(
             principal.principal as User,
-            file.inputStream
+            file.inputStream,
+            file.contentType
         )
     )
 
