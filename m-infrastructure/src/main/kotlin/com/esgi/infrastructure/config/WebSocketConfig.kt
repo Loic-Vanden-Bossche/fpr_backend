@@ -62,7 +62,7 @@ class SocketHandler: WebSocketHandler {
     }
 
     override fun supportsPartialMessages(): Boolean {
-        return false
+        return true
     }
 
 }
