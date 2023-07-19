@@ -15,7 +15,7 @@ class S3Service {
         .withRegion(Regions.EU_WEST_3)
         .build()
 
-    fun putFile(bucketName: String, fileName: String, data: InputStream, type: String = "application/octet-stream") {
+    fun putFile(bucketName: String, fileName: String, data: InputStream, type: String? = "application/octet-stream") {
         s3Client.putObject(bucketName, fileName, data, ObjectMetadata().apply {
             contentType = type
         })

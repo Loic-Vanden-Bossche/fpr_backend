@@ -3,5 +3,5 @@ package com.esgi.applicationservices.services
 import java.io.InputStream
 
 interface ProfilePictureUploader {
-    fun upload(userId: String, data: InputStream, contentType: String)
+    fun upload(userId: String, data: InputStream, contentType: String?)
 }
