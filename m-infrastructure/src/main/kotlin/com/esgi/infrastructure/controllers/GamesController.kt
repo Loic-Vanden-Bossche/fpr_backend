@@ -30,7 +30,17 @@ class GamesController(
 
     @PostMapping(path  = ["create"])
     @ResponseBody
-    fun createGame(@RequestBody @Valid body: CreateGameDto, principal: UsernamePasswordAuthenticationToken): GameResponseDto {
-        return mapper.toDto(createGameUseCase(body.title, principal.principal as User))
+    fun createGame(
+        principal: UsernamePasswordAuthenticationToken,
+        @RequestBody @Valid body: CreateGameDto
+    ): GameResponseDto {
+        println(body)
+        return mapper.toDto(createGameUseCase(
+            body.title,
+            body.nbMinPlayers,
+            body.nbMaxPlayers,
+            body.isDeterministic,
+            principal.principal as User
+        ))
     }
 }
