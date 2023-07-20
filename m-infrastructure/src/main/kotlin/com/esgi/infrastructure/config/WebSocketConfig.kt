@@ -12,7 +12,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 @EnableWebSocket
-class WebSocketConfig : WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
+class WebSocketConfig(
+    private val socketHandler: SocketHandler
+) : WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
 
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
         registry.setApplicationDestinationPrefixes("/app")
@@ -24,7 +26,7 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
     }
 
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(SocketHandler(), "/webrtc")
+        registry.addHandler(socketHandler, "/webrtc")
             .setAllowedOrigins("*")
     }
 }
