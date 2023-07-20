@@ -1,11 +1,9 @@
 package com.esgi.infrastructure.controllers
 
-import com.esgi.applicationservices.usecases.games.AddGamePictureUseCase
-import com.esgi.applicationservices.usecases.games.BuildGameUseCase
-import com.esgi.applicationservices.usecases.games.CreateGameUseCase
-import com.esgi.applicationservices.usecases.games.FindingAllGamesUseCase
+import com.esgi.applicationservices.usecases.games.*
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateGameDto
+import com.esgi.infrastructure.dto.input.SetGameVisibilityDto
 import com.esgi.infrastructure.dto.mappers.GameMapper
 import com.esgi.infrastructure.dto.output.GameResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -24,7 +22,8 @@ class GamesController(
     private val buildGameUseCase: BuildGameUseCase,
     private val createGameUseCase: CreateGameUseCase,
     private val findingAllGamesUseCase: FindingAllGamesUseCase,
-    private val addGamePictureUseCase: AddGamePictureUseCase
+    private val addGamePictureUseCase: AddGamePictureUseCase,
+    private val setGameVisibilityUseCase: SetGameVisibilityUseCase
 ) {
     private val mapper = Mappers.getMapper(GameMapper::class.java)
 
@@ -34,6 +33,7 @@ class GamesController(
     }
 
     @PostMapping("{id}/build", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @ResponseBody
     fun build(
         principal: UsernamePasswordAuthenticationToken,
         file: MultipartFile,
@@ -58,6 +58,22 @@ class GamesController(
             file.contentType
         )
     )
+
+    @PatchMapping("{id}/visibility")
+    @ResponseBody
+    fun setVisibility(
+        principal: UsernamePasswordAuthenticationToken,
+        @RequestBody @NotNull body: SetGameVisibilityDto,
+        @PathVariable @NotNull id: String
+    ): GameResponseDto {
+        return mapper.toDto(
+            setGameVisibilityUseCase(
+                (principal.principal as User).id,
+                id,
+                body.public
+            )
+        )
+    }
 
     @PostMapping("create")
     @ResponseBody

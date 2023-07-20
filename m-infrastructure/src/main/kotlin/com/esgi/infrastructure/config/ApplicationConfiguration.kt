@@ -4,10 +4,7 @@ import com.esgi.applicationservices.services.GameBuilder
 import com.esgi.applicationservices.services.GamePictureUploader
 import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
-import com.esgi.applicationservices.usecases.games.AddGamePictureUseCase
-import com.esgi.applicationservices.usecases.games.BuildGameUseCase
-import com.esgi.applicationservices.usecases.games.CreateGameUseCase
-import com.esgi.applicationservices.usecases.games.FindingAllGamesUseCase
+import com.esgi.applicationservices.usecases.games.*
 import com.esgi.applicationservices.usecases.groups.*
 import com.esgi.applicationservices.usecases.groups.message.DeleteMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUseCase
@@ -246,4 +243,8 @@ class ApplicationConfiguration(
             gamePictureUploader,
             gamesPersistence
         )
+
+    @Bean
+    fun setGameVisibilityUseCase(): SetGameVisibilityUseCase =
+        SetGameVisibilityUseCase(gamesPersistence)
 }
