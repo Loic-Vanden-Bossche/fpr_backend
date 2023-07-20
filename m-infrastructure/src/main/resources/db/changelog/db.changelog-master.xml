@@ -350,4 +350,40 @@
     <changeSet author="loloi (generated)" id="1689860114703-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-5">
+        <addColumn tableName="T_GAMES">
+            <column defaultValueBoolean="true" name="GAME_IS_DETERMINISTIC" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-6">
+        <addColumn tableName="T_GAMES">
+            <column name="GAME_NB_MAX_PLAYERS" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-7">
+        <addColumn tableName="T_GAMES">
+            <column name="GAME_NB_MIN_PLAYERS" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-8">
+        <dropColumn columnName="GAME_NB_PLAYERS" tableName="T_GAMES"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689864951615-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

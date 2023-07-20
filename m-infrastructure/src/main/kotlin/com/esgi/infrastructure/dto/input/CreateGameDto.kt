@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.dto.input;
 
-class CreateGameDto(
+data class CreateGameDto(
     val title: String,
+    val nbMaxPlayers: Int,
 )

@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.Length
 import java.util.UUID
 
 data class CreateGroupDto(
-        val users: List<UUID>,
-        @field:Length(min = 3)
-        val name: String
+    val users: List<UUID>,
+    @field:Length(min = 3)
+    val name: String
 )
