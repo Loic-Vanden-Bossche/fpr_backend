@@ -37,7 +37,7 @@ class DockerService {
 
         val hostConfig = HostConfig.newHostConfig()
             .withPortBindings(portBindings)
-//            .withAutoRemove(true)
+            .withAutoRemove(true)
 
         val container = dockerClient.createContainerCmd(imageName)
             .withHostConfig(hostConfig)
