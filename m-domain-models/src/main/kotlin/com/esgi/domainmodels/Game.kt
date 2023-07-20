@@ -7,5 +7,4 @@ data class Game(
     val title: String,
     val owner: User,
     val picture: Boolean,
-    val rooms: List<Room>,
 )

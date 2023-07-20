@@ -5,4 +5,9 @@ class GameResponseDto(
     val title: String,
     val owner: UserResponseDto,
     val picture: Boolean,
+    val nbMinPlayers: Int,
+    val nbMaxPlayers: Int,
+    val isDeterministic: Boolean,
+    val isPublic: Boolean,
+    val lastBuildDate: String?,
 )
