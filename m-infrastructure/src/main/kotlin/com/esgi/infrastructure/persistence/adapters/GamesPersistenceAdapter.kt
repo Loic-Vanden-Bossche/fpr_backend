@@ -71,4 +71,12 @@ class GamesPersistenceAdapter(
 
         return mapper.toDomain(gameRepository.save(gameEntity))
     }
+
+    override fun setGameVisibility(gameId: String, visible: Boolean): Game {
+        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+
+        gameEntity.isPublic = visible
+
+        return mapper.toDomain(gameRepository.save(gameEntity))
+    }
 }

@@ -33,7 +33,7 @@ data class GameEntity(
     val isDeterministic: Boolean = true,
 
     @Column(name = "GAME_IS_PUBLIC", nullable = false, columnDefinition = "BOOLEAN default false")
-    val isPublic: Boolean = false,
+    var isPublic: Boolean = false,
 
     @Column(name = "GAME_LAST_BUILD_DATE", nullable = true)
     var lastBuildDate: Date?,
