@@ -5,5 +5,5 @@ import com.esgi.domainmodels.User
 
 interface RoomsPersistence {
     fun findById(roomId: String): Room?
-    fun create(gameId: String, owner: User): Room
+    fun create(gameId: String, groupId: String, owner: User): Room
 }

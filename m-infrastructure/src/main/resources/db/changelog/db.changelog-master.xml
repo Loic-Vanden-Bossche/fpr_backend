@@ -410,4 +410,24 @@
     <changeSet author="loloi (generated)" id="1689870747721-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1689873672169-5">
+        <addColumn tableName="T_ROOM">
+            <column defaultValueComputed="gen_random_uuid()" name="ROOM_GROUP_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689873672169-6">
+        <addForeignKeyConstraint baseColumnNames="ROOM_GROUP_ID" baseTableName="T_ROOM" constraintName="FKn3kd80138b25271v7fft77oqr" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689873672169-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689873672169-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689873672169-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689873672169-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

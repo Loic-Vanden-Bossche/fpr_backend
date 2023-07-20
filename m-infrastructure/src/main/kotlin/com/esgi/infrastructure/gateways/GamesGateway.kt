@@ -3,6 +3,7 @@ package com.esgi.infrastructure.gateways
 import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
 import com.esgi.domainmodels.User
+import com.esgi.infrastructure.dto.input.CreateRoomDto
 import com.esgi.infrastructure.services.TcpService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,18 +29,19 @@ class GamesGateway(
 
     @MessageMapping("/createRoom")
     @SendTo("/rooms/created")
-    fun createRoom(principal: UsernamePasswordAuthenticationToken, gameId: String): String? {
-        println("Creating room with game $gameId")
+    fun createRoom(principal: UsernamePasswordAuthenticationToken, roomData: CreateRoomDto): String? {
+        println("Creating room with game ${roomData.gameId}")
 
         val room = createRoomUseCase(
-            gameId,
+            roomData.gameId,
+            roomData.groupId,
             principal.principal as User,
         )
         val roomId = room.id.toString()
 
         val session = Session(
             roomId,
-            gameInstanciator.instanciateGame(gameId)
+            gameInstanciator.instanciateGame(roomData.gameId)
         )
 
         GlobalScope.launch {

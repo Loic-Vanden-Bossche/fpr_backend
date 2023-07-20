@@ -24,6 +24,10 @@ class RoomEntity(
     val owner: UserEntity,
 
     @ManyToOne
+    @JoinColumn(name = "ROOM_GROUP_ID", referencedColumnName = "GROUP_ID")
+    val group: GroupEntity,
+
+    @ManyToOne
     @JoinColumn(name = "ROOM_GAME_ID", referencedColumnName = "GAME_ID")
     val game: GameEntity,
 
