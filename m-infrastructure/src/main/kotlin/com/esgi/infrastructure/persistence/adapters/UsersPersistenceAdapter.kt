@@ -3,6 +3,7 @@ package com.esgi.infrastructure.persistence.adapters
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.Role
 import com.esgi.domainmodels.User
+import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.UserEntity
 import com.esgi.infrastructure.persistence.repositories.FriendsRepository
@@ -75,7 +76,7 @@ class UsersPersistenceAdapter(
         coins: Int?,
         picture: Boolean?
     ): User {
-        val user = userRepository.findByIdOrNull(id) ?: throw Exception("User not found")
+        val user = userRepository.findByIdOrNull(id) ?: throw NotFoundException("User not found")
 
         val userToUpdate = UserEntity(
             id = user.id,
@@ -96,7 +97,7 @@ class UsersPersistenceAdapter(
 
     override fun delete(id: UUID): User {
         val userToDelete =
-            userRepository.findByIdOrNull(id) ?: throw Exception("User not found")
+            userRepository.findByIdOrNull(id) ?: throw NotFoundException("User not found")
         userRepository.delete(userToDelete)
         return mapper.toDomain(userToDelete, null)
     }

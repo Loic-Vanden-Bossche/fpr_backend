@@ -46,6 +46,14 @@ class GlobalExceptionHandler(
         return handleDomainException(ex, req, HttpStatus.NOT_FOUND)
     }
 
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbiddenException(
+        ex: ForbiddenException,
+        req: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        return handleDomainException(ex, req, HttpStatus.FORBIDDEN)
+    }
+
     @ExceptionHandler(LoginFailedException::class)
     fun handleUnauthorizedException(
         ex: DomainException,

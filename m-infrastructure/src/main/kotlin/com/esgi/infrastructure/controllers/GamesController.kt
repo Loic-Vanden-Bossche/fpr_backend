@@ -34,9 +34,13 @@ class GamesController(
     }
 
     @PostMapping("{id}/build", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun build(file: MultipartFile, @PathVariable @NotNull id: String): GameResponseDto {
+    fun build(
+        principal: UsernamePasswordAuthenticationToken,
+        file: MultipartFile,
+        @PathVariable @NotNull id: String
+    ): GameResponseDto {
         return mapper.toDto(
-            buildGameUseCase(id, file.inputStream)
+            buildGameUseCase((principal.principal as User).id, id, file.inputStream, file.contentType)
         )
     }
 
@@ -48,6 +52,7 @@ class GamesController(
         @PathVariable @NotNull id: String
     ): GameResponseDto = mapper.toDto(
         addGamePictureUseCase(
+            (principal.principal as User).id,
             id,
             file.inputStream,
             file.contentType

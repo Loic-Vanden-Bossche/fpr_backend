@@ -3,6 +3,7 @@ package com.esgi.infrastructure.persistence.adapters
 import com.esgi.applicationservices.persistence.GamesPersistence
 import com.esgi.domainmodels.Game
 import com.esgi.domainmodels.User
+import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.GameMapper
 import com.esgi.infrastructure.persistence.entities.GameEntity
 import com.esgi.infrastructure.persistence.repositories.GamesRepository
@@ -37,7 +38,7 @@ class GamesPersistenceAdapter(
         isDeterministic: Boolean,
         owner: User
     ): Game {
-        val userEntity = usersRepository.findById(owner.id).orElse(null) ?: throw Exception("User not found")
+        val userEntity = usersRepository.findById(owner.id).orElse(null) ?: throw NotFoundException("User not found")
 
         val gameEntity = gameRepository.save(
             GameEntity(
@@ -56,7 +57,7 @@ class GamesPersistenceAdapter(
     }
 
     override fun updateLastBuildDate(gameId: String): Game {
-        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw Exception("Game not found")
+        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
         gameEntity.lastBuildDate = Date()
 
@@ -64,7 +65,7 @@ class GamesPersistenceAdapter(
     }
 
     override fun setGamePicture(gameId: String): Game {
-        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw Exception("Game not found")
+        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
         gameEntity.picture = true
 
