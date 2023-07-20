@@ -54,6 +54,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20-RC")
     implementation("org.liquibase:liquibase-core:4.20.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
     implementation(project(mapOf("path" to ":m-application-services")))
     implementation(project(mapOf("path" to ":m-domain-models")))
     developmentOnly("org.springframework.boot:spring-boot-devtools:3.1.0")
