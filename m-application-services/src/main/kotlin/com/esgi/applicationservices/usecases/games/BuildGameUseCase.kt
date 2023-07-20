@@ -8,7 +8,7 @@ class BuildGameUseCase(
     private val gameUploader: GameUploader,
     private val gameBuilder: GameBuilder,
 ) {
-    fun execute(gameId: String, fileStream: InputStream) {
+    operator fun invoke(gameId: String, fileStream: InputStream) {
         gameUploader.uploadGame(gameId, fileStream)
         gameBuilder.buildGame(gameId)
     }

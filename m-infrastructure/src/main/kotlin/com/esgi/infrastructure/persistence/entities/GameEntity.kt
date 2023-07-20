@@ -23,6 +23,9 @@ data class GameEntity(
     @Column(name = "GAME_PICTURE", columnDefinition = "BOOLEAN default false")
     val picture: Boolean = false,
 
+    @Column(name = "GAME_NB_PLAYERS", nullable = false)
+    val nbPlayers: Int,
+
     @OneToMany(mappedBy = "game")
     val rooms: List<RoomEntity>,
 )
