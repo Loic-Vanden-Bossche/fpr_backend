@@ -36,7 +36,7 @@ class GamesController(
     @PostMapping("{id}/build", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun build(file: MultipartFile, @PathVariable @NotNull id: String): GameResponseDto {
         return mapper.toDto(
-            buildGameUseCase(id, file.inputStream)
+            buildGameUseCase(id, file.inputStream, file.contentType)
         )
     }
 

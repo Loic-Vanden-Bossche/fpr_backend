@@ -2,6 +2,7 @@ package com.esgi.infrastructure.controllers
 
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.domainmodels.User
+import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.input.CreateUserDto
 import com.esgi.infrastructure.dto.input.UpdateUserDto
 import com.esgi.infrastructure.dto.mappers.UserMapper
@@ -68,7 +69,7 @@ class UsersController(
     @ResponseBody
     @Secured("ADMIN")
     fun getUserById(@PathVariable("id") id: UUID): UserResponseDto {
-        val user = findingOneUserByIdUseCase.execute(id) ?: throw Exception("User not found")
+        val user = findingOneUserByIdUseCase.execute(id) ?: throw NotFoundException("User not found")
         val mapper = Mappers.getMapper(UserMapper::class.java)
 
         return mapper.toDto(user)
