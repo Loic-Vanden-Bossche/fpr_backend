@@ -1,6 +1,7 @@
 package com.esgi.infrastructure.dto.mappers
 
 import com.esgi.domainmodels.Game
+import com.esgi.infrastructure.dto.output.GameResponseDto
 import com.esgi.infrastructure.persistence.entities.GameEntity
 import org.mapstruct.Mapper
 import org.mapstruct.ReportingPolicy
@@ -9,4 +10,5 @@ import org.mapstruct.ReportingPolicy
 interface GameMapper {
     fun toDomain(user: GameEntity): Game
     fun toEntity(user: Game): GameEntity
+    fun toDto(user: Game): GameResponseDto
 }
