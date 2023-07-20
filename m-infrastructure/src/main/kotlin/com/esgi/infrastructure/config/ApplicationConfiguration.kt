@@ -5,6 +5,7 @@ import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.games.CreateGameUseCase
+import com.esgi.applicationservices.usecases.games.FindingAllGamesUseCase
 import com.esgi.applicationservices.usecases.groups.*
 import com.esgi.applicationservices.usecases.groups.message.DeleteMessageInGroupUseCase
 import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUseCase
@@ -26,6 +27,7 @@ class ApplicationConfiguration(
     private val groupsPersistence: GroupPersistenceAdapter,
     private val messagesPersistence: MessagesPersistenceAdapter,
     private val roomsPersistence: RoomsPersistenceAdapter,
+    private val gamesPersistence: GamesPersistenceAdapter,
 ) {
     @Bean
     fun findingAllUsersUseCase(): FindingAllUsersUseCase {
@@ -223,11 +225,13 @@ class ApplicationConfiguration(
 
     @Bean
     fun createRoomUseCase(): CreateRoomUseCase =
-        CreateRoomUseCase(
-            roomsPersistence
-        )
+        CreateRoomUseCase(roomsPersistence)
 
     @Bean
     fun createGameUseCase(): CreateGameUseCase =
-        CreateGameUseCase()
+        CreateGameUseCase(gamesPersistence)
+
+    @Bean
+    fun findingAllGamesUseCase(): FindingAllGamesUseCase =
+        FindingAllGamesUseCase(gamesPersistence)
 }
