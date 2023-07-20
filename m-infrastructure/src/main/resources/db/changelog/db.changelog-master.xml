@@ -386,4 +386,28 @@
     <changeSet author="loloi (generated)" id="1689864951615-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1689870747721-5">
+        <addColumn tableName="T_GAMES">
+            <column defaultValueBoolean="false" name="GAME_IS_PUBLIC" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689870747721-6">
+        <addColumn tableName="T_GAMES">
+            <column name="GAME_LAST_BUILD_DATE" type="timestamp(6)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689870747721-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689870747721-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689870747721-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689870747721-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

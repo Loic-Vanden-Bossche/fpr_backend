@@ -32,6 +32,12 @@ data class GameEntity(
     @Column(name = "GAME_IS_DETERMINISTIC", nullable = false, columnDefinition = "BOOLEAN default true")
     val isDeterministic: Boolean = true,
 
+    @Column(name = "GAME_IS_PUBLIC", nullable = false, columnDefinition = "BOOLEAN default false")
+    val isPublic: Boolean = false,
+
+    @Column(name = "GAME_LAST_BUILD_DATE", nullable = true)
+    var lastBuildDate: Date?,
+
     @OneToMany(mappedBy = "game")
     val rooms: List<RoomEntity>,
 )

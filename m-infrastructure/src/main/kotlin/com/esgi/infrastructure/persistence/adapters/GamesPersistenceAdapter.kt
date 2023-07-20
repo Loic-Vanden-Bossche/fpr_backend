@@ -46,10 +46,20 @@ class GamesPersistenceAdapter(
                 nbMaxPlayers = nbMaxPlayers,
                 isDeterministic = isDeterministic,
                 owner = userEntity,
+                isPublic = false,
+                lastBuildDate = null,
                 rooms = emptyList(),
             )
         )
 
         return mapper.toDomain(gameEntity)
+    }
+
+    override fun updateLastBuildDate(gameId: String): Game {
+        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw Exception("Game not found")
+
+        gameEntity.lastBuildDate = Date()
+
+        return mapper.toDomain(gameRepository.save(gameEntity))
     }
 }

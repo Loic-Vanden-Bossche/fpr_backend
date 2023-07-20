@@ -220,7 +220,8 @@ class ApplicationConfiguration(
     ): BuildGameUseCase =
         BuildGameUseCase(
             gameUploader,
-            gameBuilder
+            gameBuilder,
+            gamesPersistence
         )
 
     @Bean

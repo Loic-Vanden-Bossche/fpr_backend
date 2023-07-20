@@ -33,8 +33,10 @@ class GamesController(
     }
 
     @PostMapping("{id}/build", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun build(file: MultipartFile, @PathVariable @NotNull id: UUID) {
-        buildGameUseCase(id.toString(), file.inputStream)
+    fun build(file: MultipartFile, @PathVariable @NotNull id: UUID): GameResponseDto {
+        return mapper.toDto(
+            buildGameUseCase(id.toString(), file.inputStream)
+        )
     }
 
     @PostMapping("create")
@@ -43,12 +45,14 @@ class GamesController(
         principal: UsernamePasswordAuthenticationToken,
         @RequestBody @Valid body: CreateGameDto
     ): GameResponseDto {
-        return mapper.toDto(createGameUseCase(
-            body.title,
-            body.nbMinPlayers,
-            body.nbMaxPlayers,
-            body.isDeterministic,
-            principal.principal as User
-        ))
+        return mapper.toDto(
+            createGameUseCase(
+                body.title,
+                body.nbMinPlayers,
+                body.nbMaxPlayers,
+                body.isDeterministic,
+                principal.principal as User
+            )
+        )
     }
 }
