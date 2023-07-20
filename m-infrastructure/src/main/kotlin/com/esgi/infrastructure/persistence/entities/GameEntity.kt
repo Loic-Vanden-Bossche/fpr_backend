@@ -21,7 +21,7 @@ data class GameEntity(
     val owner: UserEntity,
 
     @Column(name = "GAME_PICTURE", columnDefinition = "BOOLEAN default false")
-    val picture: Boolean = false,
+    var picture: Boolean = false,
 
     @Column(name = "GAME_NB_MIN_PLAYERS", nullable = false)
     val nbMinPlayers: Int,

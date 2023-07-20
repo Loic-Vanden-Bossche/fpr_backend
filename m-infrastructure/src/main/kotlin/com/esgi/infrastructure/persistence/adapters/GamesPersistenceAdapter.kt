@@ -62,4 +62,12 @@ class GamesPersistenceAdapter(
 
         return mapper.toDomain(gameRepository.save(gameEntity))
     }
+
+    override fun setGamePicture(gameId: String): Game {
+        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw Exception("Game not found")
+
+        gameEntity.picture = true
+
+        return mapper.toDomain(gameRepository.save(gameEntity))
+    }
 }

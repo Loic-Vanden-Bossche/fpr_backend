@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.controllers
 
+import com.esgi.applicationservices.usecases.games.AddGamePictureUseCase
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.games.CreateGameUseCase
 import com.esgi.applicationservices.usecases.games.FindingAllGamesUseCase
@@ -15,7 +16,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.util.*
 
 @RestController
 @RequestMapping("/api/games")
@@ -23,7 +23,8 @@ import java.util.*
 class GamesController(
     private val buildGameUseCase: BuildGameUseCase,
     private val createGameUseCase: CreateGameUseCase,
-    private val findingAllGamesUseCase: FindingAllGamesUseCase
+    private val findingAllGamesUseCase: FindingAllGamesUseCase,
+    private val addGamePictureUseCase: AddGamePictureUseCase
 ) {
     private val mapper = Mappers.getMapper(GameMapper::class.java)
 
@@ -38,6 +39,20 @@ class GamesController(
             buildGameUseCase(id, file.inputStream)
         )
     }
+
+    @PostMapping("{id}/picture", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @ResponseBody
+    fun addPicture(
+        principal: UsernamePasswordAuthenticationToken,
+        @RequestPart("file") file: MultipartFile,
+        @PathVariable @NotNull id: String
+    ): GameResponseDto = mapper.toDto(
+        addGamePictureUseCase(
+            id,
+            file.inputStream,
+            file.contentType
+        )
+    )
 
     @PostMapping("create")
     @ResponseBody

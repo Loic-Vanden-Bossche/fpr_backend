@@ -31,7 +31,7 @@ class UsersController(
     private val deletingUserUseCase: DeletingUserUseCase,
     private val creatingUserUseCase: CreatingUserUseCase,
     private val searchUserUseCase: SearchUserUseCase,
-    private val addPictureUseCase: AddPictureUseCase
+    private val addProfilePictureUseCase: AddProfilePictureUseCase
 ) {
     private val mapper: UserMapper = Mappers.getMapper(UserMapper::class.java)
 
@@ -43,13 +43,13 @@ class UsersController(
         return users.map { user -> mapper.toDto(user) }
     }
 
-    @PostMapping(path = ["picture"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping("picture", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ResponseBody
     fun addPicture(
         principal: UsernamePasswordAuthenticationToken,
         @RequestPart("file") file: MultipartFile
     ): UserResponseDto = mapper.toDto(
-        addPictureUseCase(
+        addProfilePictureUseCase(
             principal.principal as User,
             file.inputStream,
             file.contentType

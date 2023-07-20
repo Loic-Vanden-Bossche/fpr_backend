@@ -1,8 +1,10 @@
 package com.esgi.infrastructure.config
 
 import com.esgi.applicationservices.services.GameBuilder
+import com.esgi.applicationservices.services.GamePictureUploader
 import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
+import com.esgi.applicationservices.usecases.games.AddGamePictureUseCase
 import com.esgi.applicationservices.usecases.games.BuildGameUseCase
 import com.esgi.applicationservices.usecases.games.CreateGameUseCase
 import com.esgi.applicationservices.usecases.games.FindingAllGamesUseCase
@@ -89,8 +91,8 @@ class ApplicationConfiguration(
     }
 
     @Bean
-    fun addPictureUseCase(@Autowired profilePictureUploader: ProfilePictureUploadService): AddPictureUseCase =
-        AddPictureUseCase(
+    fun addPictureUseCase(@Autowired profilePictureUploader: ProfilePictureUploadService): AddProfilePictureUseCase =
+        AddProfilePictureUseCase(
             usersPersistence,
             profilePictureUploader
         )
@@ -235,4 +237,13 @@ class ApplicationConfiguration(
     @Bean
     fun findingAllGamesUseCase(): FindingAllGamesUseCase =
         FindingAllGamesUseCase(gamesPersistence)
+
+    @Bean
+    fun addGamePictureUseCase(
+        @Autowired gamePictureUploader: GamePictureUploader
+    ): AddGamePictureUseCase =
+        AddGamePictureUseCase(
+            gamePictureUploader,
+            gamesPersistence
+        )
 }

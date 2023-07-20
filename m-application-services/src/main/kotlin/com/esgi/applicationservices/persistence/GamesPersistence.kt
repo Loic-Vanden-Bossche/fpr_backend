@@ -17,4 +17,6 @@ interface GamesPersistence {
     ): Game
 
     fun updateLastBuildDate(gameId: String): Game
+
+    fun setGamePicture(gameId: String): Game
 }

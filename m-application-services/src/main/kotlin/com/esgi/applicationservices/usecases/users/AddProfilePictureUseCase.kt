@@ -5,7 +5,7 @@ import com.esgi.applicationservices.services.ProfilePictureUploader
 import com.esgi.domainmodels.User
 import java.io.InputStream
 
-class AddPictureUseCase(
+class AddProfilePictureUseCase(
     private val usersPersistence: UsersPersistence,
     private val profilePictureUploader: ProfilePictureUploader
 ) {
