@@ -1,0 +1,12 @@
+package com.esgi.infrastructure.dto.mappers
+
+import com.esgi.domainmodels.Game
+import com.esgi.infrastructure.persistence.entities.GameEntity
+import org.mapstruct.Mapper
+import org.mapstruct.ReportingPolicy
+
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+interface GameMapper {
+    fun toDomain(user: GameEntity): Game
+    fun toEntity(user: Game): GameEntity
+}

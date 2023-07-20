@@ -296,4 +296,39 @@
     <changeSet author="loloi (generated)" id="1689795564191-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-5">
+        <createTable tableName="T_GAMES">
+            <column defaultValueComputed="gen_random_uuid()" name="GAME_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="T_GAMESPK"/>
+            </column>
+            <column defaultValueBoolean="false" name="GAME_PICTURE" type="BOOLEAN"/>
+            <column name="GAME_TITLE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="GAME_OWNER_ID" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-6">
+        <addColumn tableName="T_ROOM">
+            <column defaultValueComputed="gen_random_uuid()" name="ROOM_GAME_ID" type="UUID"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-7">
+        <addForeignKeyConstraint baseColumnNames="GAME_OWNER_ID" baseTableName="T_GAMES" constraintName="FKouf2xixoy55jhv0a62mpw3x6t" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-8">
+        <addForeignKeyConstraint baseColumnNames="ROOM_GAME_ID" baseTableName="T_ROOM" constraintName="FKsyt50lf1oggk0xpgww4w2asmm" deferrable="false" initiallyDeferred="false" referencedColumnNames="GAME_ID" referencedTableName="T_GAMES" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1689851884061-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

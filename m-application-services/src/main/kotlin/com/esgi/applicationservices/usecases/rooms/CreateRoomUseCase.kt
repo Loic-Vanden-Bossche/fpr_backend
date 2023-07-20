@@ -7,9 +7,9 @@ import com.esgi.domainmodels.User
 class CreateRoomUseCase(
     private val roomsPersistence: RoomsPersistence
 ) {
-    operator fun invoke(owner: User): Room {
+    operator fun invoke(gameId: String, owner: User): Room {
         println("Creating room...")
 
-        return roomsPersistence.create(owner)
+        return roomsPersistence.create(gameId, owner)
     }
 }

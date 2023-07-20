@@ -32,6 +32,7 @@ class GamesGateway(
         println("Creating room with game $gameId")
 
         val room = createRoomUseCase(
+            gameId,
             principal.principal as User,
         )
         val roomId = room.id.toString()
