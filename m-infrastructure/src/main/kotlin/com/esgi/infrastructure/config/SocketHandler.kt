@@ -2,18 +2,12 @@ package com.esgi.infrastructure.config
 
 import com.esgi.infrastructure.dto.SignalMessage
 import com.esgi.infrastructure.dto.SignalType
-import com.esgi.infrastructure.dto.input.CallGroupMessageDto
-import com.esgi.infrastructure.dto.input.IdentityMessageDto
-import com.esgi.infrastructure.dto.input.MakeAnswerMessageDto
+import com.esgi.infrastructure.dto.input.*
 import com.esgi.infrastructure.services.WebRTCSignalService
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import jakarta.inject.Inject
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.*
-import java.util.concurrent.CopyOnWriteArrayList
 
 @Component
 class SocketHandler(
@@ -60,6 +54,19 @@ class SocketHandler(
                     mapper.writeValueAsString(
                         SignalMessage("new-answer", resp.first)
                     )
+                ))
+            }
+            "connect" -> {
+                val data = mapper.readValue<SignalMessage<ConnectGroupMessageDto>>(message.payload as String)
+                val resp = webRTCSignalService.handleConnect(session, data.data)
+                session.sendMessage(TextMessage(
+                    mapper.writeValueAsString(SignalMessage("connected", resp))
+                ))
+            }
+            "presence" -> {
+                val resp = webRTCSignalService.handlePresent(session)
+                session.sendMessage(TextMessage(
+                    mapper.writeValueAsString(SignalMessage("present", resp))
                 ))
             }
             else -> null
