@@ -35,7 +35,7 @@ class WebRTCSignalService(
             val group = findingGroupUseCase.execute(callGroupMessageDto.group, userGroup.first)
             val to = group.members.find { it.user.id == callGroupMessageDto.to } ?: return null
             val sessionTo = sessions.filter { it.value.first.id == to.user.id }.keys.first()
-            return NewUserMessageResponseDto(to.user.id, callGroupMessageDto.offer) to sessionTo
+            return NewUserMessageResponseDto(userGroup.first.id, callGroupMessageDto.offer) to sessionTo
         }catch (_: NotFoundException){
             return null
         }
@@ -47,7 +47,7 @@ class WebRTCSignalService(
             val group = findingGroupUseCase.execute(makeAnswerMessageDto.group, userGroup.first)
             val to = group.members.find { it.user.id == makeAnswerMessageDto.to } ?: return null
             val sessionTo = sessions.filter { it.value.first.id == to.user.id }.keys.first()
-            return NewAnswerMessageResponseDto(makeAnswerMessageDto.answer, to.user.id) to sessionTo
+            return NewAnswerMessageResponseDto(makeAnswerMessageDto.answer, userGroup.first.id) to sessionTo
         }catch (_: NotFoundException){
             return null
         }
