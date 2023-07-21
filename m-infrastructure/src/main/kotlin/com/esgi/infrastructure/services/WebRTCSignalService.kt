@@ -3,6 +3,7 @@ package com.esgi.infrastructure.services
 import com.esgi.applicationservices.usecases.groups.FindingGroupUseCase
 import com.esgi.domainmodels.Group
 import com.esgi.domainmodels.User
+import com.esgi.infrastructure.dto.input.AddCandidateMessageDto
 import com.esgi.infrastructure.dto.input.CallGroupMessageDto
 import com.esgi.infrastructure.dto.input.ConnectGroupMessageDto
 import com.esgi.infrastructure.dto.input.MakeAnswerMessageDto
@@ -69,6 +70,13 @@ class WebRTCSignalService(
         userGroup.second ?: return null
         val users = sessions.filter { it.value.second?.id == userGroup.second?.id && it.value.first.id != userGroup.first.id }.map { it.value.first.id }
         return PresentMessageResponseDto(users)
+    }
+
+    fun handleCandidate(session: WebSocketSession, addCandidateMessageDto: AddCandidateMessageDto): Pair<ICECandidateMessageResponseDto, WebSocketSession>? {
+        val userGroup = sessions[session] ?: return null
+        userGroup.second ?: return null
+        val sessionTo = sessions.filter { it.value.first.id == addCandidateMessageDto.to }.keys.first()
+        return ICECandidateMessageResponseDto(userGroup.first.id, addCandidateMessageDto.candidate) to sessionTo
     }
 
     fun handleDisconnect(session: WebSocketSession) {
