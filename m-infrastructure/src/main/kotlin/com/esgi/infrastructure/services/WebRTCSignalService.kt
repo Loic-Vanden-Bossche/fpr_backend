@@ -3,6 +3,7 @@ package com.esgi.infrastructure.services
 import com.esgi.applicationservices.usecases.groups.FindingGroupUseCase
 import com.esgi.domainmodels.Group
 import com.esgi.domainmodels.User
+import com.esgi.infrastructure.dto.input.AddCandidateMessageDto
 import com.esgi.infrastructure.dto.input.CallGroupMessageDto
 import com.esgi.infrastructure.dto.input.ConnectGroupMessageDto
 import com.esgi.infrastructure.dto.input.MakeAnswerMessageDto
@@ -35,7 +36,7 @@ class WebRTCSignalService(
             val group = findingGroupUseCase.execute(callGroupMessageDto.group, userGroup.first)
             val to = group.members.find { it.user.id == callGroupMessageDto.to } ?: return null
             val sessionTo = sessions.filter { it.value.first.id == to.user.id }.keys.first()
-            return NewUserMessageResponseDto(to.user.id, callGroupMessageDto.offer) to sessionTo
+            return NewUserMessageResponseDto(userGroup.first.id, callGroupMessageDto.offer) to sessionTo
         }catch (_: NotFoundException){
             return null
         }
@@ -47,7 +48,7 @@ class WebRTCSignalService(
             val group = findingGroupUseCase.execute(makeAnswerMessageDto.group, userGroup.first)
             val to = group.members.find { it.user.id == makeAnswerMessageDto.to } ?: return null
             val sessionTo = sessions.filter { it.value.first.id == to.user.id }.keys.first()
-            return NewAnswerMessageResponseDto(makeAnswerMessageDto.answer, to.user.id) to sessionTo
+            return NewAnswerMessageResponseDto(makeAnswerMessageDto.answer, userGroup.first.id) to sessionTo
         }catch (_: NotFoundException){
             return null
         }
@@ -69,6 +70,13 @@ class WebRTCSignalService(
         userGroup.second ?: return null
         val users = sessions.filter { it.value.second?.id == userGroup.second?.id && it.value.first.id != userGroup.first.id }.map { it.value.first.id }
         return PresentMessageResponseDto(users)
+    }
+
+    fun handleCandidate(session: WebSocketSession, addCandidateMessageDto: AddCandidateMessageDto): Pair<ICECandidateMessageResponseDto, WebSocketSession>? {
+        val userGroup = sessions[session] ?: return null
+        userGroup.second ?: return null
+        val sessionTo = sessions.filter { it.value.first.id == addCandidateMessageDto.to }.keys.first()
+        return ICECandidateMessageResponseDto(userGroup.first.id, addCandidateMessageDto.candidate) to sessionTo
     }
 
     fun handleDisconnect(session: WebSocketSession) {

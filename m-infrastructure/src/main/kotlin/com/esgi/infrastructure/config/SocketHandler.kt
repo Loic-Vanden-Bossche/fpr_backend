@@ -69,6 +69,14 @@ class SocketHandler(
                     mapper.writeValueAsString(SignalMessage("present", resp))
                 ))
             }
+            "candidate" -> {
+                val data = mapper.readValue<SignalMessage<AddCandidateMessageDto>>(message.payload as String)
+                webRTCSignalService.handleCandidate(session, data.data)?.let { resp ->
+                    resp.second.sendMessage(TextMessage(
+                        mapper.writeValueAsString(SignalMessage("candidate", resp.first))
+                    ))
+                }
+            }
             else -> null
         }
     }
