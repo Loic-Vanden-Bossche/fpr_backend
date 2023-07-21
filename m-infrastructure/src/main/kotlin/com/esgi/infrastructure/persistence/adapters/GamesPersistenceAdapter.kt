@@ -50,6 +50,7 @@ class GamesPersistenceAdapter(
                 isPublic = false,
                 lastBuildDate = null,
                 rooms = emptyList(),
+                picture = false
             )
         )
 

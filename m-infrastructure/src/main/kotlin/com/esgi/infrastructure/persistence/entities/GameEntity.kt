@@ -21,7 +21,7 @@ data class GameEntity(
     val owner: UserEntity,
 
     @Column(name = "GAME_PICTURE", columnDefinition = "BOOLEAN default false")
-    var picture: Boolean = false,
+    var picture: Boolean,
 
     @Column(name = "GAME_NB_MIN_PLAYERS", nullable = false)
     val nbMinPlayers: Int,
@@ -30,10 +30,10 @@ data class GameEntity(
     val nbMaxPlayers: Int,
 
     @Column(name = "GAME_IS_DETERMINISTIC", nullable = false, columnDefinition = "BOOLEAN default true")
-    val isDeterministic: Boolean = true,
+    val isDeterministic: Boolean,
 
     @Column(name = "GAME_IS_PUBLIC", nullable = false, columnDefinition = "BOOLEAN default false")
-    var isPublic: Boolean = false,
+    var isPublic: Boolean,
 
     @Column(name = "GAME_LAST_BUILD_DATE", nullable = true)
     var lastBuildDate: Date?,

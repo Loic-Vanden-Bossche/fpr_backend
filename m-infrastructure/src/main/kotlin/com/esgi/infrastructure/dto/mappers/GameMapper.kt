@@ -8,7 +8,7 @@ import org.mapstruct.ReportingPolicy
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface GameMapper {
-    fun toDomain(user: GameEntity): Game
-    fun toEntity(user: Game): GameEntity
-    fun toDto(user: Game): GameResponseDto
+    fun toDomain(game: GameEntity): Game
+    fun toEntity(game: Game): GameEntity
+    fun toDto(game: Game): GameResponseDto
 }

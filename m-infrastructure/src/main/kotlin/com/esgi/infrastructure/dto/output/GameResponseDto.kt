@@ -7,7 +7,7 @@ class GameResponseDto(
     val picture: Boolean,
     val nbMinPlayers: Int,
     val nbMaxPlayers: Int,
-    val isDeterministic: Boolean,
-    val isPublic: Boolean,
+    var isDeterministic: Boolean,
+    var isPublic: Boolean,
     val lastBuildDate: String?,
 )
