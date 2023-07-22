@@ -72,4 +72,9 @@ class FriendsPersistenceAdapter(
         friendEntity.group = groupEntity
         friendsRepository.save(friendEntity)
     }
+
+    override fun alreadyInRelation(user: User, friend: User): Boolean {
+        val friendsEntity = friendsRepository.findByUserPair(user.id, friend.id)
+        return friendsEntity !== null
+    }
 }

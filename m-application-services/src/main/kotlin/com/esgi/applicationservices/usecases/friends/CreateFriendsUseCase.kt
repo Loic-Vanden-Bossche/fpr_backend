@@ -17,6 +17,9 @@ class CreateFriendsUseCase(
         val friend = userPersistence.findById(friendId) ?: run {
             throw NotFoundException("User not found")
         }
+        if(persistence.alreadyInRelation(user, friend)){
+            return false
+        }
         return persistence.createFriend(friend, user)
     }
 }

@@ -17,4 +17,6 @@ interface FriendsPersistence {
     fun deleteFriend(user: User, friend: User): Boolean
 
     fun addGroup(user: User, friend: User, group: Group)
+
+    fun alreadyInRelation(user: User, friend: User): Boolean
 }
