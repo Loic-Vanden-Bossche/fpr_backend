@@ -12,4 +12,7 @@ interface MessagesRepository: JpaRepository<MessageEntity, UUID> {
 
     @Query
     fun findAllByGroup(group: GroupEntity, pageable: Pageable): Page<MessageEntity>
+
+    @Query
+    fun deleteAllByGroup(group: GroupEntity)
 }

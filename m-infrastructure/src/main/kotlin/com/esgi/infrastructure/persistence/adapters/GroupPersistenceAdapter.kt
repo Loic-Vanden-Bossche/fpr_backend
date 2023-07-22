@@ -7,10 +7,8 @@ import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.mappers.GroupMapper
 import com.esgi.infrastructure.persistence.entities.GroupEntity
 import com.esgi.infrastructure.persistence.entities.UserGroupEntity
-import com.esgi.infrastructure.persistence.repositories.FriendsRepository
-import com.esgi.infrastructure.persistence.repositories.GroupsRepository
-import com.esgi.infrastructure.persistence.repositories.UsersGroupsRepository
-import com.esgi.infrastructure.persistence.repositories.UsersRepository
+import com.esgi.infrastructure.persistence.repositories.*
+import jakarta.transaction.Transactional
 import org.mapstruct.factory.Mappers
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -22,7 +20,8 @@ class GroupPersistenceAdapter(
     private val groupsRepository: GroupsRepository,
     private val usersRepository: UsersRepository,
     private val usersGroupsRepository: UsersGroupsRepository,
-    private val friendsRepository: FriendsRepository
+    private val friendsRepository: FriendsRepository,
+    private val messagesRepository: MessagesRepository
 ): GroupsPersistence {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
 
@@ -100,12 +99,14 @@ class GroupPersistenceAdapter(
         usersGroupsRepository.save(ug)
     }
 
+    @Transactional
     override fun deleteFriendGroup(user: User, friend: User) {
         val friendEntity = friendsRepository.getDeniedFromFor(user.id, friend.id)!!
         val group = friendEntity.group!!
         friendEntity.group = null
         friendsRepository.save(friendEntity)
         usersGroupsRepository.deleteAllByGroup(group)
+        messagesRepository.deleteAllByGroup(group)
         groupsRepository.deleteById(group.id!!)
     }
 }

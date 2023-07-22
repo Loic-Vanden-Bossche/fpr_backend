@@ -60,9 +60,9 @@ class FriendsPersistenceAdapter(
     }
 
     override fun deleteFriend(user: User, friend: User): Boolean {
-        val friendPending = friendsRepository.getFromFor(user.id, friend.id) ?: return false
-        friendPending.status = FriendRequestStatus.REJECTED
-        friendsRepository.save(friendPending)
+        val friendEntity = friendsRepository.getFromFor(user.id, friend.id) ?: return false
+        friendEntity.status = FriendRequestStatus.REJECTED
+        friendsRepository.save(friendEntity)
         return true
     }
 
