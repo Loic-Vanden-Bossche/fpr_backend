@@ -8,5 +8,5 @@ data class UserResponseDto(
     val coins: Int,
     val updatedAt: String,
     val createdAt: String,
-    val picture: String? = null
+    val picture: Boolean
 )
