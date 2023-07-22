@@ -74,7 +74,7 @@ class SecurityConfig(
             cors.configurationSource {
                 val configuration = CorsConfiguration()
                 configuration.allowedOrigins = listOf("http://localhost:8080", "https://jxy.me", "http://localhost:5173", "https://flash-player-revival.net", "http://192.168.1.67:5173")
-                configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+                configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 configuration.allowedHeaders = listOf("authorization", "content-type")
                 configuration.allowCredentials = true
                 configuration
