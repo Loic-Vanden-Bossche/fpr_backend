@@ -1,6 +1,7 @@
 package com.esgi.infrastructure.services
 
 import org.springframework.stereotype.Service
+import java.io.EOFException
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -30,7 +31,9 @@ class TcpService {
         try {
             val readBuffer = ByteBuffer.allocate(2048)
 
-            client.read(readBuffer).get()
+            if(client.read(readBuffer).get() == -1){
+                throw EOFException()
+            }
 
             readBuffer.flip()
 

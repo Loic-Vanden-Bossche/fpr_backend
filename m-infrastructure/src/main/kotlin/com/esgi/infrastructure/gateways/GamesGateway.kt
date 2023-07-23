@@ -3,12 +3,19 @@ package com.esgi.infrastructure.gateways
 import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.*
 import com.esgi.domainmodels.User
+import com.esgi.domainmodels.exceptions.BadRequestException
+import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.input.CreateRoomDto
 import com.esgi.infrastructure.dto.input.GameOutput
+import com.esgi.infrastructure.dto.output.games.CreateRoomResponseDto
+import com.esgi.infrastructure.dto.output.games.JoinRoomResponseDto
+import com.esgi.infrastructure.dto.output.games.StartedGameResponseDto
 import com.esgi.infrastructure.services.TcpService
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -19,6 +26,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
 import java.io.IOException
 import java.nio.channels.AsynchronousSocketChannel
+import kotlin.coroutines.coroutineContext
 
 @Controller
 @CrossOrigin(origins = ["https://jxy.me"], allowCredentials = "true")
@@ -37,7 +45,7 @@ class GamesGateway(
 
     @MessageMapping("/createRoom")
     @SendTo("/rooms/created")
-    fun createRoom(principal: UsernamePasswordAuthenticationToken, roomData: CreateRoomDto): String? {
+    fun createRoom(principal: UsernamePasswordAuthenticationToken, roomData: CreateRoomDto): CreateRoomResponseDto {
         println("Creating room with game ${roomData.gameId}")
 
         val room = try {
@@ -48,22 +56,22 @@ class GamesGateway(
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            return "Error creating room"
+            return CreateRoomResponseDto(false, reason = "Error creating room")
         }
 
-        val roomId = room.id.toString()
+        val roomId = room.id
 
         val session = try {
             Session(
-                roomId,
+                roomId.toString(),
                 gameInstanciator.instanciateGame(roomData.gameId)
             )
         } catch (e: Exception) {
             e.printStackTrace()
 
-            deleteRoomUseCase(roomId)
+            deleteRoomUseCase(roomId.toString())
 
-            return "Error creating session"
+            return CreateRoomResponseDto(false, reason = "Error creating session")
         }
 
         GlobalScope.launch {
@@ -83,9 +91,9 @@ class GamesGateway(
             }
         }
 
-        sessions[roomId] = session
+        sessions[roomId.toString()] = session
 
-        return "Created room $roomId"
+        return CreateRoomResponseDto(true, roomId)
     }
 
     @MessageMapping("/joinRoom/{roomId}")
@@ -93,27 +101,32 @@ class GamesGateway(
     fun joinRoom(
         principal: UsernamePasswordAuthenticationToken,
         @DestinationVariable roomId: String
-    ): String? {
+    ): JoinRoomResponseDto {
         println("Joining room $roomId")
 
-        joinRoomUseCase(roomId, (principal.principal as User).id.toString())
-
-        return "Joined room $roomId"
+        return try {
+            joinRoomUseCase(roomId, (principal.principal as User).id.toString())
+            JoinRoomResponseDto(true)
+        } catch (e: BadRequestException){
+            JoinRoomResponseDto(false, e.message)
+        } catch (e: NotFoundException) {
+            JoinRoomResponseDto(false, e.message)
+        }
     }
 
     @MessageMapping("/startGame/{roomId}")
     @SendTo("/rooms/{roomId}")
-    fun startGame(@DestinationVariable roomId: String) {
-        val session = sessions[roomId]
+    fun startGame(@DestinationVariable roomId: String): StartedGameResponseDto {
+        val session = sessions[roomId] ?: return StartedGameResponseDto(false, "Session not found")
 
-        if (session != null) {
-            println("Starting game in room $roomId")
-
+        return try {
             val room = startSessionUseCase(roomId)
-
-            session.sendInstruction("{\"init\": { \"players\": ${room.players.size} }}\n")
-        } else {
-            println("Room game client $roomId not found")
+            session.sendInstruction(Instruction(Init(room.players.size)))
+            StartedGameResponseDto(true)
+        } catch (e: IllegalStateException) {
+            StartedGameResponseDto(false, e.message)
+        } catch (e: NotFoundException) {
+            StartedGameResponseDto(false, e.message)
         }
     }
 
@@ -121,12 +134,12 @@ class GamesGateway(
     fun play(
         principal: UsernamePasswordAuthenticationToken,
         @DestinationVariable roomId: String,
-        instruction: String
+        instruction: Instruction
     ) {
         val session = sessions[roomId]
 
         if (session != null) {
-            playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), instruction)
+            playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), jsonMapper.writeValueAsString(instruction))
 
             println("Sending instruction $instruction to room $roomId")
             session.sendInstruction(instruction)
@@ -136,8 +149,8 @@ class GamesGateway(
     }
 
     inner class Session(private val roomId: String, private val client: AsynchronousSocketChannel) {
-        fun sendInstruction(message: String) {
-            tcpService.sendTcpMessage(client, "$message\n")
+        fun sendInstruction(message: Instruction) {
+            tcpService.sendTcpMessage(client, "${jsonMapper.writeValueAsString(message)}\n\n")
         }
 
         fun receiveResponse(): String? {
@@ -148,4 +161,12 @@ class GamesGateway(
             simpMessagingTemplate.convertAndSend("/rooms/$roomId", gameOutput)
         }
     }
+
+    data class Instruction(
+        val init: Init
+    )
+
+    data class Init (
+        val players: Int
+    )
 }
