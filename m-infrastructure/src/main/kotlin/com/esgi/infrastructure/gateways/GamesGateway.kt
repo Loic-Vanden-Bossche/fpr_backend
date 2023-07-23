@@ -4,7 +4,10 @@ import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.*
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateRoomDto
+import com.esgi.infrastructure.dto.input.GameOutput
 import com.esgi.infrastructure.services.TcpService
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.springframework.messaging.handler.annotation.DestinationVariable
@@ -30,6 +33,7 @@ class GamesGateway(
     val deleteRoomUseCase: DeleteRoomUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
+    val jsonMapper = jacksonObjectMapper()
 
     @MessageMapping("/createRoom")
     @SendTo("/rooms/created")
@@ -68,7 +72,9 @@ class GamesGateway(
                     val jsonMessage: String? = session.receiveResponse()
 
                     if (jsonMessage != null) {
-                        session.broadcast(jsonMessage)
+                        val gameOutput = jsonMapper.readValue<GameOutput>(jsonMessage)
+
+                        session.broadcast(gameOutput)
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -138,8 +144,8 @@ class GamesGateway(
             return tcpService.receiveTcpMessage(client)
         }
 
-        fun broadcast(message: String) {
-            simpMessagingTemplate.convertAndSend("/rooms/$roomId", message)
+        fun broadcast(gameOutput: GameOutput) {
+            simpMessagingTemplate.convertAndSend("/rooms/$roomId", gameOutput)
         }
     }
 }

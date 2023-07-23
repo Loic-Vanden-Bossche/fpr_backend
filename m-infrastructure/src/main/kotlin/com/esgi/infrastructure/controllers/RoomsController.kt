@@ -26,8 +26,6 @@ class RoomsController(
             (principal.principal as User).id
         )
 
-        println(rooms[0].players)
-
         return rooms.map { mapper.toDto(it) }
     }
 
