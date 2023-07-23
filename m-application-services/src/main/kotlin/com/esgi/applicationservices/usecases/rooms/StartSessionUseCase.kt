@@ -21,6 +21,8 @@ class StartSessionUseCase(
             throw IllegalStateException("Not enough players in room")
         }
 
+        roomsPersistence.calculatePlayerIndexes(roomId)
+
         return roomsPersistence.updateStatus(roomId, RoomStatus.STARTED)
     }
 }
