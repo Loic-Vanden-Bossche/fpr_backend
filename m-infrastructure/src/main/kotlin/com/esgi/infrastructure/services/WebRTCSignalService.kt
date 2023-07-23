@@ -93,7 +93,9 @@ class WebRTCSignalService(
         val userGroup = sessions[session] ?: return null
         userGroup.second ?: return null
         val sessionTo = sessions.filter { it.value.first.id == addCandidateMessageDto.to }.keys.first()
-        return ICECandidateMessageResponseDto(userGroup.first.id, addCandidateMessageDto.candidate) to sessionTo
+        return addCandidateMessageDto.candidate?.let {
+            ICECandidateMessageResponseDto(userGroup.first.id, it) to sessionTo
+        }
     }
 
     fun handleDisconnect(session: WebSocketSession) {
