@@ -17,7 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
-import java.io.*
+import java.io.IOException
 import java.nio.channels.AsynchronousSocketChannel
 
 @Controller
@@ -100,11 +100,15 @@ class GamesGateway(
     }
 
     @MessageMapping("/play/{roomId}")
-    fun play(@DestinationVariable roomId: String, instruction: String) {
+    fun play(
+        principal: UsernamePasswordAuthenticationToken,
+        @DestinationVariable roomId: String,
+        instruction: String
+    ) {
         val session = sessions[roomId]
 
         if (session != null) {
-            playSessionActionUseCase(roomId, instruction)
+            playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), instruction)
 
             println("Sending instruction $instruction to room $roomId")
             session.sendInstruction(instruction)
@@ -113,7 +117,7 @@ class GamesGateway(
         }
     }
 
-    inner class Session(private val roomId: String,private val client: AsynchronousSocketChannel) {
+    inner class Session(private val roomId: String, private val client: AsynchronousSocketChannel) {
         fun sendInstruction(message: String) {
             tcpService.sendTcpMessage(client, "$message\n")
         }

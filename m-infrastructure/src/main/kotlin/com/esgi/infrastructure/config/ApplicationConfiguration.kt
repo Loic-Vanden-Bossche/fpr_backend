@@ -262,4 +262,8 @@ class ApplicationConfiguration(
     @Bean
     fun playSessionActionUseCase(): PlaySessionActionUseCase =
         PlaySessionActionUseCase(roomsPersistence)
+
+    @Bean
+    fun deleteGameUseCase(): DeleteGameUseCase =
+        DeleteGameUseCase(gamesPersistence)
 }

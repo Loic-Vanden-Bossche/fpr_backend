@@ -430,4 +430,52 @@
     <changeSet author="loloi (generated)" id="1689873672169-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-5">
+        <createTable tableName="TJ_ROOMS_SESSION_ACTIONS">
+            <column defaultValueComputed="gen_random_uuid()" name="ROOM_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="ACTION_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-6">
+        <createTable tableName="T_SESSION_ACTIONS">
+            <column defaultValueComputed="gen_random_uuid()" name="ACTION_ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="T_SESSION_ACTIONSPK"/>
+            </column>
+            <column name="CREATED_AT" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UPDATED_AT" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACTION_INSTRUCTION" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="gen_random_uuid()" name="ACTION_PLAYER" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-7">
+        <addForeignKeyConstraint baseColumnNames="ACTION_PLAYER" baseTableName="T_SESSION_ACTIONS" constraintName="FK2f9lkbkme2btinok1ce7oyi7" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-8">
+        <addForeignKeyConstraint baseColumnNames="ACTION_ID" baseTableName="TJ_ROOMS_SESSION_ACTIONS" constraintName="FK3geou10w9sse9ufy4dm8953q3" deferrable="false" initiallyDeferred="false" referencedColumnNames="ACTION_ID" referencedTableName="T_SESSION_ACTIONS" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-9">
+        <addForeignKeyConstraint baseColumnNames="ROOM_ID" baseTableName="TJ_ROOMS_SESSION_ACTIONS" constraintName="FKtr1o8dyx0oo8p544clsxbtqdf" deferrable="false" initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM" validate="true"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690103296279-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

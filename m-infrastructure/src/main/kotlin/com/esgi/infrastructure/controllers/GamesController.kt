@@ -23,7 +23,8 @@ class GamesController(
     private val createGameUseCase: CreateGameUseCase,
     private val findingAllGamesUseCase: FindingAllGamesUseCase,
     private val addGamePictureUseCase: AddGamePictureUseCase,
-    private val setGameVisibilityUseCase: SetGameVisibilityUseCase
+    private val setGameVisibilityUseCase: SetGameVisibilityUseCase,
+    private val deleteGameUseCase: DeleteGameUseCase
 ) {
     private val mapper = Mappers.getMapper(GameMapper::class.java)
 
@@ -90,5 +91,13 @@ class GamesController(
                 principal.principal as User
             )
         )
+    }
+
+    @DeleteMapping("{id}")
+    fun deleteGame(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable @NotNull id: String
+    ) {
+        deleteGameUseCase((principal.principal as User).id, id)
     }
 }

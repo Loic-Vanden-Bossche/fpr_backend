@@ -18,7 +18,7 @@ class BuildGameUseCase(
     operator fun invoke(ownerId: UUID, gameId: String, fileStream: InputStream, contentType: String?): Game {
         val game = gamesPersistence.findById(gameId) ?: throw NotFoundException("Game not found")
 
-        if (game.owner.id == ownerId) {
+        if (game.owner.id != ownerId) {
             throw ForbiddenException("You are not the owner of this game")
         }
 

@@ -10,4 +10,5 @@ interface RoomsPersistence {
     fun addPlayer(roomId: String, userId: String)
     fun removePlayer(roomId: String, userId: String)
     fun updateStatus(roomId: String, status: RoomStatus): Room
+    fun recordAction(roomId: String, userId: String, instruction: String)
 }

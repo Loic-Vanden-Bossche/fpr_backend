@@ -80,4 +80,10 @@ class GamesPersistenceAdapter(
 
         return mapper.toDomain(gameRepository.save(gameEntity))
     }
+
+    override fun delete(gameId: String) {
+        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+
+        gameRepository.delete(gameEntity)
+    }
 }

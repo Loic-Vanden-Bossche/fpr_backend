@@ -38,4 +38,12 @@ class RoomEntity(
         inverseJoinColumns = [JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")]
     )
     var players: List<UserEntity>,
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "TJ_ROOMS_SESSION_ACTIONS",
+        joinColumns = [JoinColumn(name = "ROOM_ID", referencedColumnName = "ROOM_ID")],
+        inverseJoinColumns = [JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID")]
+    )
+    var actions: List<SessionActionEntity>,
 ): AuditableDates()

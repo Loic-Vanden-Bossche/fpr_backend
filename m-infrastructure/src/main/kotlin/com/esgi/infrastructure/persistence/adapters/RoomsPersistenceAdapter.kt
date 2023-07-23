@@ -7,6 +7,7 @@ import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
 import com.esgi.infrastructure.persistence.entities.RoomEntity
+import com.esgi.infrastructure.persistence.entities.SessionActionEntity
 import com.esgi.infrastructure.persistence.repositories.GamesRepository
 import com.esgi.infrastructure.persistence.repositories.GroupsRepository
 import com.esgi.infrastructure.persistence.repositories.RoomsRepository
@@ -41,6 +42,7 @@ class RoomsPersistenceAdapter(
             players = listOf(userEntity),
             game = gameEntity,
             group = groupEntity,
+            actions = listOf()
         )
 
         return mapper.toDomain(roomsRepository.save(roomEntity))
@@ -70,5 +72,19 @@ class RoomsPersistenceAdapter(
         roomEntity.status = status
 
         return mapper.toDomain(roomsRepository.save(roomEntity))
+    }
+
+    override fun recordAction(roomId: String, userId: String, instruction: String) {
+        val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
+        val userEntity = usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
+
+        val sessionAction = SessionActionEntity(
+            instruction = instruction,
+            player = userEntity
+        )
+
+        roomEntity.actions += sessionAction
+
+        roomsRepository.save(roomEntity)
     }
 }

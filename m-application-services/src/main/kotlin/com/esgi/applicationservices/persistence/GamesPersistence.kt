@@ -21,4 +21,6 @@ interface GamesPersistence {
     fun setGamePicture(gameId: String): Game
 
     fun setGameVisibility(gameId: String, visible: Boolean): Game
+
+    fun delete(gameId: String)
 }
