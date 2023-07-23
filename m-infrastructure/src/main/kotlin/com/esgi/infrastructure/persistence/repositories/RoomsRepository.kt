@@ -12,7 +12,6 @@ interface RoomWithInvitationStatus {
     fun getStatus(): String
 }
 
-data class RoomWithStatus(val room: RoomEntity, val status: String)
 @Repository
 interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     override fun findById(id: UUID): Optional<RoomEntity>

@@ -22,6 +22,7 @@ class GamesController(
     private val buildGameUseCase: BuildGameUseCase,
     private val createGameUseCase: CreateGameUseCase,
     private val findingAllGamesUseCase: FindingAllGamesUseCase,
+    private val findingMyGamesUseCase: FindingMyGamesUseCase,
     private val addGamePictureUseCase: AddGamePictureUseCase,
     private val setGameVisibilityUseCase: SetGameVisibilityUseCase,
     private val deleteGameUseCase: DeleteGameUseCase
@@ -31,6 +32,13 @@ class GamesController(
     @GetMapping
     fun findAll(): List<GameResponseDto> {
         return findingAllGamesUseCase().map { mapper.toDto(it) }
+    }
+
+    @GetMapping("self")
+    fun findSelf(
+        principal: UsernamePasswordAuthenticationToken
+    ): List<GameResponseDto> {
+        return findingMyGamesUseCase((principal.principal as User).id).map { mapper.toDto(it) }
     }
 
     @PostMapping("{id}/build", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])

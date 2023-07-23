@@ -6,6 +6,8 @@ import com.esgi.domainmodels.User
 interface GamesPersistence {
     fun findAll(): List<Game>
 
+    fun findAllByUserId(userId: String): List<Game>
+
     fun findById(gameId: String): Game?
 
     fun createGame(

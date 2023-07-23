@@ -90,4 +90,12 @@ class GamesPersistenceAdapter(
 
         gameRepository.delete(gameEntity)
     }
+
+    override fun findAllByUserId(userId: String): List<Game> {
+        val userEntity = usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
+
+        return gameRepository.findAllByOwner(userEntity).map { gameEntity ->
+            mapper.toDomain(gameEntity)
+        }
+    }
 }
