@@ -18,15 +18,15 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
 
     @Query("""
         SELECT DISTINCT r as roomEntity,
-               CASE WHEN (p.id = :userId) THEN 'JOINED'
-                    WHEN (gu.user.id = :userId) THEN 'PENDING'
+               CASE WHEN (p.id = :userId AND gu.user.id = :userId) THEN 'JOINED'
+                    WHEN (gu.user.id = :userId AND p.id IS NULL) THEN 'PENDING'
                     ELSE 'UNKNOWN'
                END as status
-        FROM RoomEntity r 
+        FROM RoomEntity r
+        INNER JOIN r.group g 
+        INNER JOIN g.users gu 
         LEFT JOIN r.players p 
-        LEFT JOIN r.group g 
-        LEFT JOIN g.users gu 
-        WHERE p.id=:userId OR gu.user.id=:userId
+        WHERE (p.id=:userId OR gu.user.id=:userId)
     """)
     fun findAllByPlayersContains(@Param("userId") userId: UUID): List<RoomWithInvitationStatus>
 }
