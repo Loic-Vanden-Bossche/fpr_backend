@@ -17,7 +17,7 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     override fun findById(id: UUID): Optional<RoomEntity>
 
     @Query("""
-        SELECT r as roomEntity,
+        SELECT DISTINCT r as roomEntity,
                CASE WHEN (p.id = :userId) THEN 'JOINED'
                     WHEN (gu.user.id = :userId) THEN 'PENDING'
                     ELSE 'UNKNOWN'

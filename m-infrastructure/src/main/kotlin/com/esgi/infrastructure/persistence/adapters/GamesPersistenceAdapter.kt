@@ -20,7 +20,7 @@ class GamesPersistenceAdapter(
     private val mapper = Mappers.getMapper(GameMapper::class.java)
 
     override fun findAll(): List<Game> {
-        return gameRepository.findAll().map { gameEntity ->
+        return gameRepository.findAllByLastBuildDateIsNotNull().map { gameEntity ->
             mapper.toDomain(gameEntity)
         }
     }
