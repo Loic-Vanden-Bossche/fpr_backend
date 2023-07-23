@@ -103,7 +103,7 @@ class RoomsPersistenceAdapter(
     }
 
     override fun getUserRooms(userId: UUID): List<Room> {
-        return roomsRepository.findAllByPlayersContains(userId).filter { it.getStatus() != "UNKNOWN" }.map {
+        return roomsRepository.findAllByPlayersContains(userId).map {
             mapper.toDomain(it.getRoomEntity(), RoomInvitationStatus.values().find { status -> status.name == it.getStatus() })
         }
     }
