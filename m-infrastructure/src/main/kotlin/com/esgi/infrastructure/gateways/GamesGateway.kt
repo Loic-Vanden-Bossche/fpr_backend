@@ -2,6 +2,9 @@ package com.esgi.infrastructure.gateways
 
 import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
+import com.esgi.applicationservices.usecases.rooms.FindOneRoomById
+import com.esgi.applicationservices.usecases.rooms.JoinRoomUseCase
+import com.esgi.domainmodels.RoomStatus
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateRoomDto
 import com.esgi.infrastructure.services.TcpService
@@ -24,6 +27,8 @@ class GamesGateway(
     val tcpService: TcpService,
     val simpMessagingTemplate: SimpMessagingTemplate,
     val createRoomUseCase: CreateRoomUseCase,
+    val joinRoomUseCase: JoinRoomUseCase,
+    val findOneRoomById: FindOneRoomById,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
 
@@ -66,8 +71,13 @@ class GamesGateway(
 
     @MessageMapping("/joinRoom/{roomId}")
     @SendTo("/rooms/{roomId}")
-    fun joinRoom(@DestinationVariable roomId: String): String? {
+    fun joinRoom(
+        principal: UsernamePasswordAuthenticationToken,
+        @DestinationVariable roomId: String
+    ): String? {
         println("Joining room $roomId")
+
+        joinRoomUseCase(roomId, (principal.principal as User).id.toString())
 
         return "Joined room $roomId"
     }
@@ -79,21 +89,41 @@ class GamesGateway(
 
         if (session != null) {
             println("Starting game in room $roomId")
-            session.sendInstruction("{\"init\": { \"players\": 2 }}\n")
+
+            val room = findOneRoomById(roomId)
+
+            if (room.status != RoomStatus.WAITING) {
+                println("Room $roomId is not waiting")
+                return
+            }
+
+            if (room.players.size < room.game.nbMinPlayers) {
+                println("Not enough players in room $roomId")
+                return
+            }
+
+            session.sendInstruction("{\"init\": { \"players\": ${room.players.size} }}\n")
         } else {
-            println("Room $roomId not found")
+            println("Room game client $roomId not found")
         }
     }
 
     @MessageMapping("/play/{roomId}")
     fun play(@DestinationVariable roomId: String, instruction: String) {
-        val room = sessions[roomId]
+        val session = sessions[roomId]
 
-        if (room != null) {
+        if (session != null) {
+            val room = findOneRoomById(roomId)
+
+            if (room.status != RoomStatus.STARTED) {
+                println("Room $roomId is not started")
+                return
+            }
+
             println("Sending instruction $instruction to room $roomId")
-            room.sendInstruction(instruction)
+            session.sendInstruction(instruction)
         } else {
-            println("Room $roomId not found")
+            println("Room game client $roomId not found")
         }
     }
 

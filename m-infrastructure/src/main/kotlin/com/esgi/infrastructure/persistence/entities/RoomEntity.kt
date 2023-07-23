@@ -31,11 +31,11 @@ class RoomEntity(
     @JoinColumn(name = "ROOM_GAME_ID", referencedColumnName = "GAME_ID")
     val game: GameEntity,
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "TJ_ROOMS_USERS",
         joinColumns = [JoinColumn(name = "ROOM_ID", referencedColumnName = "ROOM_ID")],
         inverseJoinColumns = [JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")]
     )
-    val players: List<UserEntity>,
+    var players: List<UserEntity>,
 ): AuditableDates()

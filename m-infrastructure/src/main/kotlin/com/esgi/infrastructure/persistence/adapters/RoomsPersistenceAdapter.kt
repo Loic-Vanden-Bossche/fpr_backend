@@ -6,6 +6,7 @@ import com.esgi.domainmodels.RoomStatus
 import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
+import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.repositories.GamesRepository
 import com.esgi.infrastructure.persistence.repositories.GroupsRepository
@@ -23,6 +24,7 @@ class RoomsPersistenceAdapter(
     private val groupsRepository: GroupsRepository
 ): RoomsPersistence {
     private val mapper = Mappers.getMapper(RoomMapper::class.java)
+    private val userMapper = Mappers.getMapper(UserMapper::class.java)
 
     override fun findById(roomId: String): Room? {
         val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: return null
@@ -44,5 +46,23 @@ class RoomsPersistenceAdapter(
         )
 
         return mapper.toDomain(roomsRepository.save(roomEntity))
+    }
+
+    override fun addPlayer(roomId: String, userId: String) {
+        val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
+        val userEntity = usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
+
+        roomEntity.players += userEntity
+
+        roomsRepository.save(roomEntity)
+    }
+
+    override fun removePlayer(roomId: String, userId: String) {
+        val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
+        val userEntity = usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
+
+        roomEntity.players -= userEntity
+
+        roomsRepository.save(roomEntity)
     }
 }
