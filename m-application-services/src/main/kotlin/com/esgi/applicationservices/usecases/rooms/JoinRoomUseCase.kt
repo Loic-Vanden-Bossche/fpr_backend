@@ -11,10 +11,11 @@ class JoinRoomUseCase(
     operator fun invoke(roomId: String, userId: String) {
         val room = roomsPersistence.findById(roomId) ?: throw NotFoundException("Room not found")
 
-        if (room.players.size >= room.game.nbMaxPlayers) throw BadRequestException("Room is full")
+        if (room.players.any { it.user.id == UUID.fromString(userId) }) {
+            throw BadRequestException("User is already in the room")
+        }
 
-        room.players.find { it.user.id != UUID.fromString(userId) }
-            ?: throw BadRequestException("User is already in the room")
+        if (room.players.size >= room.game.nbMaxPlayers) throw BadRequestException("Room is full")
 
         roomsPersistence.addPlayer(roomId, userId)
     }

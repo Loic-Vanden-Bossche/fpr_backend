@@ -10,6 +10,5 @@ import org.mapstruct.ReportingPolicy
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 interface RoomMapper {
     fun toDomain(user: RoomEntity, invitationStatus: RoomInvitationStatus?): Room
-    fun toEntity(user: Room): RoomEntity
     fun toDto(user: Room): RoomResponseDto
 }

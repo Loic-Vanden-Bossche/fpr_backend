@@ -6,9 +6,11 @@ import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.input.CreateRoomDto
+import com.esgi.infrastructure.dto.input.GameErrorOutput
 import com.esgi.infrastructure.dto.input.GameOutput
 import com.esgi.infrastructure.dto.output.games.CreateRoomResponseDto
 import com.esgi.infrastructure.dto.output.games.JoinRoomResponseDto
+import com.esgi.infrastructure.dto.output.games.PlayGameResponseDto
 import com.esgi.infrastructure.dto.output.games.StartedGameResponseDto
 import com.esgi.infrastructure.services.TcpService
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -77,11 +79,22 @@ class GamesGateway(
                     val jsonMessage: String? = session.receiveResponse()
 
                     if (jsonMessage != null) {
-                        val gameOutput = jsonMapper.readValue<GameOutput>(jsonMessage)
-
-                        session.broadcast(gameOutput)
+                        try {
+                            session.broadcast(
+                                jsonMapper.readValue<GameOutput>(jsonMessage)
+                            )
+                        } catch (e: IOException) {
+                            try {
+                                session.broadcast(
+                                    jsonMapper.readValue<GameErrorOutput>(jsonMessage)
+                                )
+                            } catch (e: IOException) {
+                                println("Error parsing message")
+                                e.printStackTrace()
+                            }
+                        }
                     }
-                } catch (e: IOException) {
+                } catch (e: Exception) {
                     e.printStackTrace()
                     break
                 }
@@ -128,32 +141,41 @@ class GamesGateway(
     }
 
     @MessageMapping("/play/{roomId}")
+    @SendTo("/rooms/{roomId}")
     fun play(
         principal: UsernamePasswordAuthenticationToken,
         @DestinationVariable roomId: String,
         instruction: String
-    ) {
+    ): PlayGameResponseDto {
         val session = sessions[roomId]
 
         try {
             jsonMapper.readTree(instruction)
         }catch (_: Exception){
-            println("Not json")
+            PlayGameResponseDto(false, "Invalid JSON instruction")
         }
 
         if (session != null) {
-            playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), jsonMapper.writeValueAsString(instruction))
+            return try {
+                playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), jsonMapper.writeValueAsString(instruction))
 
-            println("Sending instruction $instruction to room $roomId")
-            session.sendInstruction(instruction)
-        } else {
-            println("Room game client $roomId not found")
+                println("Sending instruction $instruction to room $roomId")
+                session.sendInstruction(instruction)
+
+                PlayGameResponseDto(true)
+            } catch (e: BadRequestException) {
+                PlayGameResponseDto(false, e.message)
+            } catch (e: NotFoundException) {
+                PlayGameResponseDto(false, e.message)
+            }
         }
+
+        return PlayGameResponseDto(false, "Session not found")
     }
 
     inner class Session(private val roomId: String, private val client: AsynchronousSocketChannel) {
         fun sendInstruction(message: String) {
-            tcpService.sendTcpMessage(client, "$message}\n\n")
+            tcpService.sendTcpMessage(client, "$message\n\n")
         }
 
         fun receiveResponse(): String? {
@@ -162,6 +184,10 @@ class GamesGateway(
 
         fun broadcast(gameOutput: GameOutput) {
             simpMessagingTemplate.convertAndSend("/rooms/$roomId", gameOutput)
+        }
+
+        fun broadcast(gameErrorOutput: GameErrorOutput) {
+            simpMessagingTemplate.convertAndSend("/rooms/$roomId", gameErrorOutput)
         }
     }
 

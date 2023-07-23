@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface PlayersRepository : CrudRepository<PlayerEntity, UUID>
+interface PlayersRepository : CrudRepository<PlayerEntity, UUID> {
+    fun deleteAllByRoomId(roomId: UUID)
+}

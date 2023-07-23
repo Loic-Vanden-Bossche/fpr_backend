@@ -22,6 +22,6 @@ class PlayerEntity(
     @JoinColumn(name = "PLAYER_ROOM_ID", referencedColumnName = "ROOM_ID")
     val room: RoomEntity,
 
-    @Column(name = "PLAYER_INDEX", nullable = false, columnDefinition = "INT default NULL")
-    var playerIndex: Int?,
+    @Column(name = "PLAYER_INDEX", nullable = false)
+    var playerIndex: Int,
 ) : AuditableDates()

@@ -28,24 +28,18 @@ class TcpService {
     }
 
     fun receiveTcpMessage(client: AsynchronousSocketChannel): String? {
-        try {
-            val readBuffer = ByteBuffer.allocate(2048)
+        val readBuffer = ByteBuffer.allocate(2048)
 
-            if(client.read(readBuffer).get() == -1){
-                throw EOFException()
-            }
-
-            readBuffer.flip()
-
-            val response = ByteArray(readBuffer.remaining())
-
-            readBuffer.get(response)
-
-            return String(response)
-        } catch (e: IOException) {
-            e.printStackTrace()
+        if(client.read(readBuffer).get() == -1){
+            throw EOFException()
         }
 
-        return null
+        readBuffer.flip()
+
+        val response = ByteArray(readBuffer.remaining())
+
+        readBuffer.get(response)
+
+        return String(response)
     }
 }

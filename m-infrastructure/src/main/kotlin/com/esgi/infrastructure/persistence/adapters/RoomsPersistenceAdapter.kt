@@ -9,6 +9,7 @@ import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
 import com.esgi.infrastructure.persistence.entities.UserEntity
 import com.esgi.infrastructure.persistence.repositories.*
+import jakarta.transaction.Transactional
 import org.mapstruct.factory.Mappers
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
@@ -20,6 +21,7 @@ class RoomsPersistenceAdapter(
     private val usersRepository: UsersRepository,
     private val gamesRepository: GamesRepository,
     private val groupsRepository: GroupsRepository,
+    private val playersRepository: PlayersRepository,
     private val sessionActionRepository: SessionActionRepository
 ) : RoomsPersistence {
     private val mapper = Mappers.getMapper(RoomMapper::class.java)
@@ -58,15 +60,17 @@ class RoomsPersistenceAdapter(
             actions = listOf()
         )
 
+        roomsRepository.save(roomEntity)
+
         val playerEntity = PlayerEntity(
             user = userEntity,
             room = roomEntity,
-            playerIndex = null
+            playerIndex = 0
         )
 
-        roomEntity.players += playerEntity
+        playersRepository.save(playerEntity)
 
-        return mapper.toDomain(roomsRepository.save(roomEntity), null)
+        return mapper.toDomain(roomEntity, null)
     }
 
     override fun addPlayer(roomId: String, userId: String) {
@@ -78,10 +82,10 @@ class RoomsPersistenceAdapter(
         val playerEntity = PlayerEntity(
             user = userEntity,
             room = roomEntity,
-            playerIndex = null
+            playerIndex = 0
         )
 
-        roomEntity.players += playerEntity
+        playersRepository.save(playerEntity)
 
         roomsRepository.save(roomEntity)
     }
@@ -93,8 +97,10 @@ class RoomsPersistenceAdapter(
         val players = roomEntity.players.shuffled()
 
         players.forEachIndexed { index, player ->
-            player.playerIndex = index
+            player.playerIndex = index + 1
         }
+
+        playersRepository.saveAll(players)
 
         roomEntity.players = players.toMutableList()
 
@@ -141,7 +147,10 @@ class RoomsPersistenceAdapter(
         roomsRepository.save(roomEntity)
     }
 
+    @Transactional
     override fun delete(roomId: String) {
+        playersRepository.deleteAllByRoomId(UUID.fromString(roomId))
+        sessionActionRepository.deleteAllByRoomId(UUID.fromString(roomId))
         roomsRepository.deleteById(UUID.fromString(roomId))
     }
 

@@ -2,6 +2,7 @@ package com.esgi.applicationservices.usecases.rooms
 
 import com.esgi.applicationservices.persistence.RoomsPersistence
 import com.esgi.domainmodels.RoomStatus
+import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.NotFoundException
 
 class PlaySessionActionUseCase(
@@ -12,7 +13,7 @@ class PlaySessionActionUseCase(
 
         if (room.status != RoomStatus.STARTED) {
             println("Room $roomId is not started")
-            throw IllegalStateException("Room $roomId is not started")
+            throw BadRequestException("Room $roomId is not started")
         }
 
         roomsPersistence.recordAction(roomId, userId, action)
