@@ -14,8 +14,6 @@ import com.esgi.infrastructure.services.TcpService
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
 import java.io.IOException
 import java.nio.channels.AsynchronousSocketChannel
-import kotlin.coroutines.coroutineContext
 
 @Controller
 @CrossOrigin(origins = ["https://jxy.me"], allowCredentials = "true")
