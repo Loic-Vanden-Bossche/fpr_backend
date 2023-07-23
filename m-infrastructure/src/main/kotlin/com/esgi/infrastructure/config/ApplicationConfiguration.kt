@@ -280,4 +280,8 @@ class ApplicationConfiguration(
     @Bean
     fun findingMyGamesUseCase(): FindingMyGamesUseCase =
         FindingMyGamesUseCase(gamesPersistence)
+
+    @Bean
+    fun findRoomUseCase(): FindRoomUseCase =
+        FindRoomUseCase(roomsPersistence)
 }

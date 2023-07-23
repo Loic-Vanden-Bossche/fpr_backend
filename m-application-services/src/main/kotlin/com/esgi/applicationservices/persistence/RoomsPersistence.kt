@@ -7,6 +7,7 @@ import java.util.*
 
 interface RoomsPersistence {
     fun findById(roomId: String): Room?
+    fun findByIdOfUser(roomId: UUID, user: UUID): Room?
     fun create(gameId: String, groupId: String, owner: User): Room
     fun addPlayer(roomId: String, userId: String)
     fun removePlayer(roomId: String, userId: String)

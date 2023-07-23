@@ -7,6 +7,7 @@ import com.esgi.infrastructure.dto.mappers.RoomMapper
 import com.esgi.infrastructure.persistence.entities.PlayerEntity
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
+import com.esgi.infrastructure.persistence.entities.UserEntity
 import com.esgi.infrastructure.persistence.repositories.*
 import org.mapstruct.factory.Mappers
 import org.springframework.data.repository.findByIdOrNull
@@ -27,6 +28,18 @@ class RoomsPersistenceAdapter(
         val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: return null
 
         return mapper.toDomain(roomEntity, null)
+    }
+
+    override fun findByIdOfUser(roomId: UUID, user: UUID): Room? {
+        val roomEntity = roomsRepository.findByIdOrNull(roomId) ?: return null
+        val status = if(user in roomEntity.players.map { it.user.id }){
+            RoomInvitationStatus.JOINED
+        } else if(user in roomEntity.group.users.map { it.user.id }){
+            RoomInvitationStatus.JOINED
+        } else {
+            return null
+        }
+        return mapper.toDomain(roomEntity, status)
     }
 
     override fun create(gameId: String, groupId: String, owner: User): Room {
