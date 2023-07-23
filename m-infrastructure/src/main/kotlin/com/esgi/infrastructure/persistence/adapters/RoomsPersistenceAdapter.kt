@@ -8,10 +8,7 @@ import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
-import com.esgi.infrastructure.persistence.repositories.GamesRepository
-import com.esgi.infrastructure.persistence.repositories.GroupsRepository
-import com.esgi.infrastructure.persistence.repositories.RoomsRepository
-import com.esgi.infrastructure.persistence.repositories.UsersRepository
+import com.esgi.infrastructure.persistence.repositories.*
 import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Component
 import java.util.*
@@ -21,7 +18,8 @@ class RoomsPersistenceAdapter(
     private val roomsRepository: RoomsRepository,
     private val usersRepository: UsersRepository,
     private val gamesRepository: GamesRepository,
-    private val groupsRepository: GroupsRepository
+    private val groupsRepository: GroupsRepository,
+    private val sessionActionRepository: SessionActionRepository
 ) : RoomsPersistence {
     private val mapper = Mappers.getMapper(RoomMapper::class.java)
 
@@ -91,6 +89,8 @@ class RoomsPersistenceAdapter(
             instruction = instruction,
             player = userEntity
         )
+
+        sessionActionRepository.save(sessionAction)
 
         roomEntity.actions += sessionAction
 
