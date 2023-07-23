@@ -96,4 +96,8 @@ class RoomsPersistenceAdapter(
 
         roomsRepository.save(roomEntity)
     }
+
+    override fun delete(roomId: String) {
+        roomsRepository.deleteById(UUID.fromString(roomId))
+    }
 }

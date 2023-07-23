@@ -1,10 +1,7 @@
 package com.esgi.infrastructure.gateways
 
 import com.esgi.applicationservices.services.GameInstanciator
-import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
-import com.esgi.applicationservices.usecases.rooms.JoinRoomUseCase
-import com.esgi.applicationservices.usecases.rooms.PlaySessionActionUseCase
-import com.esgi.applicationservices.usecases.rooms.StartSessionUseCase
+import com.esgi.applicationservices.usecases.rooms.*
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateRoomDto
 import com.esgi.infrastructure.services.TcpService
@@ -29,7 +26,8 @@ class GamesGateway(
     val createRoomUseCase: CreateRoomUseCase,
     val joinRoomUseCase: JoinRoomUseCase,
     val startSessionUseCase: StartSessionUseCase,
-    val playSessionActionUseCase: PlaySessionActionUseCase
+    val playSessionActionUseCase: PlaySessionActionUseCase,
+    val deleteRoomUseCase: DeleteRoomUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
 
@@ -38,17 +36,31 @@ class GamesGateway(
     fun createRoom(principal: UsernamePasswordAuthenticationToken, roomData: CreateRoomDto): String? {
         println("Creating room with game ${roomData.gameId}")
 
-        val room = createRoomUseCase(
-            roomData.gameId,
-            roomData.groupId,
-            principal.principal as User,
-        )
+        val room = try {
+            createRoomUseCase(
+                roomData.gameId,
+                roomData.groupId,
+                principal.principal as User,
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return "Error creating room"
+        }
+
         val roomId = room.id.toString()
 
-        val session = Session(
-            roomId,
-            gameInstanciator.instanciateGame(roomData.gameId)
-        )
+        val session = try {
+            Session(
+                roomId,
+                gameInstanciator.instanciateGame(roomData.gameId)
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+
+            deleteRoomUseCase(roomId)
+
+            return "Error creating session"
+        }
 
         GlobalScope.launch {
             while (true) {

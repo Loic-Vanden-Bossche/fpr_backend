@@ -12,10 +12,7 @@ import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessa
 import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
 import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
 import com.esgi.applicationservices.usecases.profile.UpdateProfileNickName
-import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
-import com.esgi.applicationservices.usecases.rooms.JoinRoomUseCase
-import com.esgi.applicationservices.usecases.rooms.PlaySessionActionUseCase
-import com.esgi.applicationservices.usecases.rooms.StartSessionUseCase
+import com.esgi.applicationservices.usecases.rooms.*
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.*
 import com.esgi.infrastructure.services.ProfilePictureUploadService
@@ -271,4 +268,8 @@ class ApplicationConfiguration(
     @Bean
     fun updateProfileNickName(): UpdateProfileNickName =
         UpdateProfileNickName(usersPersistence)
+
+    @Bean
+    fun deleteRoomUseCase(): DeleteRoomUseCase =
+        DeleteRoomUseCase(roomsPersistence)
 }
