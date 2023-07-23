@@ -18,8 +18,8 @@ class BuildGameUseCase(
 ) {
     private val contentTypes: List<String> = listOf(
         "application/zip",
-        "application/x-zip-compressed\n",
-        "application/zip-compressed\n"
+        "application/x-zip-compressed",
+        "application/zip-compressed"
     )
 
     operator fun invoke(
