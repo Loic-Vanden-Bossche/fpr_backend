@@ -17,7 +17,7 @@ class RoomEntity(
 
     @Column(name = "ROOM_STATUS", nullable = false, columnDefinition = "VARCHAR(255) default 'WAITING'")
     @Enumerated(EnumType.STRING)
-    val status: RoomStatus = RoomStatus.WAITING,
+    var status: RoomStatus = RoomStatus.WAITING,
 
     @ManyToOne
     @JoinColumn(name = "ROOM_OWNER_ID", referencedColumnName = "USER_ID")

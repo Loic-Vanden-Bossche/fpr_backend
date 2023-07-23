@@ -12,8 +12,9 @@ import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessa
 import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
 import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
-import com.esgi.applicationservices.usecases.rooms.FindOneRoomById
 import com.esgi.applicationservices.usecases.rooms.JoinRoomUseCase
+import com.esgi.applicationservices.usecases.rooms.PlaySessionActionUseCase
+import com.esgi.applicationservices.usecases.rooms.StartSessionUseCase
 import com.esgi.applicationservices.usecases.users.*
 import com.esgi.infrastructure.persistence.adapters.*
 import com.esgi.infrastructure.services.ProfilePictureUploadService
@@ -251,14 +252,14 @@ class ApplicationConfiguration(
         SetGameVisibilityUseCase(gamesPersistence)
 
     @Bean
-    fun findingOneGameByIdUseCase(): FindingOneGameById =
-        FindingOneGameById(gamesPersistence)
-
-    @Bean
-    fun findingOneRoomByIdUseCase(): FindOneRoomById =
-        FindOneRoomById(roomsPersistence)
-
-    @Bean
     fun joinRoomUseCase(): JoinRoomUseCase =
         JoinRoomUseCase(roomsPersistence)
+
+    @Bean
+    fun startSessionUseCase(): StartSessionUseCase =
+        StartSessionUseCase(roomsPersistence)
+
+    @Bean
+    fun playSessionActionUseCase(): PlaySessionActionUseCase =
+        PlaySessionActionUseCase(roomsPersistence)
 }

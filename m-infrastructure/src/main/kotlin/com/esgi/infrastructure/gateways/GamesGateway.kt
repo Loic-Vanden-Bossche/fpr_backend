@@ -2,9 +2,9 @@ package com.esgi.infrastructure.gateways
 
 import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
-import com.esgi.applicationservices.usecases.rooms.FindOneRoomById
 import com.esgi.applicationservices.usecases.rooms.JoinRoomUseCase
-import com.esgi.domainmodels.RoomStatus
+import com.esgi.applicationservices.usecases.rooms.PlaySessionActionUseCase
+import com.esgi.applicationservices.usecases.rooms.StartSessionUseCase
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateRoomDto
 import com.esgi.infrastructure.services.TcpService
@@ -28,7 +28,8 @@ class GamesGateway(
     val simpMessagingTemplate: SimpMessagingTemplate,
     val createRoomUseCase: CreateRoomUseCase,
     val joinRoomUseCase: JoinRoomUseCase,
-    val findOneRoomById: FindOneRoomById,
+    val startSessionUseCase: StartSessionUseCase,
+    val playSessionActionUseCase: PlaySessionActionUseCase
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
 
@@ -90,17 +91,7 @@ class GamesGateway(
         if (session != null) {
             println("Starting game in room $roomId")
 
-            val room = findOneRoomById(roomId)
-
-            if (room.status != RoomStatus.WAITING) {
-                println("Room $roomId is not waiting")
-                return
-            }
-
-            if (room.players.size < room.game.nbMinPlayers) {
-                println("Not enough players in room $roomId")
-                return
-            }
+            val room = startSessionUseCase(roomId)
 
             session.sendInstruction("{\"init\": { \"players\": ${room.players.size} }}\n")
         } else {
@@ -113,12 +104,7 @@ class GamesGateway(
         val session = sessions[roomId]
 
         if (session != null) {
-            val room = findOneRoomById(roomId)
-
-            if (room.status != RoomStatus.STARTED) {
-                println("Room $roomId is not started")
-                return
-            }
+            playSessionActionUseCase(roomId, instruction)
 
             println("Sending instruction $instruction to room $roomId")
             session.sendInstruction(instruction)
