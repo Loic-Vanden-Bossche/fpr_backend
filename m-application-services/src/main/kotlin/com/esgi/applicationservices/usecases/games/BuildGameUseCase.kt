@@ -16,6 +16,12 @@ class BuildGameUseCase(
     private val gameBuilder: GameBuilder,
     private val gamesPersistence: GamesPersistence
 ) {
+    private val contentTypes: List<String> = listOf(
+        "application/zip",
+        "application/x-zip-compressed\n",
+        "application/zip-compressed\n"
+    )
+
     operator fun invoke(
         ownerId: UUID,
         gameId: String,
@@ -35,7 +41,9 @@ class BuildGameUseCase(
         GameLanguage.values().find { it.name == language.uppercase() }
             ?: throw BadRequestException("Language $language is not allowed")
 
-        if (contentType != "application/zip") throw BadRequestException("Content type $contentType is not allowed")
+        if (contentType !in contentTypes) {
+            throw BadRequestException("Content type $contentType is not allowed")
+        }
 
         gameUploader.uploadGame(gameId, fileStream)
         gameBuilder.buildGame(gameId)
