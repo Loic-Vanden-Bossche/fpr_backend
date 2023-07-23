@@ -103,11 +103,11 @@ class GamesGateway(
 
         return try {
             joinRoomUseCase(roomId, (principal.principal as User).id.toString())
-            JoinRoomResponseDto(true)
+            JoinRoomResponseDto(true, (principal.principal as User).id)
         } catch (e: BadRequestException){
-            JoinRoomResponseDto(false, e.message)
+            JoinRoomResponseDto(false, reason = e.message)
         } catch (e: NotFoundException) {
-            JoinRoomResponseDto(false, e.message)
+            JoinRoomResponseDto(false, reason = e.message)
         }
     }
 
