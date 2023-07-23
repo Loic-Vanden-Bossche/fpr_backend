@@ -4,5 +4,5 @@ import java.util.*
 
 data class AddCandidateMessageDto(
     val to: UUID,
-    val candidate: ICECandidate
+    val candidate: ICECandidate?
 )
