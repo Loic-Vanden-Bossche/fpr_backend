@@ -7,7 +7,10 @@ import com.esgi.infrastructure.dto.output.RoomResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.mapstruct.factory.Mappers
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -28,6 +31,5 @@ class RoomsController(
 
         return rooms.map { mapper.toDto(it) }
     }
-
 }
 

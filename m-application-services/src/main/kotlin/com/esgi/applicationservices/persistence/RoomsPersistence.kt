@@ -3,7 +3,7 @@ package com.esgi.applicationservices.persistence
 import com.esgi.domainmodels.Room
 import com.esgi.domainmodels.RoomStatus
 import com.esgi.domainmodels.User
-import java.util.UUID
+import java.util.*
 
 interface RoomsPersistence {
     fun findById(roomId: String): Room?

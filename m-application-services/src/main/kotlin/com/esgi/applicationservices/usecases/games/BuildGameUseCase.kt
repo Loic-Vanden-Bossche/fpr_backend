@@ -16,7 +16,13 @@ class BuildGameUseCase(
     private val gameBuilder: GameBuilder,
     private val gamesPersistence: GamesPersistence
 ) {
-    operator fun invoke(ownerId: UUID, gameId: String, fileStream: InputStream?, contentType: String?, language: String?): Game {
+    operator fun invoke(
+        ownerId: UUID,
+        gameId: String,
+        fileStream: InputStream?,
+        contentType: String?,
+        language: String?
+    ): Game {
         if (language == null) throw BadRequestException("Language is required to build game")
         if (fileStream == null) throw BadRequestException("File is required to build game")
 
@@ -26,7 +32,8 @@ class BuildGameUseCase(
             throw ForbiddenException("You are not the owner of this game")
         }
 
-        GameLanguage.values().find { it.name == language.uppercase() } ?: throw BadRequestException("Language $language is not allowed")
+        GameLanguage.values().find { it.name == language.uppercase() }
+            ?: throw BadRequestException("Language $language is not allowed")
 
         if (contentType != "application/zip") throw BadRequestException("Content type $contentType is not allowed")
 

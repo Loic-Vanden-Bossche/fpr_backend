@@ -2,7 +2,7 @@ package com.esgi.applicationservices.usecases.games
 
 import com.esgi.applicationservices.persistence.GamesPersistence
 import com.esgi.domainmodels.Game
-import java.util.UUID
+import java.util.*
 
 class FindingMyGamesUseCase(
     private val gamesPersistence: GamesPersistence

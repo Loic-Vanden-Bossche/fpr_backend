@@ -16,7 +16,8 @@ interface RoomWithInvitationStatus {
 interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     override fun findById(id: UUID): Optional<RoomEntity>
 
-    @Query("""
+    @Query(
+        """
         SELECT DISTINCT r as roomEntity,
                CASE WHEN (p.id = :userId) THEN 'JOINED'
                     WHEN (gu.user.id = :userId) THEN 'PENDING'
@@ -27,6 +28,7 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
         LEFT JOIN r.group g 
         LEFT JOIN g.users gu 
         WHERE p.id=:userId OR gu.user.id=:userId
-    """)
+    """
+    )
     fun findAllByPlayersContains(@Param("userId") userId: UUID): List<RoomWithInvitationStatus>
 }

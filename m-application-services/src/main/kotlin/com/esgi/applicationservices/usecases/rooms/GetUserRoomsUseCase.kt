@@ -2,7 +2,7 @@ package com.esgi.applicationservices.usecases.rooms
 
 import com.esgi.applicationservices.persistence.RoomsPersistence
 import com.esgi.domainmodels.Room
-import java.util.UUID
+import java.util.*
 
 class GetUserRoomsUseCase(
     private val roomsPersistence: RoomsPersistence
