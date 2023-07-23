@@ -36,4 +36,6 @@ interface UsersPersistence {
     ): User
 
     fun delete(id: UUID): User
+
+    fun updateNickName(id: UUID, newNickName: String): User
 }

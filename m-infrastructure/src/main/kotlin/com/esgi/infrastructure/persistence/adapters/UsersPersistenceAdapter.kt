@@ -101,4 +101,25 @@ class UsersPersistenceAdapter(
         userRepository.delete(userToDelete)
         return mapper.toDomain(userToDelete, null)
     }
+
+    override fun updateNickName(id: UUID, newNickName: String): User {
+        val user = userRepository.findByIdOrNull(id) ?: throw NotFoundException("User not found")
+
+        val userToUpdate = UserEntity(
+            id = user.id,
+            email = user.email,
+            nickname = newNickName,
+            password = user.password,
+            role = user.role,
+            coins = user.coins,
+            picture = user.picture
+        ).apply {
+            this.createdAt = user.createdAt
+            this.updatedAt = user.updatedAt
+        }
+
+        val updatedUser = userRepository.save(userToUpdate)
+
+        return mapper.toDomain(updatedUser, null)
+    }
 }

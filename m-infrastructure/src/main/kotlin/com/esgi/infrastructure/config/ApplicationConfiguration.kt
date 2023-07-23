@@ -11,6 +11,7 @@ import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUs
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
 import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
 import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
+import com.esgi.applicationservices.usecases.profile.UpdateProfileNickName
 import com.esgi.applicationservices.usecases.rooms.CreateRoomUseCase
 import com.esgi.applicationservices.usecases.rooms.JoinRoomUseCase
 import com.esgi.applicationservices.usecases.rooms.PlaySessionActionUseCase
@@ -266,4 +267,8 @@ class ApplicationConfiguration(
     @Bean
     fun deleteGameUseCase(): DeleteGameUseCase =
         DeleteGameUseCase(gamesPersistence)
+
+    @Bean
+    fun updateProfileNickName(): UpdateProfileNickName =
+        UpdateProfileNickName(usersPersistence)
 }
