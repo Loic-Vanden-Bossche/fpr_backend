@@ -31,19 +31,9 @@ class RoomEntity(
     @JoinColumn(name = "ROOM_GAME_ID", referencedColumnName = "GAME_ID")
     val game: GameEntity,
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "TJ_ROOMS_USERS",
-        joinColumns = [JoinColumn(name = "ROOM_ID", referencedColumnName = "ROOM_ID")],
-        inverseJoinColumns = [JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")]
-    )
-    var players: List<UserEntity>,
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
+    var players: MutableList<PlayerEntity>,
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "TJ_ROOMS_SESSION_ACTIONS",
-        joinColumns = [JoinColumn(name = "ROOM_ID", referencedColumnName = "ROOM_ID")],
-        inverseJoinColumns = [JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID")]
-    )
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER)
     var actions: List<SessionActionEntity>,
 ) : AuditableDates()

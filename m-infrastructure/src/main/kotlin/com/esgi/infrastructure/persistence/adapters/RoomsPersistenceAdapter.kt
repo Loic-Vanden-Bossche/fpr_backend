@@ -1,12 +1,10 @@
 package com.esgi.infrastructure.persistence.adapters
 
 import com.esgi.applicationservices.persistence.RoomsPersistence
-import com.esgi.domainmodels.Room
-import com.esgi.domainmodels.RoomInvitationStatus
-import com.esgi.domainmodels.RoomStatus
-import com.esgi.domainmodels.User
+import com.esgi.domainmodels.*
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
+import com.esgi.infrastructure.persistence.entities.PlayerEntity
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
 import com.esgi.infrastructure.persistence.repositories.*
@@ -41,11 +39,19 @@ class RoomsPersistenceAdapter(
         val roomEntity = RoomEntity(
             owner = userEntity,
             status = RoomStatus.WAITING,
-            players = listOf(userEntity),
+            players = mutableListOf(),
             game = gameEntity,
             group = groupEntity,
             actions = listOf()
         )
+
+        val playerEntity = PlayerEntity(
+            user = userEntity,
+            room = roomEntity,
+            playerIndex = null
+        )
+
+        roomEntity.players += playerEntity
 
         return mapper.toDomain(roomsRepository.save(roomEntity), null)
     }
@@ -56,18 +62,39 @@ class RoomsPersistenceAdapter(
         val userEntity =
             usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
 
-        roomEntity.players += userEntity
+        val playerEntity = PlayerEntity(
+            user = userEntity,
+            room = roomEntity,
+            playerIndex = null
+        )
+
+        roomEntity.players += playerEntity
 
         roomsRepository.save(roomEntity)
+    }
+
+    override fun calculatePlayerIndexes(roomId: String): Room {
+        val roomEntity =
+            roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
+
+        val players = roomEntity.players.shuffled()
+
+        players.forEachIndexed { index, player ->
+            player.playerIndex = index
+        }
+
+        roomEntity.players = players.toMutableList()
+
+        return mapper.toDomain(roomEntity, null)
     }
 
     override fun removePlayer(roomId: String, userId: String) {
         val roomEntity =
             roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
-        val userEntity =
-            usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
+        val playerEntity = roomEntity.players.find { it.user.id == UUID.fromString(userId) }
+            ?: throw NotFoundException("Player not found")
 
-        roomEntity.players -= userEntity
+        roomEntity.players -= playerEntity
 
         roomsRepository.save(roomEntity)
     }
@@ -84,12 +111,14 @@ class RoomsPersistenceAdapter(
     override fun recordAction(roomId: String, userId: String, instruction: String) {
         val roomEntity =
             roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
-        val userEntity =
-            usersRepository.findById(UUID.fromString(userId)).orElse(null) ?: throw NotFoundException("User not found")
+
+        val playerEntity = roomEntity.players.find { it.user.id == UUID.fromString(userId) }
+            ?: throw NotFoundException("Player not found")
 
         val sessionAction = SessionActionEntity(
             instruction = instruction,
-            player = userEntity
+            player = playerEntity,
+            room = roomEntity
         )
 
         sessionActionRepository.save(sessionAction)
@@ -106,7 +135,7 @@ class RoomsPersistenceAdapter(
     override fun getUserRooms(userId: UUID): List<Room> {
         val user = usersRepository.findByIdOrNull(userId) ?: return emptyList()
         return roomsRepository.findAllByUser(user).map {
-            val status = if(user in it.players) RoomInvitationStatus.JOINED else  RoomInvitationStatus.PENDING
+            val status = if (user in it.players.map { player -> player.user }) RoomInvitationStatus.JOINED else  RoomInvitationStatus.PENDING
             mapper.toDomain(it, status)
         }
     }

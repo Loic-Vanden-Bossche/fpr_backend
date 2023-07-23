@@ -18,6 +18,10 @@ data class SessionActionEntity(
     var instruction: String = "",
 
     @ManyToOne
-    @JoinColumn(name = "ACTION_PLAYER", referencedColumnName = "USER_ID")
-    val player: UserEntity,
+    @JoinColumn(name = "ACTION_ROOM", referencedColumnName = "ROOM_ID")
+    val room: RoomEntity,
+
+    @ManyToOne
+    @JoinColumn(name = "ACTION_PLAYER", referencedColumnName = "PLAYER_ID")
+    val player: PlayerEntity,
 ) : AuditableDates()

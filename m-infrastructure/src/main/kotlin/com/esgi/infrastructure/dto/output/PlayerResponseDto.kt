@@ -2,6 +2,7 @@ package com.esgi.infrastructure.dto.output
 
 data class PlayerResponseDto(
     val id: String,
-    val nickname: String,
-    val picture: Boolean,
+    val user: UserResponseDto,
+    val room: RoomResponseDto,
+    val playerIndex: Int?,
 )
