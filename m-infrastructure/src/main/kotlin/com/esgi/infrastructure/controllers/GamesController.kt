@@ -37,11 +37,12 @@ class GamesController(
     @ResponseBody
     fun build(
         principal: UsernamePasswordAuthenticationToken,
-        file: MultipartFile,
+        file: MultipartFile?,
+        language: String?,
         @PathVariable @NotNull id: String
     ): GameResponseDto {
         return mapper.toDto(
-            buildGameUseCase((principal.principal as User).id, id, file.inputStream, file.contentType)
+            buildGameUseCase((principal.principal as User).id, id, file?.inputStream, file?.contentType, language)
         )
     }
 
