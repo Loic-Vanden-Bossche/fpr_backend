@@ -11,6 +11,7 @@ import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
 import com.esgi.infrastructure.persistence.repositories.*
 import org.mapstruct.factory.Mappers
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.util.*
 
@@ -103,10 +104,10 @@ class RoomsPersistenceAdapter(
     }
 
     override fun getUserRooms(userId: UUID): List<Room> {
-        return roomsRepository.findAllByPlayersContains(userId).map {
-            mapper.toDomain(
-                it.getRoomEntity(),
-                RoomInvitationStatus.values().find { status -> status.name == it.getStatus() })
+        val user = usersRepository.findByIdOrNull(userId) ?: return emptyList()
+        return roomsRepository.findAllByUser(user).map {
+            val status = if(user in it.players) RoomInvitationStatus.JOINED else  RoomInvitationStatus.PENDING
+            mapper.toDomain(it, status)
         }
     }
 }
