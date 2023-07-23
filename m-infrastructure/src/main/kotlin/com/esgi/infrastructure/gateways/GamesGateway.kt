@@ -121,7 +121,7 @@ class GamesGateway(
 
         return try {
             val room = startSessionUseCase(roomId)
-            session.sendInstruction(Instruction(Init(room.players.size)))
+            session.sendInstruction(jsonMapper.writeValueAsString(Instruction(Init(room.players.size))))
             StartedGameResponseDto(true)
         } catch (e: IllegalStateException) {
             StartedGameResponseDto(false, e.message)
@@ -134,9 +134,15 @@ class GamesGateway(
     fun play(
         principal: UsernamePasswordAuthenticationToken,
         @DestinationVariable roomId: String,
-        instruction: Instruction
+        instruction: String
     ) {
         val session = sessions[roomId]
+
+        try {
+            jsonMapper.readTree(instruction)
+        }catch (_: Exception){
+            println("Not json")
+        }
 
         if (session != null) {
             playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), jsonMapper.writeValueAsString(instruction))
@@ -149,8 +155,8 @@ class GamesGateway(
     }
 
     inner class Session(private val roomId: String, private val client: AsynchronousSocketChannel) {
-        fun sendInstruction(message: Instruction) {
-            tcpService.sendTcpMessage(client, "${jsonMapper.writeValueAsString(message)}\n\n")
+        fun sendInstruction(message: String) {
+            tcpService.sendTcpMessage(client, "$message}\n\n")
         }
 
         fun receiveResponse(): String? {
