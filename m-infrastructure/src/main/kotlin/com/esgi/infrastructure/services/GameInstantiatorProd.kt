@@ -1,7 +1,6 @@
 package com.esgi.infrastructure.services
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain
-import com.amazonaws.regions.Regions
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest
 import com.esgi.applicationservices.services.GameInstanciator
@@ -17,7 +16,7 @@ import java.nio.channels.AsynchronousSocketChannel
 class GameInstantiatorProd(
     private val taskService: TaskService,
     private val tcpService: TcpService
-): GameInstanciator {
+) : GameInstanciator {
     @Value("\${aws.region}")
     private val awsRegion: String? = null
 

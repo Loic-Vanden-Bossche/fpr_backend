@@ -14,31 +14,36 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/api/friends")
 @SecurityRequirement(name = "fpr")
 class FriendsController(
-        private val findingAllFriendsUseCase: FindingAllFriendsUseCase,
-        private val findingAllPendingFriendsUseCase: FindingAllPendingFriendsUseCase,
-        private val createFriendsUseCase: CreateFriendsUseCase,
-        private val approveFriendUseCase: ApproveFriendUseCase,
-        private val denyFriendUseCase: DenyFriendUseCase,
-        private val deleteFriendUseCase: DeleteFriendUseCase
+    private val findingAllFriendsUseCase: FindingAllFriendsUseCase,
+    private val findingAllPendingFriendsUseCase: FindingAllPendingFriendsUseCase,
+    private val createFriendsUseCase: CreateFriendsUseCase,
+    private val approveFriendUseCase: ApproveFriendUseCase,
+    private val denyFriendUseCase: DenyFriendUseCase,
+    private val deleteFriendUseCase: DeleteFriendUseCase
 ) {
     private val mapper = Mappers.getMapper(UserMapper::class.java)
 
     @GetMapping
     @ResponseBody
     @Secured("USER")
-    fun getFriends(principal: UsernamePasswordAuthenticationToken): List<UserResponseDto> = findingAllFriendsUseCase.execute((principal.principal as User)).map(mapper::toDto)
+    fun getFriends(principal: UsernamePasswordAuthenticationToken): List<UserResponseDto> =
+        findingAllFriendsUseCase.execute((principal.principal as User)).map(mapper::toDto)
 
     @PostMapping
     @ResponseBody
     @Secured("USER")
-    fun createFriends(@RequestBody @Valid createFriendDto: CreateFriendDto, principal: UsernamePasswordAuthenticationToken, response: HttpServletResponse){
-        if(!createFriendsUseCase.execute(createFriendDto.friend, principal.principal as User)){
+    fun createFriends(
+        @RequestBody @Valid createFriendDto: CreateFriendDto,
+        principal: UsernamePasswordAuthenticationToken,
+        response: HttpServletResponse
+    ) {
+        if (!createFriendsUseCase.execute(createFriendDto.friend, principal.principal as User)) {
             response.status = HttpStatus.NO_CONTENT.value()
         }
     }
@@ -46,20 +51,29 @@ class FriendsController(
     @GetMapping("/pending")
     @ResponseBody
     @Secured("USER")
-    fun getPendingFriends(principal: UsernamePasswordAuthenticationToken): List<UserResponseDto> = findingAllPendingFriendsUseCase.execute((principal.principal as User)).map(mapper::toDto)
+    fun getPendingFriends(principal: UsernamePasswordAuthenticationToken): List<UserResponseDto> =
+        findingAllPendingFriendsUseCase.execute((principal.principal as User)).map(mapper::toDto)
 
     @PatchMapping("/{id}/approve")
     @Secured("USER")
-    fun setApproveFriend(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID, response: HttpServletResponse){
-        if(!approveFriendUseCase.execute(principal.principal as User, id)){
+    fun setApproveFriend(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable @NotNull id: UUID,
+        response: HttpServletResponse
+    ) {
+        if (!approveFriendUseCase.execute(principal.principal as User, id)) {
             response.status = HttpStatus.NOT_FOUND.value()
         }
     }
 
     @PatchMapping("/{id}/deny")
     @Secured("USER")
-    fun setDeniedFriend(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID, response: HttpServletResponse){
-        if(!denyFriendUseCase.execute(principal.principal as User, id)){
+    fun setDeniedFriend(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable @NotNull id: UUID,
+        response: HttpServletResponse
+    ) {
+        if (!denyFriendUseCase.execute(principal.principal as User, id)) {
             response.status = HttpStatus.NOT_FOUND.value()
         }
     }
@@ -67,7 +81,7 @@ class FriendsController(
     @DeleteMapping("/{id}")
     @Secured("USER")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteFriend(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID){
+    fun deleteFriend(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID) {
         deleteFriendUseCase(principal.principal as User, id)
     }
 }

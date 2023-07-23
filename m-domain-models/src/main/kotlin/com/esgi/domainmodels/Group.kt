@@ -1,6 +1,6 @@
 package com.esgi.domainmodels
 
-import java.util.UUID
+import java.util.*
 
 data class Group(
     val id: UUID,

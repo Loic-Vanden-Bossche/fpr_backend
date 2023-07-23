@@ -1,6 +1,6 @@
 package com.esgi.domainmodels
 
-import java.util.Date
+import java.util.*
 
 data class UserGroup(
     val user: User,

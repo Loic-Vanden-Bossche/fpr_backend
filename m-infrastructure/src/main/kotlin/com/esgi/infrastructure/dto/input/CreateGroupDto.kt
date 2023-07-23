@@ -1,7 +1,7 @@
 package com.esgi.infrastructure.dto.input
 
 import org.hibernate.validator.constraints.Length
-import java.util.UUID
+import java.util.*
 
 data class CreateGroupDto(
     val users: List<UUID>,

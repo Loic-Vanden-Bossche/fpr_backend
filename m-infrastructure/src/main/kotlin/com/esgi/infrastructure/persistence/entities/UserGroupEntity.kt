@@ -2,7 +2,7 @@ package com.esgi.infrastructure.persistence.entities
 
 import jakarta.persistence.*
 import java.time.Instant
-import java.util.Date
+import java.util.*
 
 @Entity
 @Table(name = "TJ_GROUPS_USERS")

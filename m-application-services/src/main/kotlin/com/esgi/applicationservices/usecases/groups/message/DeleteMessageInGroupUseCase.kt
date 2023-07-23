@@ -5,19 +5,19 @@ import com.esgi.applicationservices.persistence.MessagesPersistence
 import com.esgi.domainmodels.Message
 import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
-import java.util.UUID
+import java.util.*
 
 class DeleteMessageInGroupUseCase(
     private val groupsPersistence: GroupsPersistence,
     private val messagesPersistence: MessagesPersistence
 ) {
-    operator fun invoke(user: User, groupId: UUID, messageId: UUID): Message{
+    operator fun invoke(user: User, groupId: UUID, messageId: UUID): Message {
         val group = groupsPersistence.find(groupId) ?: throw NotFoundException("Group not found")
-        if(user !in group.members.map { it.user }){
-            throw  NotFoundException("Group not Found")
+        if (user !in group.members.map { it.user }) {
+            throw NotFoundException("Group not Found")
         }
         val message = messagesPersistence.findById(messageId) ?: throw NotFoundException("Message not found")
-        if(message !in group.messages){
+        if (message !in group.messages) {
             throw NotFoundException("Message not found in this group")
         }
         messagesPersistence.deleteMessage(message)

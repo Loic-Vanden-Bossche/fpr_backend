@@ -11,7 +11,7 @@ import java.nio.channels.AsynchronousSocketChannel
 class GameInstantiatorDev(
     private val dockerService: DockerService,
     private val tcpService: TcpService,
-): GameInstanciator {
+) : GameInstanciator {
     @Value("\${aws.region}")
     private val awsRegion: String? = null
 

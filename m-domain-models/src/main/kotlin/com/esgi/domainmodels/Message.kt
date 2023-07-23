@@ -1,7 +1,6 @@
 package com.esgi.domainmodels
 
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 data class Message(
     val id: UUID,

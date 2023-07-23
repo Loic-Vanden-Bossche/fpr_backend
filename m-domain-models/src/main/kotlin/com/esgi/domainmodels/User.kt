@@ -1,7 +1,7 @@
 package com.esgi.domainmodels
 
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 data class User(
     val id: UUID,

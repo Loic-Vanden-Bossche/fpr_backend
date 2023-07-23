@@ -46,4 +46,4 @@ class RoomEntity(
         inverseJoinColumns = [JoinColumn(name = "ACTION_ID", referencedColumnName = "ACTION_ID")]
     )
     var actions: List<SessionActionEntity>,
-): AuditableDates()
+) : AuditableDates()

@@ -18,7 +18,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
-import java.util.UUID
+import java.util.*
 
 @Controller
 @CrossOrigin(origins = ["http://localhost:1234", "https://jxy.me"], allowCredentials = "true")
@@ -35,19 +35,31 @@ class MessagesGateway(
     private val mapper = Mappers.getMapper(MessageMapper::class.java)
 
     @MessageMapping("/{id}/messages")
-    fun writeToGroup(principal: UsernamePasswordAuthenticationToken, @DestinationVariable id: UUID, message: WriteMessageDto) {
+    fun writeToGroup(
+        principal: UsernamePasswordAuthenticationToken,
+        @DestinationVariable id: UUID,
+        message: WriteMessageDto
+    ) {
         val result = writeMessageToGroupUseCase.execute(principal.principal as User, id, message.message)
         template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseType.NEW))
     }
 
     @MessageMapping("/{id}/messages/edit")
-    fun editMessageInGroup(principal: UsernamePasswordAuthenticationToken, @DestinationVariable id: UUID, message: EditMessageDto) {
+    fun editMessageInGroup(
+        principal: UsernamePasswordAuthenticationToken,
+        @DestinationVariable id: UUID,
+        message: EditMessageDto
+    ) {
         val result = editMessageInGroupUseCase(principal.principal as User, id, message.id, message.message)
         template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseType.EDIT))
     }
 
     @MessageMapping("/{id}/messages/delete")
-    fun deleteMessageInGroup(principal: UsernamePasswordAuthenticationToken, @DestinationVariable id: UUID, message: DeleteMessageDto){
+    fun deleteMessageInGroup(
+        principal: UsernamePasswordAuthenticationToken,
+        @DestinationVariable id: UUID,
+        message: DeleteMessageDto
+    ) {
         val result = deleteMessageInGroupUseCase(principal.principal as User, id, message.id)
         template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseType.DELETE))
     }

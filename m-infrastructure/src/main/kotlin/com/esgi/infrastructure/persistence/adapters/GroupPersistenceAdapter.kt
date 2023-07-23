@@ -22,10 +22,12 @@ class GroupPersistenceAdapter(
     private val usersGroupsRepository: UsersGroupsRepository,
     private val friendsRepository: FriendsRepository,
     private val messagesRepository: MessagesRepository
-): GroupsPersistence {
+) : GroupsPersistence {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
 
-    override fun findAll(user: User): List<Group> = usersRepository.findUserGroups(user.id).map{ mapper.toDomain(it.group) }.sortedByDescending { it.members.find { it.user.id == user.id }!!.lastRead }
+    override fun findAll(user: User): List<Group> =
+        usersRepository.findUserGroups(user.id).map { mapper.toDomain(it.group) }
+            .sortedByDescending { it.members.find { it.user.id == user.id }!!.lastRead }
 
     override fun find(id: UUID): Group? = groupsRepository.findByIdOrNull(id)?.let { mapper.toDomain(it) }
 
@@ -81,11 +83,11 @@ class GroupPersistenceAdapter(
 
     override fun removeUserFromGroup(user: User, group: Group): Group? {
         val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
-        return if(groupEntity.users.size == 1){
+        return if (groupEntity.users.size == 1) {
             groupsRepository.delete(groupEntity)
             null
-        }else{
-            groupEntity.users.removeIf{ it.user.id == user.id }
+        } else {
+            groupEntity.users.removeIf { it.user.id == user.id }
             groupsRepository.save(groupEntity)
             mapper.toDomain(groupEntity)
         }

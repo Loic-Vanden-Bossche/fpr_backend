@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UsersGroupsRepository: CrudRepository<UserGroupEntity, UsersGroupsId>{
+interface UsersGroupsRepository : CrudRepository<UserGroupEntity, UsersGroupsId> {
 
     fun findByGroupAndUser(group: GroupEntity, user: UserEntity): UserGroupEntity
 

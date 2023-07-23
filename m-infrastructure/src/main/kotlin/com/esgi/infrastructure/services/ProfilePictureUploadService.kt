@@ -8,7 +8,7 @@ import java.io.InputStream
 @Service
 class ProfilePictureUploadService(
     private val s3Service: S3Service
-): ProfilePictureUploader {
+) : ProfilePictureUploader {
     @Value("\${medias-bucket.name}")
     private val bucketName: String? = null
 

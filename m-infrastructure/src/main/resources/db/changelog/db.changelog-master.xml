@@ -73,10 +73,16 @@
         </createTable>
     </changeSet>
     <changeSet author="loloi (generated)" id="1685109254506-3">
-        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="TJ_GROUPS_USERS" constraintName="FK3jh6vg5pjx9k3b47at3pa0rtk" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="TJ_GROUPS_USERS"
+                                 constraintName="FK3jh6vg5pjx9k3b47at3pa0rtk" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="GROUP_ID"
+                                 referencedTableName="T_GROUPS" validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1685109254506-4">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="TJ_GROUPS_USERS" constraintName="FKovq3fbk5lm1uafu2ffnqf7uqq" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="TJ_GROUPS_USERS"
+                                 constraintName="FKovq3fbk5lm1uafu2ffnqf7uqq" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1685808759999-1">
         <createTable tableName="T_FRIENDS">
@@ -92,10 +98,16 @@
         </createTable>
     </changeSet>
     <changeSet author="macaron (generated)" id="1685808759999-2">
-        <addForeignKeyConstraint baseColumnNames="USER_1" baseTableName="T_FRIENDS" constraintName="FKcevc84wkiwna145d9fk9b7dnt" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_1" baseTableName="T_FRIENDS"
+                                 constraintName="FKcevc84wkiwna145d9fk9b7dnt" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1685808759999-3">
-        <addForeignKeyConstraint baseColumnNames="USER_2" baseTableName="T_FRIENDS" constraintName="FKcjrqsbba56pwktq7mr1u39dwl" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_2" baseTableName="T_FRIENDS"
+                                 constraintName="FKcjrqsbba56pwktq7mr1u39dwl" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687344941809-3">
         <addColumn tableName="T_FRIENDS">
@@ -105,10 +117,12 @@
         </addColumn>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687344941809-1">
-        <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()" tableName="T_FRIENDS"/>
+        <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()"
+                         tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687344941809-2">
-        <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()" tableName="T_FRIENDS"/>
+        <addDefaultValue columnDataType="uuid" columnName="FRIENDS_ID" defaultValueComputed="gen_random_uuid()"
+                         tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687467088460-1">
         <addColumn tableName="T_GROUPS">
@@ -134,10 +148,16 @@
         </createTable>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687525140834-2">
-        <addForeignKeyConstraint baseColumnNames="GROUP" baseTableName="T_MESSAGE" constraintName="FK4udcndo2n3c4qw28va0gq8qkc" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="GROUP" baseTableName="T_MESSAGE"
+                                 constraintName="FK4udcndo2n3c4qw28va0gq8qkc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="GROUP_ID"
+                                 referencedTableName="T_GROUPS" validate="true"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687525140834-3">
-        <addForeignKeyConstraint baseColumnNames="USER" baseTableName="T_MESSAGE" constraintName="FKctan5iq6oou28x9bcu9f5uv45" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER" baseTableName="T_MESSAGE"
+                                 constraintName="FKctan5iq6oou28x9bcu9f5uv45" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1687614373879-1">
         <addColumn tableName="T_MESSAGE">
@@ -162,16 +182,20 @@
         <addPrimaryKey columnNames="GROUP_ID, USER_ID" constraintName="TJ_GROUPS_USERSPK" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688329373964-1">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688329373964-2">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688330690994-1">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688330690994-2">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688397256009-3">
         <addColumn tableName="T_FRIENDS">
@@ -179,13 +203,18 @@
         </addColumn>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688397256009-4">
-        <addForeignKeyConstraint baseColumnNames="GROUP" baseTableName="T_FRIENDS" constraintName="FKqfalpyfs5yqmief26iwuo8ubd" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="GROUP" baseTableName="T_FRIENDS"
+                                 constraintName="FKqfalpyfs5yqmief26iwuo8ubd" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="GROUP_ID"
+                                 referencedTableName="T_GROUPS" validate="true"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688397256009-1">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1688397256009-2">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1689526591022-5">
         <addColumn tableName="T_USERS">
@@ -199,10 +228,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1689526591022-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1689526591022-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1689538036184-1">
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
@@ -211,10 +242,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1689538036184-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="macaron (generated)" id="1689538036184-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689718463686-5">
         <addColumn tableName="T_USERS">
@@ -231,10 +264,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689718463686-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689718463686-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689791786478-1">
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
@@ -243,10 +278,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689791786478-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689791786478-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-5">
         <createTable tableName="TJ_ROOMS_USERS">
@@ -276,13 +313,22 @@
         </createTable>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-7">
-        <addForeignKeyConstraint baseColumnNames="ROOM_OWNER_ID" baseTableName="T_ROOM" constraintName="FKawrxpeki1lu9ogj45wnmfe1ej" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ROOM_OWNER_ID" baseTableName="T_ROOM"
+                                 constraintName="FKawrxpeki1lu9ogj45wnmfe1ej" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-8">
-        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="TJ_ROOMS_USERS" constraintName="FKc42owru2rbf6v277o2qffw583" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="USER_ID" baseTableName="TJ_ROOMS_USERS"
+                                 constraintName="FKc42owru2rbf6v277o2qffw583" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-9">
-        <addForeignKeyConstraint baseColumnNames="ROOM_ID" baseTableName="TJ_ROOMS_USERS" constraintName="FKdq8kijvl4hhdcbht51x7qh3nj" deferrable="false" initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ROOM_ID" baseTableName="TJ_ROOMS_USERS"
+                                 constraintName="FKdq8kijvl4hhdcbht51x7qh3nj" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-1">
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
@@ -291,10 +337,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689795564191-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689851884061-5">
         <createTable tableName="T_GAMES">
@@ -314,10 +362,16 @@
         </addColumn>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689851884061-7">
-        <addForeignKeyConstraint baseColumnNames="GAME_OWNER_ID" baseTableName="T_GAMES" constraintName="FKouf2xixoy55jhv0a62mpw3x6t" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="GAME_OWNER_ID" baseTableName="T_GAMES"
+                                 constraintName="FKouf2xixoy55jhv0a62mpw3x6t" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689851884061-8">
-        <addForeignKeyConstraint baseColumnNames="ROOM_GAME_ID" baseTableName="T_ROOM" constraintName="FKsyt50lf1oggk0xpgww4w2asmm" deferrable="false" initiallyDeferred="false" referencedColumnNames="GAME_ID" referencedTableName="T_GAMES" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ROOM_GAME_ID" baseTableName="T_ROOM"
+                                 constraintName="FKsyt50lf1oggk0xpgww4w2asmm" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="GAME_ID" referencedTableName="T_GAMES"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689851884061-1">
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
@@ -326,10 +380,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689851884061-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689851884061-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689860114703-5">
         <addColumn tableName="T_GAMES">
@@ -345,10 +401,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689860114703-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689860114703-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689864951615-5">
         <addColumn tableName="T_GAMES">
@@ -381,10 +439,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689864951615-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689864951615-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689870747721-5">
         <addColumn tableName="T_GAMES">
@@ -405,10 +465,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689870747721-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689870747721-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689873672169-5">
         <addColumn tableName="T_ROOM">
@@ -416,7 +478,10 @@
         </addColumn>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689873672169-6">
-        <addForeignKeyConstraint baseColumnNames="ROOM_GROUP_ID" baseTableName="T_ROOM" constraintName="FKn3kd80138b25271v7fft77oqr" deferrable="false" initiallyDeferred="false" referencedColumnNames="GROUP_ID" referencedTableName="T_GROUPS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ROOM_GROUP_ID" baseTableName="T_ROOM"
+                                 constraintName="FKn3kd80138b25271v7fft77oqr" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="GROUP_ID"
+                                 referencedTableName="T_GROUPS" validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689873672169-1">
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
@@ -425,10 +490,12 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689873672169-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1689873672169-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-5">
         <createTable tableName="TJ_ROOMS_SESSION_ACTIONS">
@@ -458,13 +525,22 @@
         </createTable>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-7">
-        <addForeignKeyConstraint baseColumnNames="ACTION_PLAYER" baseTableName="T_SESSION_ACTIONS" constraintName="FK2f9lkbkme2btinok1ce7oyi7" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ACTION_PLAYER" baseTableName="T_SESSION_ACTIONS"
+                                 constraintName="FK2f9lkbkme2btinok1ce7oyi7" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-8">
-        <addForeignKeyConstraint baseColumnNames="ACTION_ID" baseTableName="TJ_ROOMS_SESSION_ACTIONS" constraintName="FK3geou10w9sse9ufy4dm8953q3" deferrable="false" initiallyDeferred="false" referencedColumnNames="ACTION_ID" referencedTableName="T_SESSION_ACTIONS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ACTION_ID" baseTableName="TJ_ROOMS_SESSION_ACTIONS"
+                                 constraintName="FK3geou10w9sse9ufy4dm8953q3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="ACTION_ID"
+                                 referencedTableName="T_SESSION_ACTIONS" validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-9">
-        <addForeignKeyConstraint baseColumnNames="ROOM_ID" baseTableName="TJ_ROOMS_SESSION_ACTIONS" constraintName="FKtr1o8dyx0oo8p544clsxbtqdf" deferrable="false" initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ROOM_ID" baseTableName="TJ_ROOMS_SESSION_ACTIONS"
+                                 constraintName="FKtr1o8dyx0oo8p544clsxbtqdf" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-1">
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
@@ -473,9 +549,11 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690103296279-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
 </databaseChangeLog>

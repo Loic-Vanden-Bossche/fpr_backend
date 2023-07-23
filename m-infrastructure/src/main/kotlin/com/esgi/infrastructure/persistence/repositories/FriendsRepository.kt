@@ -4,10 +4,10 @@ import com.esgi.infrastructure.persistence.entities.FriendsEntity
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import java.util.UUID
+import java.util.*
 
 @Repository
-interface FriendsRepository: CrudRepository<FriendsEntity, UUID> {
+interface FriendsRepository : CrudRepository<FriendsEntity, UUID> {
 
     @Query("SELECT f FROM FriendsEntity f WHERE (f.user1.id = :id OR f.user2.id = :id) AND f.status = 'APPROVED'")
     fun getAllFriendsOf(id: UUID): List<FriendsEntity>

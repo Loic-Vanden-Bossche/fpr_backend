@@ -1,5 +1,6 @@
 package com.esgi.infrastructure.services
-import com.amazonaws.services.ecs.model.*
+
+import com.amazonaws.services.ecs.model.KeyValuePair
 import com.esgi.applicationservices.services.GameBuilder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class BuildGameService(
     private val _taskService: TaskService,
-): GameBuilder {
+) : GameBuilder {
     @Value("\${games-bucket.name}")
     private val bucketName: String? = null
 

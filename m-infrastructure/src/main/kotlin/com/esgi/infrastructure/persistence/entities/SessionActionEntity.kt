@@ -20,4 +20,4 @@ data class SessionActionEntity(
     @ManyToOne
     @JoinColumn(name = "ACTION_PLAYER", referencedColumnName = "USER_ID")
     val player: UserEntity,
-): AuditableDates()
+) : AuditableDates()

@@ -7,7 +7,7 @@ import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.ForbiddenException
 import com.esgi.domainmodels.exceptions.NotFoundException
 import java.io.InputStream
-import java.util.UUID
+import java.util.*
 
 class AddGamePictureUseCase(
     private val gamePictureUploader: GamePictureUploader,

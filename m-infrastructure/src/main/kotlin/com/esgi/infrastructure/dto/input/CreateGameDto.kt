@@ -1,4 +1,5 @@
-package com.esgi.infrastructure.dto.input;
+package com.esgi.infrastructure.dto.input
+
 import com.fasterxml.jackson.annotation.JsonCreator
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotEmpty

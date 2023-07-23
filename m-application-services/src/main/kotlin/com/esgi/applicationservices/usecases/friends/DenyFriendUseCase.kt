@@ -3,13 +3,13 @@ package com.esgi.applicationservices.usecases.friends
 import com.esgi.applicationservices.persistence.FriendsPersistence
 import com.esgi.applicationservices.persistence.UsersPersistence
 import com.esgi.domainmodels.User
-import java.util.UUID
+import java.util.*
 
 class DenyFriendUseCase(
-        private val usersPersistence: UsersPersistence,
-        private val friendsPersistence: FriendsPersistence
+    private val usersPersistence: UsersPersistence,
+    private val friendsPersistence: FriendsPersistence
 ) {
-    fun execute(user: User, friend: UUID): Boolean{
+    fun execute(user: User, friend: UUID): Boolean {
         val friendUser = usersPersistence.findById(friend) ?: run {
             return false
         }

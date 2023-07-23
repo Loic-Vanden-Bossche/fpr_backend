@@ -1,7 +1,7 @@
 package com.esgi.infrastructure.dto.output
 
 import com.esgi.domainmodels.FriendRequestStatus
-import java.util.UUID
+import java.util.*
 
 data class SearchResponseDto(
     val id: UUID,

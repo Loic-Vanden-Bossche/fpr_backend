@@ -2,7 +2,7 @@ package com.esgi.applicationservices.persistence
 
 import com.esgi.domainmodels.Group
 import com.esgi.domainmodels.User
-import java.util.UUID
+import java.util.*
 
 interface GroupsPersistence {
     fun findAll(user: User): List<Group>

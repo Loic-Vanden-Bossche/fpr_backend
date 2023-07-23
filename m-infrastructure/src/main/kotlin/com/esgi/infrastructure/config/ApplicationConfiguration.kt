@@ -135,11 +135,11 @@ class ApplicationConfiguration(
 
     @Bean
     fun deleteFriendUseCase(): DeleteFriendUseCase =
-            DeleteFriendUseCase(
-                usersPersistence,
-                friendsPersistence,
-                groupsPersistence
-            )
+        DeleteFriendUseCase(
+            usersPersistence,
+            friendsPersistence,
+            groupsPersistence
+        )
 
     @Bean
     fun findingAllGroupsUseCase(): FindingAllGroupsUseCase =
@@ -170,7 +170,7 @@ class ApplicationConfiguration(
     @Bean
     fun renameGroupUseCase(): RenameGroupUseCase =
         RenameGroupUseCase(
-                groupsPersistence
+            groupsPersistence
         )
 
     @Bean

@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotNull
 import java.util.*
 
 data class CreateFriendDto @JsonCreator constructor(
-        @field:NotNull
-        val friend: UUID
+    @field:NotNull
+    val friend: UUID
 )

@@ -19,18 +19,8 @@ import org.apache.http.HttpStatus
 import org.mapstruct.factory.Mappers
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/api/groups")
@@ -50,36 +40,52 @@ class GroupsController(
 
     @GetMapping
     @ResponseBody
-    fun getGroups(principal: UsernamePasswordAuthenticationToken): List<GroupResponseDto> = findingAllGroupsUseCase.execute((principal.principal as User)).map(mapper::toDto)
+    fun getGroups(principal: UsernamePasswordAuthenticationToken): List<GroupResponseDto> =
+        findingAllGroupsUseCase.execute((principal.principal as User)).map(mapper::toDto)
 
     @PostMapping
     @ResponseBody
-    fun createGroup(@RequestBody @Valid body: CreateGroupDto, principal: UsernamePasswordAuthenticationToken): GroupResponseDto = mapper.toDto(createGroupUseCase.execute(body.users, principal.principal as User, body.name))
+    fun createGroup(
+        @RequestBody @Valid body: CreateGroupDto,
+        principal: UsernamePasswordAuthenticationToken
+    ): GroupResponseDto = mapper.toDto(createGroupUseCase.execute(body.users, principal.principal as User, body.name))
 
     @GetMapping("/{id}")
     @ResponseBody
     fun getGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): GroupResponseDto =
-            mapper.toDto(findingGroupUseCase.execute(id, principal.principal as User))
+        mapper.toDto(findingGroupUseCase.execute(id, principal.principal as User))
 
     @PatchMapping("/{id}")
     @ResponseBody
-    fun patchGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, @RequestBody @Valid body: ChangeGroupNameDto): GroupResponseDto =
-            mapper.toDto(renameGroupUseCase.execute(principal.principal as User, id, body.name))
+    fun patchGroup(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable id: UUID,
+        @RequestBody @Valid body: ChangeGroupNameDto
+    ): GroupResponseDto =
+        mapper.toDto(renameGroupUseCase.execute(principal.principal as User, id, body.name))
 
     @PutMapping("/{id}")
     @ResponseBody
-    fun putMemberInGroup(@RequestBody @Valid body: AddUserToGroupDto, principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): GroupResponseDto =
-            mapper.toDto(addUserToGroupUseCase.execute(principal.principal as User, id, body.users))
+    fun putMemberInGroup(
+        @RequestBody @Valid body: AddUserToGroupDto,
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable id: UUID
+    ): GroupResponseDto =
+        mapper.toDto(addUserToGroupUseCase.execute(principal.principal as User, id, body.users))
 
     @PatchMapping("/{id}/read")
     @Secured("USER")
-    fun readGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID){
+    fun readGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable @NotNull id: UUID) {
         readGroupUseCase(principal.principal as User, id)
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    fun quitGroup(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, response: HttpServletResponse): GroupResponseDto? =
+    fun quitGroup(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable id: UUID,
+        response: HttpServletResponse
+    ): GroupResponseDto? =
         quitGroupUseCase.execute(principal.principal as User, id)?.let { mapper.toDto(it) } ?: run {
             response.status = HttpStatus.SC_NO_CONTENT
             null
@@ -87,7 +93,12 @@ class GroupsController(
 
     @GetMapping("/{id}/messages")
     @ResponseBody
-    fun getAllMessages(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID, @RequestParam page: Int? = null, @RequestParam size: Int? = null): List<MessageResponseDto> =
+    fun getAllMessages(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable id: UUID,
+        @RequestParam page: Int? = null,
+        @RequestParam size: Int? = null
+    ): List<MessageResponseDto> =
         findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map {
             messageMapper.toDto(it, MessageResponseType.NEW)
         }

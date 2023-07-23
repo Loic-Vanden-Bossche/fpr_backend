@@ -8,7 +8,7 @@ import java.io.InputStream
 @Service
 class UploadGameService(
     val s3Service: S3Service
-): GameUploader {
+) : GameUploader {
     @Value("\${games-bucket.name}")
     private val bucketName: String? = null
 

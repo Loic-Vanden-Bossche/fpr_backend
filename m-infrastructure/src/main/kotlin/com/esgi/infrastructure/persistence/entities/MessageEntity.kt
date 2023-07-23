@@ -1,15 +1,9 @@
 package com.esgi.infrastructure.persistence.entities
 
 import com.esgi.infrastructure.persistence.listeners.AuditableDates
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.DynamicUpdate
-import java.util.UUID
+import java.util.*
 
 @Entity
 @DynamicUpdate
@@ -30,4 +24,4 @@ data class MessageEntity(
     @ManyToOne
     @JoinColumn(name = "USER", nullable = false)
     val user: UserEntity? = null
-): AuditableDates()
+) : AuditableDates()

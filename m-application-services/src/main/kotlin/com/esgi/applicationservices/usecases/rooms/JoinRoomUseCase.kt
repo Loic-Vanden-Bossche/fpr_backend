@@ -13,7 +13,8 @@ class JoinRoomUseCase(
 
         if (room.players.size >= room.game.nbMaxPlayers) throw BadRequestException("Room is full")
 
-        room.players.find { it.id == UUID.fromString(userId) } ?: throw BadRequestException("User is already in the room")
+        room.players.find { it.id == UUID.fromString(userId) }
+            ?: throw BadRequestException("User is already in the room")
 
         roomsPersistence.addPlayer(roomId, userId)
     }

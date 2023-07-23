@@ -50,10 +50,11 @@ class UsersPersistenceAdapter(
         }.toMutableList()
     }
 
-    override fun search(search: String, user: User): List<User> = userRepository.findAllByEmailNickname("%$search%").map{
-        val friendsEntity = friendsRepository.findByUserPair(it.id!!, user.id)
-        mapper.toDomain(it, friendsEntity?.status)
-    }
+    override fun search(search: String, user: User): List<User> =
+        userRepository.findAllByEmailNickname("%$search%").map {
+            val friendsEntity = friendsRepository.findByUserPair(it.id!!, user.id)
+            mapper.toDomain(it, friendsEntity?.status)
+        }
 
     override fun findById(id: UUID): User? {
         return userRepository.findByIdOrNull(id)?.let { userEntity ->

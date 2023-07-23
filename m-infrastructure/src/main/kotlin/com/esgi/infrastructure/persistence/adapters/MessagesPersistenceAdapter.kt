@@ -21,7 +21,7 @@ class MessagesPersistenceAdapter(
     private val usersRepository: UsersRepository,
     private val groupsRepository: GroupsRepository,
     private val messagesRepository: MessagesRepository
-): MessagesPersistence{
+) : MessagesPersistence {
 
     private val mapper = Mappers.getMapper(MessageMapper::class.java)
 

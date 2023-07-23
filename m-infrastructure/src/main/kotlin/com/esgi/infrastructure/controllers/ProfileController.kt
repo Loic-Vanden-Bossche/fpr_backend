@@ -23,7 +23,8 @@ class ProfileController(
 
     @GetMapping
     @ResponseBody
-    fun getProfile(principal: UsernamePasswordAuthenticationToken): UserResponseDto = mapper.toDto(getProfileUseCase(principal.principal as User))
+    fun getProfile(principal: UsernamePasswordAuthenticationToken): UserResponseDto =
+        mapper.toDto(getProfileUseCase(principal.principal as User))
 
     @PatchMapping
     @ResponseBody

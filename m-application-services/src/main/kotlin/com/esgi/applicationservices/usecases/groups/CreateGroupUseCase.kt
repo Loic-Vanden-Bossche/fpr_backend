@@ -8,20 +8,20 @@ import com.esgi.domainmodels.exceptions.NotFoundException
 import java.util.*
 
 class CreateGroupUseCase(
-        private val usersPersistence: UsersPersistence,
-        private val groupsPersistence: GroupsPersistence
+    private val usersPersistence: UsersPersistence,
+    private val groupsPersistence: GroupsPersistence
 ) {
     fun execute(usersId: List<UUID>, currentUser: User, name: String): Group {
         var hasUser = false
         val users = usersId.distinct().map {
-            if(it != currentUser.id){
+            if (it != currentUser.id) {
                 usersPersistence.findById(it) ?: throw NotFoundException("User Not Found")
-            }else {
+            } else {
                 hasUser = true
                 currentUser
             }
         }.toMutableList()
-        if(!hasUser){
+        if (!hasUser) {
             users.add(currentUser)
         }
         return groupsPersistence.create(users, name)

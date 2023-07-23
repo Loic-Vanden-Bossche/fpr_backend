@@ -3,7 +3,7 @@ package com.esgi.applicationservices.usecases.games
 import com.esgi.applicationservices.persistence.GamesPersistence
 import com.esgi.domainmodels.exceptions.ForbiddenException
 import com.esgi.domainmodels.exceptions.NotFoundException
-import java.util.UUID
+import java.util.*
 
 class DeleteGameUseCase(
     private val gamesPersistence: GamesPersistence

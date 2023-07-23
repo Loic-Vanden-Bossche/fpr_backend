@@ -4,9 +4,9 @@ import com.esgi.applicationservices.persistence.FriendsPersistence
 import com.esgi.domainmodels.User
 
 class FindingAllFriendsUseCase(
-        private val persistence: FriendsPersistence
+    private val persistence: FriendsPersistence
 ) {
-    fun execute(user: User): List<User>{
+    fun execute(user: User): List<User> {
         return persistence.findAll(user)
     }
 }

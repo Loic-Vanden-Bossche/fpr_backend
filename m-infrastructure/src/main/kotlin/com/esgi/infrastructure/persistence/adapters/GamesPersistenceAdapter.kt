@@ -16,7 +16,7 @@ import java.util.*
 class GamesPersistenceAdapter(
     private val gameRepository: GamesRepository,
     private val usersRepository: UsersRepository
-): GamesPersistence {
+) : GamesPersistence {
     private val mapper = Mappers.getMapper(GameMapper::class.java)
 
     override fun findAll(): List<Game> {
@@ -58,7 +58,8 @@ class GamesPersistenceAdapter(
     }
 
     override fun updateLastBuildDate(gameId: String): Game {
-        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+        val gameEntity =
+            gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
         gameEntity.lastBuildDate = Date()
 
@@ -66,7 +67,8 @@ class GamesPersistenceAdapter(
     }
 
     override fun setGamePicture(gameId: String): Game {
-        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+        val gameEntity =
+            gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
         gameEntity.picture = true
 
@@ -74,7 +76,8 @@ class GamesPersistenceAdapter(
     }
 
     override fun setGameVisibility(gameId: String, visible: Boolean): Game {
-        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+        val gameEntity =
+            gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
         gameEntity.isPublic = visible
 
@@ -82,7 +85,8 @@ class GamesPersistenceAdapter(
     }
 
     override fun delete(gameId: String) {
-        val gameEntity = gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+        val gameEntity =
+            gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
         gameRepository.delete(gameEntity)
     }

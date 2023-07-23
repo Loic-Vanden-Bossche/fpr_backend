@@ -1,7 +1,6 @@
 package com.esgi.infrastructure.dto.output
 
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 data class MessageResponseDto(
     val id: UUID,
