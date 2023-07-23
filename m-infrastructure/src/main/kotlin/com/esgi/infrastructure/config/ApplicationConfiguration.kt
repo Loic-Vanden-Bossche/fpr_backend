@@ -272,4 +272,8 @@ class ApplicationConfiguration(
     @Bean
     fun deleteRoomUseCase(): DeleteRoomUseCase =
         DeleteRoomUseCase(roomsPersistence)
+
+    @Bean
+    fun getUserRoomsUseCase(): GetUserRoomsUseCase =
+        GetUserRoomsUseCase(roomsPersistence)
 }

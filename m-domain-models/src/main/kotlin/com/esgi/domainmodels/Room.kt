@@ -10,5 +10,6 @@ data class Room(
     var status: RoomStatus,
     val updatedAt: Instant,
     val createdAt: Instant,
+    val invitationStatus: RoomInvitationStatus?,
     var players: List<User>,
 )

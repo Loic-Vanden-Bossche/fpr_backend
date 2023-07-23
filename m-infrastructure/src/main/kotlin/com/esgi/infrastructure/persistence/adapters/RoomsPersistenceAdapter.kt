@@ -2,6 +2,7 @@ package com.esgi.infrastructure.persistence.adapters
 
 import com.esgi.applicationservices.persistence.RoomsPersistence
 import com.esgi.domainmodels.Room
+import com.esgi.domainmodels.RoomInvitationStatus
 import com.esgi.domainmodels.RoomStatus
 import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
@@ -26,7 +27,7 @@ class RoomsPersistenceAdapter(
     override fun findById(roomId: String): Room? {
         val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: return null
 
-        return mapper.toDomain(roomEntity)
+        return mapper.toDomain(roomEntity, null)
     }
 
     override fun create(gameId: String, groupId: String, owner: User): Room {
@@ -45,7 +46,7 @@ class RoomsPersistenceAdapter(
             actions = listOf()
         )
 
-        return mapper.toDomain(roomsRepository.save(roomEntity))
+        return mapper.toDomain(roomsRepository.save(roomEntity), null)
     }
 
     override fun addPlayer(roomId: String, userId: String) {
@@ -76,7 +77,7 @@ class RoomsPersistenceAdapter(
 
         roomEntity.status = status
 
-        return mapper.toDomain(roomsRepository.save(roomEntity))
+        return mapper.toDomain(roomsRepository.save(roomEntity), null)
     }
 
     override fun recordAction(roomId: String, userId: String, instruction: String) {
@@ -99,5 +100,11 @@ class RoomsPersistenceAdapter(
 
     override fun delete(roomId: String) {
         roomsRepository.deleteById(UUID.fromString(roomId))
+    }
+
+    override fun getUserRooms(userId: UUID): List<Room> {
+        return roomsRepository.findAllByPlayersContains(userId).map {
+            mapper.toDomain(it.getRoomEntity(), RoomInvitationStatus.values().find { status -> status.name == it.getStatus() })
+        }
     }
 }
