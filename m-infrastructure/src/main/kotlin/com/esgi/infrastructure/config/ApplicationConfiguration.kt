@@ -275,7 +275,7 @@ class ApplicationConfiguration(
 
     @Bean
     fun getUserRoomsUseCase(): GetUserRoomsUseCase =
-        GetUserRoomsUseCase(roomsPersistence)
+        GetUserRoomsUseCase(roomsPersistence, groupsPersistence, usersPersistence)
 
     @Bean
     fun findingMyGamesUseCase(): FindingMyGamesUseCase =

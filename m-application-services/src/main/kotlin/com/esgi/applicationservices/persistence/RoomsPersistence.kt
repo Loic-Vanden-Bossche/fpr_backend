@@ -1,9 +1,6 @@
 package com.esgi.applicationservices.persistence
 
-import com.esgi.domainmodels.Room
-import com.esgi.domainmodels.RoomStatus
-import com.esgi.domainmodels.SessionAction
-import com.esgi.domainmodels.User
+import com.esgi.domainmodels.*
 import java.util.*
 
 interface RoomsPersistence {
@@ -15,7 +12,7 @@ interface RoomsPersistence {
     fun updateStatus(roomId: String, status: RoomStatus): Room
     fun recordAction(roomId: String, userId: String, instruction: String)
     fun delete(roomId: String)
-    fun getUserRooms(userId: UUID): List<Room>
+    fun getUserRooms(group: Group): List<Room>
     fun calculatePlayerIndexes(roomId: String): Room
     fun getActionsOfRoom(roomId: UUID): List<SessionAction>
     fun pauseAllRooms()

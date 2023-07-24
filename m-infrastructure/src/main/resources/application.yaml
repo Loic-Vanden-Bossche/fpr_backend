@@ -39,4 +39,3 @@ medias-bucket:
 
 aws:
   region: eu-west-3
-  accountId: test
