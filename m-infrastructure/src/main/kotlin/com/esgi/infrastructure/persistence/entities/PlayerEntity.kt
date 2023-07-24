@@ -7,9 +7,11 @@ import java.util.*
 
 @Entity
 @DynamicUpdate
-@Table(name = "T_PLAYERS", uniqueConstraints=[
-    UniqueConstraint(columnNames = ["PLAYER_USER_ID", "PLAYER_ROOM_ID"])
-])
+@Table(
+    name = "T_PLAYERS", uniqueConstraints = [
+        UniqueConstraint(columnNames = ["PLAYER_USER_ID", "PLAYER_ROOM_ID"])
+    ]
+)
 data class PlayerEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

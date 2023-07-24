@@ -2,7 +2,6 @@ package com.esgi.applicationservices.persistence
 
 import com.esgi.domainmodels.Role
 import com.esgi.domainmodels.User
-import com.esgi.domainmodels.exceptions.NotFoundException
 import java.util.*
 
 interface UsersPersistence {

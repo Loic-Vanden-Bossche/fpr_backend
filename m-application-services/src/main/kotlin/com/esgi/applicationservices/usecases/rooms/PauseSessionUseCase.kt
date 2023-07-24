@@ -15,12 +15,15 @@ class PauseSessionUseCase(
             RoomStatus.PAUSED -> {
                 throw BadRequestException("Room already paused")
             }
+
             RoomStatus.FINISHED -> {
                 throw BadRequestException("Room already finished")
             }
+
             RoomStatus.WAITING -> {
                 throw BadRequestException("Room not started")
             }
+
             else -> roomsPersistence.updateStatus(roomId, RoomStatus.PAUSED)
         }
     }

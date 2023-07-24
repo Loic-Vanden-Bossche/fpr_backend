@@ -3,7 +3,6 @@ package com.esgi.applicationservices.usecases.rooms
 import com.esgi.applicationservices.persistence.RoomsPersistence
 import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.NotFoundException
-import java.lang.IllegalStateException
 import java.util.*
 
 class JoinRoomUseCase(

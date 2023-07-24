@@ -23,6 +23,6 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     @Query("UPDATE RoomEntity r SET r.status = 'PAUSED' WHERE r.status <> 'FINISHED'")
     fun pauseAllStartedRooms()
 
-    @Query("SELECT r.actions FROM RoomEntity r")
+    @Query("SELECT a FROM RoomEntity r INNER JOIN r.actions a WHERE r.id = :roomId ORDER BY a.createdAt ASC")
     fun findActionByRoomId(roomId: UUID): List<SessionActionEntity>
 }

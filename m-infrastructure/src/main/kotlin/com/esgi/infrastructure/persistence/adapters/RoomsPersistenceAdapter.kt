@@ -170,6 +170,14 @@ class RoomsPersistenceAdapter(
 
     override fun getActionsOfRoom(roomId: UUID): List<SessionAction> {
         val room = roomsRepository.findByIdOrNull(roomId) ?: throw NotFoundException("Room not found")
-        return roomsRepository.findActionByRoomId(room.id!!).map { SessionAction(it.id!!, userMapper.toDomain(it.player.user, null), it.instruction, it.createdAt!!, it.updatedAt!!) }
+        return roomsRepository.findActionByRoomId(room.id!!).map {
+            SessionAction(
+                it.id!!,
+                userMapper.toDomain(it.player.user, null),
+                it.instruction,
+                it.createdAt!!,
+                it.updatedAt!!
+            )
+        }
     }
 }

@@ -3,7 +3,7 @@ package com.esgi.applicationservices.usecases.rooms
 import com.esgi.applicationservices.persistence.RoomsPersistence
 import com.esgi.domainmodels.SessionAction
 import com.esgi.domainmodels.exceptions.NotFoundException
-import java.util.UUID
+import java.util.*
 
 class GetHistoryForRoomUseCase(
     private val roomsPersistence: RoomsPersistence

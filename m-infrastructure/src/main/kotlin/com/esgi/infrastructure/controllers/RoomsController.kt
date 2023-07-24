@@ -3,7 +3,6 @@ package com.esgi.infrastructure.controllers
 import com.esgi.applicationservices.usecases.rooms.FindRoomUseCase
 import com.esgi.applicationservices.usecases.rooms.GetHistoryForRoomUseCase
 import com.esgi.applicationservices.usecases.rooms.GetUserRoomsUseCase
-import com.esgi.domainmodels.Room
 import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
@@ -40,12 +39,17 @@ class RoomsController(
     @GetMapping("/{id}")
     @ResponseBody
     fun getById(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): RoomResponseDto {
-        return mapper.toDto(findRoomUseCase(principal.principal as User, id) ?: throw NotFoundException("Room not found"))
+        return mapper.toDto(
+            findRoomUseCase(principal.principal as User, id) ?: throw NotFoundException("Room not found")
+        )
     }
 
     @GetMapping("/{id}/history")
     @ResponseBody
-    fun getHistory(principal: UsernamePasswordAuthenticationToken, @PathVariable id: UUID): List<SessionActionResponseDto> =
+    fun getHistory(
+        principal: UsernamePasswordAuthenticationToken,
+        @PathVariable id: UUID
+    ): List<SessionActionResponseDto> =
         getHistoryForRoomUseCase(id).map { SessionActionResponseDto(it.id, it.player.id, it.instruction) }
 }
 

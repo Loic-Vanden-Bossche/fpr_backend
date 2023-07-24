@@ -2,6 +2,8 @@ package com.esgi.infrastructure.services
 
 import com.esgi.applicationservices.services.GameInstanciator
 import com.esgi.applicationservices.usecases.rooms.*
+import com.esgi.domainmodels.Room
+import com.esgi.domainmodels.SessionAction
 import com.esgi.infrastructure.dto.input.GameErrorOutput
 import com.esgi.infrastructure.dto.input.GameOutput
 import com.esgi.infrastructure.dto.output.games.*
@@ -14,7 +16,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.stereotype.Service
 import java.io.IOException
 import java.nio.channels.AsynchronousSocketChannel
-import java.util.UUID
+import java.util.*
 
 @Service
 class SessionsService(
@@ -27,18 +29,27 @@ class SessionsService(
     private val findRoomUseCase: FindRoomUseCase,
     private val resumeSessionUseCase: ResumeSessionUseCase,
     private val pauseAllRoomsUseCase: PauseAllRoomsUseCase,
+    private val getHistoryForRoomUseCase: GetHistoryForRoomUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
     private val jsonMapper = jacksonObjectMapper()
 
     @EventListener(ApplicationReadyEvent::class)
-    fun doSomethingAfterStartup() {
+    fun pauseAllRoomsOnStartup() {
         println("Startup - pausing all rooms that are not finished")
         pauseAllRoomsUseCase()
     }
 
     fun addSession(session: Session) {
         sessions[session.roomId] = session
+    }
+
+    fun createSessionAndListen(gameId: String, roomId: String): String {
+        val message = createSession(gameId, roomId)
+
+        listenToIncomingMessages(roomId)
+
+        return message
     }
 
     fun createSession(gameId: String, roomId: String): String {
@@ -55,10 +66,28 @@ class SessionsService(
             throw Exception("Error creating session")
         }
 
+        addSession(session)
+
+        return "Session created"
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun listenToIncomingMessages(roomId: String, actions: List<SessionAction> = emptyList()) {
+        val session = getSession(roomId) ?: return
+
         GlobalScope.launch {
+            // remove last state
+            val actionsSequence = LinkedList(actions.filterIndexed { index, _ -> index != actions.size - 1 })
+
             while (true) {
                 try {
                     val jsonMessage: String? = session.receiveResponse()
+                    val action = actionsSequence.poll()
+
+                    if (action != null) {
+                        println("Sending action ${action.instruction}")
+                        session.sendInstruction(action.instruction)
+                    }
 
                     if (jsonMessage != null) {
                         try {
@@ -83,14 +112,45 @@ class SessionsService(
                 }
             }
         }
-
-        addSession(session)
-
-        return "Session created"
     }
 
-    fun resumeSession(roomId: String) {
+//    fun rollbackSession(room: Room, actionId: String) {
+//        val roomId = room.id.toString()
+//        val actions = replayToAction(room, actionId)
+//
+//        println("Rolling back session for room $roomId")
+//
+//        createSession(room.game.id.toString(), roomId)
+//
+//        listenToIncomingMessages(roomId, actions)
+//    }
+
+    fun resumeSession(room: Room) {
+        val roomId = room.id.toString()
         resumeSessionUseCase(roomId)
+
+        println("Resuming session for room $roomId")
+
+        createSession(room.game.id.toString(), roomId)
+
+        listenToIncomingMessages(roomId, replayToAction(room, null))
+    }
+
+    private fun replayToAction(room: Room, actionId: String?): List<SessionAction> {
+        val session = getSession(room.id.toString()) ?: return emptyList()
+
+        session.startGame(room.players.size)
+
+        // replay actions
+        val actions = if (actionId == null) {
+            // get all actions
+            getHistoryForRoomUseCase(room.id)
+        } else {
+            // get actions after actionId
+            getHistoryForRoomUseCase(room.id)
+        }
+
+        return actions
     }
 
     private fun getSession(roomId: String): Session? {
@@ -103,6 +163,10 @@ class SessionsService(
 
     fun isSessionMissing(roomId: String): Boolean {
         return getSession(roomId) == null
+    }
+
+    fun isSessionExisting(roomId: String): Boolean {
+        return getSession(roomId) != null
     }
 
     fun startGameSession(roomId: String, nPlayers: Int) {
@@ -145,8 +209,10 @@ class SessionsService(
         }
 
         fun startGame(nPlayers: Int) {
-            sendInstruction(jsonMapper.writeValueAsString(
-                Instruction(Init(nPlayers)))
+            sendInstruction(
+                jsonMapper.writeValueAsString(
+                    Instruction(Init(nPlayers))
+                )
             )
         }
 

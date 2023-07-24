@@ -9,8 +9,6 @@ import com.esgi.infrastructure.dto.output.games.*
 import com.esgi.infrastructure.services.SessionsService
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.springframework.boot.context.event.ApplicationReadyEvent
-import org.springframework.context.event.EventListener
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
@@ -52,7 +50,7 @@ class GamesGateway(
             CreateRoomResponseDto(
                 true,
                 roomId,
-                sessionsService.createSession(roomData.gameId, roomId.toString())
+                sessionsService.createSessionAndListen(roomData.gameId, roomId.toString())
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -111,17 +109,22 @@ class GamesGateway(
     @MessageMapping("/resumeGame/{roomId}")
     @SendTo("/rooms/{roomId}")
     fun resumeGame(@DestinationVariable roomId: String): ResumedGameResponseDto {
-        if (sessionsService.isSessionMissing(roomId)) {
-            return ResumedGameResponseDto(false, reason = "Session not found")
+        println("Resuming game $roomId")
+        if (sessionsService.isSessionExisting(roomId)) {
+            return ResumedGameResponseDto(false, reason = "Session is already running")
         }
+
+        val room = findRoomUseCase(roomId) ?: return ResumedGameResponseDto(false, "Room not found")
+
+        println("Room $roomId found")
 
         return try {
             sessionsService.resumeSession(
-                roomId,
+                room,
             )
 
             ResumedGameResponseDto(true)
-        } catch (e: IllegalStateException) {
+        } catch (e: BadRequestException) {
             ResumedGameResponseDto(false, e.message)
         } catch (e: NotFoundException) {
             ResumedGameResponseDto(false, e.message)
@@ -171,9 +174,9 @@ class GamesGateway(
             return PlayGameResponseDto(false, reason = "Session not found")
         }
 
-        val room = findRoomUseCase(roomId)
+        val room = findRoomUseCase(roomId) ?: return PlayGameResponseDto(false, "Room not found")
 
-        val player = room?.players?.find { it.user.id == (principal.principal as User).id }
+        val player = room.players.find { it.user.id == (principal.principal as User).id }
             ?: return PlayGameResponseDto(false, "You are not in this room")
 
         val parsedInstruction = try {
