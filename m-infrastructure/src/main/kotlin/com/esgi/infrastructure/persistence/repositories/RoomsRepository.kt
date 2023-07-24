@@ -1,6 +1,7 @@
 package com.esgi.infrastructure.persistence.repositories
 
 import com.esgi.infrastructure.persistence.entities.RoomEntity
+import com.esgi.infrastructure.persistence.entities.SessionActionEntity
 import com.esgi.infrastructure.persistence.entities.UserEntity
 import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.Modifying
@@ -21,4 +22,7 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     @Modifying
     @Query("UPDATE RoomEntity r SET r.status = 'PAUSED' WHERE r.status <> 'FINISHED'")
     fun pauseAllStartedRooms()
+
+    @Query("SELECT r.actions FROM RoomEntity r")
+    fun findActionByRoomId(roomId: UUID): List<SessionActionEntity>
 }

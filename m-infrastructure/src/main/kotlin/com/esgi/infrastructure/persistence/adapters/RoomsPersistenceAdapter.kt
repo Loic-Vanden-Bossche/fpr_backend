@@ -1,12 +1,10 @@
 package com.esgi.infrastructure.persistence.adapters
 
 import com.esgi.applicationservices.persistence.RoomsPersistence
-import com.esgi.domainmodels.Room
-import com.esgi.domainmodels.RoomInvitationStatus
-import com.esgi.domainmodels.RoomStatus
-import com.esgi.domainmodels.User
+import com.esgi.domainmodels.*
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
+import com.esgi.infrastructure.dto.mappers.UserMapper
 import com.esgi.infrastructure.persistence.entities.PlayerEntity
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
@@ -27,6 +25,7 @@ class RoomsPersistenceAdapter(
     private val sessionActionRepository: SessionActionRepository
 ) : RoomsPersistence {
     private val mapper = Mappers.getMapper(RoomMapper::class.java)
+    private val userMapper = Mappers.getMapper(UserMapper::class.java)
 
     override fun findById(roomId: String): Room? {
         val roomEntity = roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: return null
@@ -167,5 +166,10 @@ class RoomsPersistenceAdapter(
 
     override fun pauseAllRooms() {
         roomsRepository.pauseAllStartedRooms()
+    }
+
+    override fun getActionsOfRoom(roomId: UUID): List<SessionAction> {
+        val room = roomsRepository.findByIdOrNull(roomId) ?: throw NotFoundException("Room not found")
+        return roomsRepository.findActionByRoomId(room.id!!).map { SessionAction(it.id!!, userMapper.toDomain(it.player.user, null), it.instruction, it.createdAt!!, it.updatedAt!!) }
     }
 }

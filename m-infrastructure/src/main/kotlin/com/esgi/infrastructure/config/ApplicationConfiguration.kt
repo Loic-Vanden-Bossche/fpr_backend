@@ -296,4 +296,8 @@ class ApplicationConfiguration(
     @Bean
     fun pauseAllRoomsUseCase(): PauseAllRoomsUseCase =
         PauseAllRoomsUseCase(roomsPersistence)
+
+    @Bean
+    fun getHistoryForRoomUseCase(): GetHistoryForRoomUseCase =
+        GetHistoryForRoomUseCase(roomsPersistence)
 }
