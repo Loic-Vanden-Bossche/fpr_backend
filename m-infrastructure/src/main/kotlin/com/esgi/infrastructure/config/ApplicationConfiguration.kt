@@ -284,4 +284,8 @@ class ApplicationConfiguration(
     @Bean
     fun findRoomUseCase(): FindRoomUseCase =
         FindRoomUseCase(roomsPersistence)
+
+    @Bean
+    fun finalizeSessionUseCase(): FinalizeSessionUseCase =
+        FinalizeSessionUseCase(roomsPersistence, usersPersistence)
 }
