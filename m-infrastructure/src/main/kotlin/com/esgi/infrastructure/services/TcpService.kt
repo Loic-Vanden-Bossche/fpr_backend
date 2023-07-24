@@ -30,7 +30,7 @@ class TcpService {
     fun receiveTcpMessage(client: AsynchronousSocketChannel): String? {
         val readBuffer = ByteBuffer.allocate(2048)
 
-        if(client.read(readBuffer).get() == -1){
+        if (client.read(readBuffer).get() == -1) {
             throw EOFException()
         }
 

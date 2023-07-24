@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.mapstruct.factory.Mappers
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.bind.annotation.*
-import java.util.UUID
+import java.util.*
 
 @RestController
 @RequestMapping("/api/rooms")

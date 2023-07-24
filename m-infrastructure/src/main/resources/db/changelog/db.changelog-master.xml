@@ -580,22 +580,35 @@
         </addColumn>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-7">
-        <addForeignKeyConstraint baseColumnNames="ACTION_ROOM" baseTableName="T_SESSION_ACTIONS" constraintName="FK7spwgndds43a2wph8nggahhw0" deferrable="false" initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ACTION_ROOM" baseTableName="T_SESSION_ACTIONS"
+                                 constraintName="FK7spwgndds43a2wph8nggahhw0" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-8">
-        <addForeignKeyConstraint baseColumnNames="PLAYER_ROOM_ID" baseTableName="T_PLAYERS" constraintName="FKcfwsy53739efgg4badquhmmld" deferrable="false" initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="PLAYER_ROOM_ID" baseTableName="T_PLAYERS"
+                                 constraintName="FKcfwsy53739efgg4badquhmmld" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="ROOM_ID" referencedTableName="T_ROOM"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-9">
-        <addForeignKeyConstraint baseColumnNames="PLAYER_USER_ID" baseTableName="T_PLAYERS" constraintName="FKhl4lymphq0v9867u8n2w5ngh3" deferrable="false" initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="PLAYER_USER_ID" baseTableName="T_PLAYERS"
+                                 constraintName="FKhl4lymphq0v9867u8n2w5ngh3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="USER_ID" referencedTableName="T_USERS"
+                                 validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-10">
-        <addForeignKeyConstraint baseColumnNames="ACTION_PLAYER" baseTableName="T_SESSION_ACTIONS" constraintName="FKpy4i0m40diskbibewcvj36enf" deferrable="false" initiallyDeferred="false" referencedColumnNames="PLAYER_ID" referencedTableName="T_PLAYERS" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="ACTION_PLAYER" baseTableName="T_SESSION_ACTIONS"
+                                 constraintName="FKpy4i0m40diskbibewcvj36enf" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="PLAYER_ID"
+                                 referencedTableName="T_PLAYERS" validate="true"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-11">
         <dropForeignKeyConstraint baseTableName="T_SESSION_ACTIONS" constraintName="FK2f9lkbkme2btinok1ce7oyi7"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-12">
-        <dropForeignKeyConstraint baseTableName="TJ_ROOMS_SESSION_ACTIONS" constraintName="FK3geou10w9sse9ufy4dm8953q3"/>
+        <dropForeignKeyConstraint baseTableName="TJ_ROOMS_SESSION_ACTIONS"
+                                  constraintName="FK3geou10w9sse9ufy4dm8953q3"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-13">
         <dropForeignKeyConstraint baseTableName="TJ_ROOMS_USERS" constraintName="FKc42owru2rbf6v277o2qffw583"/>
@@ -604,7 +617,8 @@
         <dropForeignKeyConstraint baseTableName="TJ_ROOMS_USERS" constraintName="FKdq8kijvl4hhdcbht51x7qh3nj"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-15">
-        <dropForeignKeyConstraint baseTableName="TJ_ROOMS_SESSION_ACTIONS" constraintName="FKtr1o8dyx0oo8p544clsxbtqdf"/>
+        <dropForeignKeyConstraint baseTableName="TJ_ROOMS_SESSION_ACTIONS"
+                                  constraintName="FKtr1o8dyx0oo8p544clsxbtqdf"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-16">
         <dropTable tableName="TJ_ROOMS_SESSION_ACTIONS"/>
@@ -619,9 +633,11 @@
         <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-3">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
     <changeSet author="loloi (generated)" id="1690145367145-4">
-        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()"
+                         tableName="TJ_GROUPS_USERS"/>
     </changeSet>
 </databaseChangeLog>

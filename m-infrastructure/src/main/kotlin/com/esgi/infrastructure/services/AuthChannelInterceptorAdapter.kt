@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.server.resource.InvalidBearerTokenExc
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpClientErrorException.Unauthorized
 
 @Component
 class AuthChannelInterceptorAdapter @Inject constructor(
@@ -46,11 +45,11 @@ class AuthChannelInterceptorAdapter @Inject constructor(
                     )
                 )
             }
-        } else if(accessor?.command == StompCommand.SUBSCRIBE) {
+        } else if (accessor?.command == StompCommand.SUBSCRIBE) {
             val id = ((accessor.user as UsernamePasswordAuthenticationToken).principal as User).id
             val dest = accessor.destination?.split("/")?.minusElement("") ?: return message
-            if(dest.size == 3 && dest[0] == "rooms"){
-                if(dest[2] != id.toString()){
+            if (dest.size == 3 && dest[0] == "rooms") {
+                if (dest[2] != id.toString()) {
                     throw IllegalAccessException("Not permitted")
                 } else {
                     return message

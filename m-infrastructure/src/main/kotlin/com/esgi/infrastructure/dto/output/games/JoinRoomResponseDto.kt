@@ -1,6 +1,6 @@
 package com.esgi.infrastructure.dto.output.games
 
-import java.util.UUID
+import java.util.*
 
 data class JoinRoomResponseDto(
     val joined: Boolean,

@@ -117,7 +117,7 @@ class GamesGateway(
         return try {
             joinRoomUseCase(roomId, (principal.principal as User).id.toString())
             JoinRoomResponseDto(true, (principal.principal as User).id)
-        } catch (e: BadRequestException){
+        } catch (e: BadRequestException) {
             JoinRoomResponseDto(false, reason = e.message)
         } catch (e: NotFoundException) {
             JoinRoomResponseDto(false, reason = e.message)
@@ -151,13 +151,17 @@ class GamesGateway(
 
         try {
             jsonMapper.readTree(instruction)
-        }catch (_: Exception){
+        } catch (_: Exception) {
             PlayGameResponseDto(false, "Invalid JSON instruction")
         }
 
         if (session != null) {
             return try {
-                playSessionActionUseCase(roomId, (principal.principal as User).id.toString(), jsonMapper.writeValueAsString(instruction))
+                playSessionActionUseCase(
+                    roomId,
+                    (principal.principal as User).id.toString(),
+                    jsonMapper.writeValueAsString(instruction)
+                )
 
                 println("Sending instruction $instruction to room $roomId")
                 session.sendInstruction(instruction)
@@ -195,7 +199,7 @@ class GamesGateway(
         val init: Init
     )
 
-    data class Init (
+    data class Init(
         val players: Int
     )
 }

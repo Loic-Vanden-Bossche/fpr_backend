@@ -1,13 +1,15 @@
 package com.esgi.infrastructure.persistence.adapters
 
 import com.esgi.applicationservices.persistence.RoomsPersistence
-import com.esgi.domainmodels.*
+import com.esgi.domainmodels.Room
+import com.esgi.domainmodels.RoomInvitationStatus
+import com.esgi.domainmodels.RoomStatus
+import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.RoomMapper
 import com.esgi.infrastructure.persistence.entities.PlayerEntity
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.SessionActionEntity
-import com.esgi.infrastructure.persistence.entities.UserEntity
 import com.esgi.infrastructure.persistence.repositories.*
 import jakarta.transaction.Transactional
 import org.mapstruct.factory.Mappers
@@ -34,9 +36,9 @@ class RoomsPersistenceAdapter(
 
     override fun findByIdOfUser(roomId: UUID, user: UUID): Room? {
         val roomEntity = roomsRepository.findByIdOrNull(roomId) ?: return null
-        val status = if(user in roomEntity.players.map { it.user.id }){
+        val status = if (user in roomEntity.players.map { it.user.id }) {
             RoomInvitationStatus.JOINED
-        } else if(user in roomEntity.group.users.map { it.user.id }){
+        } else if (user in roomEntity.group.users.map { it.user.id }) {
             RoomInvitationStatus.JOINED
         } else {
             return null
@@ -157,7 +159,8 @@ class RoomsPersistenceAdapter(
     override fun getUserRooms(userId: UUID): List<Room> {
         val user = usersRepository.findByIdOrNull(userId) ?: return emptyList()
         return roomsRepository.findAllByUser(user).map {
-            val status = if (user in it.players.map { player -> player.user }) RoomInvitationStatus.JOINED else  RoomInvitationStatus.PENDING
+            val status =
+                if (user in it.players.map { player -> player.user }) RoomInvitationStatus.JOINED else RoomInvitationStatus.PENDING
             mapper.toDomain(it, status)
         }
     }
