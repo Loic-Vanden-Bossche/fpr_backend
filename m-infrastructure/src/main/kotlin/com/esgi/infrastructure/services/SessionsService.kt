@@ -77,7 +77,7 @@ class SessionsService(
 
         GlobalScope.launch {
             // remove last state
-            val actionsSequence = LinkedList(actions.filterIndexed { index, _ -> index != actions.size - 1 })
+            val actionsSequence = LinkedList(actions)
 
             while (true) {
                 try {
