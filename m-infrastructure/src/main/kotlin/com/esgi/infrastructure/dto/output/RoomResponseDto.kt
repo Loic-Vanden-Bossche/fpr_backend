@@ -8,4 +8,5 @@ data class RoomResponseDto(
     val players: List<PlayerResponseDto>,
     val invitationStatus: RoomInvitationStatus?,
     val game: GameResponseDto,
+    val group: GroupResponseDto
 )
