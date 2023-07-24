@@ -123,4 +123,25 @@ class UsersPersistenceAdapter(
 
         return mapper.toDomain(updatedUser, null)
     }
+
+    override fun updatePlayerScore(userId: String, score: Int): User {
+        val user = userRepository.findByIdOrNull(UUID.fromString(userId)) ?: throw NotFoundException("User not found")
+
+        val userToUpdate = UserEntity(
+            id = user.id,
+            email = user.email,
+            nickname = user.nickname,
+            password = user.password,
+            role = user.role,
+            coins = user.coins + score,
+            picture = user.picture
+        ).apply {
+            this.createdAt = user.createdAt
+            this.updatedAt = user.updatedAt
+        }
+
+        val updatedUser = userRepository.save(userToUpdate)
+
+        return mapper.toDomain(updatedUser, null)
+    }
 }

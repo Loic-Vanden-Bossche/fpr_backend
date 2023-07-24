@@ -6,7 +6,6 @@ import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.input.CreateRoomDto
-import com.esgi.infrastructure.dto.input.GameDisplay
 import com.esgi.infrastructure.dto.input.GameErrorOutput
 import com.esgi.infrastructure.dto.input.GameOutput
 import com.esgi.infrastructure.dto.output.games.*
@@ -37,6 +36,7 @@ class GamesGateway(
     val playSessionActionUseCase: PlaySessionActionUseCase,
     val deleteRoomUseCase: DeleteRoomUseCase,
     val findRoomUseCase: FindRoomUseCase,
+    val finalizeSessionUseCase: FinalizeSessionUseCase
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
     val jsonMapper = jacksonObjectMapper()
@@ -137,7 +137,9 @@ class GamesGateway(
 
         return try {
             val room = startSessionUseCase(roomId)
-            session.sendInstruction(jsonMapper.writeValueAsString(Instruction(Init(room.players.size))))
+            session.sendInstruction(jsonMapper.writeValueAsString(
+                Instruction(Init(room.players.size)))
+            )
             StartedGameResponseDto(true)
         } catch (e: IllegalStateException) {
             StartedGameResponseDto(false, e.message)
@@ -285,6 +287,16 @@ class GamesGateway(
                 }
 
                 sentToUser(it.user.id.toString(), gameResponse)
+            }
+
+            if (gameOutput.gameState.gameOver) {
+                finalizeSessionUseCase(roomId, gameOutput.gameState.scores)
+
+                withContext(Dispatchers.IO) {
+                    client.close()
+                }
+
+                sessions.remove(roomId)
             }
         }
     }

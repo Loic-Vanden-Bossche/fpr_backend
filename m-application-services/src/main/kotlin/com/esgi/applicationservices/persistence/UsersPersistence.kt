@@ -2,6 +2,7 @@ package com.esgi.applicationservices.persistence
 
 import com.esgi.domainmodels.Role
 import com.esgi.domainmodels.User
+import com.esgi.domainmodels.exceptions.NotFoundException
 import java.util.*
 
 interface UsersPersistence {
@@ -38,4 +39,6 @@ interface UsersPersistence {
     fun delete(id: UUID): User
 
     fun updateNickName(id: UUID, newNickName: String): User
+
+    fun updatePlayerScore(userId: String, score: Int): User
 }
