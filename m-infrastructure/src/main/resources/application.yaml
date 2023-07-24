@@ -8,7 +8,7 @@ spring:
         physical-strategy: com.esgi.infrastructure.persistence.strategies.PhysicalStrategy
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
     open-in-view: false
-    show-sql: true
+    show-sql: false
   datasource:
     url: jdbc:postgresql://localhost:5432/jpr?schema=public
     username: postgres
