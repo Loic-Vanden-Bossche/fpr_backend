@@ -2,6 +2,7 @@ package com.esgi.infrastructure.controllers
 
 import com.esgi.applicationservices.usecases.groups.*
 import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
+import com.esgi.applicationservices.usecases.groups.message.UpdateLastReadUseCase
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.AddUserToGroupDto
 import com.esgi.infrastructure.dto.input.ChangeGroupNameDto
@@ -33,7 +34,8 @@ class GroupsController(
     private val renameGroupUseCase: RenameGroupUseCase,
     private val quitGroupUseCase: QuitGroupUseCase,
     private val findingAllGroupMessageUseCase: FindingAllGroupMessageUseCase,
-    private val readGroupUseCase: ReadGroupUseCase
+    private val readGroupUseCase: ReadGroupUseCase,
+    private val updateLastReadUseCase: UpdateLastReadUseCase
 ) {
     private val mapper = Mappers.getMapper(GroupMapper::class.java)
     private val messageMapper = Mappers.getMapper(MessageMapper::class.java)
@@ -101,5 +103,7 @@ class GroupsController(
     ): List<MessageResponseDto> =
         findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map {
             messageMapper.toDto(it, MessageResponseType.NEW)
+        }.also {
+            updateLastReadUseCase(id, principal.principal as User)
         }
 }

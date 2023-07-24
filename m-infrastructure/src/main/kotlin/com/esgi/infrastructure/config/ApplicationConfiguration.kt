@@ -6,10 +6,7 @@ import com.esgi.applicationservices.services.GameUploader
 import com.esgi.applicationservices.usecases.friends.*
 import com.esgi.applicationservices.usecases.games.*
 import com.esgi.applicationservices.usecases.groups.*
-import com.esgi.applicationservices.usecases.groups.message.DeleteMessageInGroupUseCase
-import com.esgi.applicationservices.usecases.groups.message.EditMessageInGroupUseCase
-import com.esgi.applicationservices.usecases.groups.message.FindingAllGroupMessageUseCase
-import com.esgi.applicationservices.usecases.groups.message.WriteMessageToGroupUseCase
+import com.esgi.applicationservices.usecases.groups.message.*
 import com.esgi.applicationservices.usecases.profile.GetProfileUseCase
 import com.esgi.applicationservices.usecases.profile.UpdateProfileNickName
 import com.esgi.applicationservices.usecases.rooms.*
@@ -304,4 +301,8 @@ class ApplicationConfiguration(
     @Bean
     fun getHistoryForRoomUseCase(): GetHistoryForRoomUseCase =
         GetHistoryForRoomUseCase(roomsPersistence)
+
+    @Bean
+    fun updateLastReadUseCase(): UpdateLastReadUseCase =
+        UpdateLastReadUseCase(groupsPersistence)
 }
