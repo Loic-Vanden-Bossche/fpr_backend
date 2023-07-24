@@ -274,7 +274,7 @@ class GamesGateway(
                             content = d.content
                         )
                     },
-                    resquestedActions = requestActions.map { action ->
+                    requestedActions = requestActions.map { action ->
                         GameRequestedActionResponseDto(
                             type = action.type,
                             zones = action.zones
