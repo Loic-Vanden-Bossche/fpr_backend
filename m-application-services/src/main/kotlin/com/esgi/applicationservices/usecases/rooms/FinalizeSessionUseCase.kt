@@ -12,12 +12,14 @@ class FinalizeSessionUseCase(
     operator fun invoke(roomId: String, scores: List<Int>) {
         val room = roomsPersistence.findById(roomId) ?: throw NotFoundException("Room not found")
 
-        room.players.forEach {
-            if (it.playerIndex <= 0) {
-                return@forEach
-            }
+        if (scores.isNotEmpty()) {
+            room.players.forEach {
+                if (it.playerIndex <= 0) {
+                    return@forEach
+                }
 
-            usersPersistence.updatePlayerScore(it.user.id.toString(), scores[it.playerIndex - 1])
+                usersPersistence.updatePlayerScore(it.user.id.toString(), scores[it.playerIndex - 1])
+            }
         }
 
         roomsPersistence.updateStatus(roomId, RoomStatus.FINISHED)

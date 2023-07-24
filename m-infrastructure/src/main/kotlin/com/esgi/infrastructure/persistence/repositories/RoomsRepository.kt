@@ -8,15 +8,10 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.util.*
 
-interface RoomWithInvitationStatus {
-    fun getRoomEntity(): RoomEntity
-    fun getStatus(): String
-}
-
 @Repository
 interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     override fun findById(id: UUID): Optional<RoomEntity>
 
-    @Query("SELECT r FROM RoomEntity r INNER JOIN UserGroupEntity ug WHERE ug.user = :user")
+    @Query("SELECT r FROM RoomEntity r INNER JOIN UserGroupEntity ug WHERE ug.user = :user AND r.status <> 'FINISHED'")
     fun findAllByUser(@Param("user") user: UserEntity): List<RoomEntity>
 }

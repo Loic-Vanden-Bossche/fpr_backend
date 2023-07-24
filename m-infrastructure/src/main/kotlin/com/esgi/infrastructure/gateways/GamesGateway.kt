@@ -95,6 +95,7 @@ class GamesGateway(
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    session.close(emptyList())
                     break
                 }
             }
@@ -161,7 +162,7 @@ class GamesGateway(
         val player = room?.players?.find { it.user.id == (principal.principal as User).id }
             ?: return PlayGameResponseDto(false, "You are not in this room")
 
-        try {
+        val parsedInstruction = try {
             val tree = jsonMapper.readTree(instruction)
 
             if (tree["actions"].isArray) {
@@ -172,6 +173,7 @@ class GamesGateway(
                 }
             }
 
+            tree
         } catch (_: Exception) {
             PlayGameResponseDto(false, "Invalid JSON instruction")
         }
@@ -181,11 +183,11 @@ class GamesGateway(
                 playSessionActionUseCase(
                     roomId,
                     (principal.principal as User).id.toString(),
-                    jsonMapper.writeValueAsString(instruction)
+                    jsonMapper.writeValueAsString(parsedInstruction)
                 )
 
-                println("Sending instruction $instruction to room $roomId")
-                session.sendInstruction(instruction)
+                println("Sending instruction $parsedInstruction to room $roomId")
+                session.sendInstruction(parsedInstruction.toString())
 
                 PlayGameResponseDto(true)
             } catch (e: BadRequestException) {
@@ -290,14 +292,16 @@ class GamesGateway(
             }
 
             if (gameOutput.gameState.gameOver) {
-                finalizeSessionUseCase(roomId, gameOutput.gameState.scores)
-
-                withContext(Dispatchers.IO) {
-                    client.close()
-                }
-
-                sessions.remove(roomId)
+                close(gameOutput.gameState.scores)
             }
+        }
+
+        fun close(scores: List<Int>) {
+            finalizeSessionUseCase(roomId, scores)
+
+            client.close()
+
+            sessions.remove(roomId)
         }
     }
 
