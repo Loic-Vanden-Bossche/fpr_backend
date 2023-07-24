@@ -14,7 +14,7 @@ import java.util.*
 interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
     override fun findById(id: UUID): Optional<RoomEntity>
 
-    @Query("SELECT r FROM RoomEntity r WHERE r.group = :group")
+    @Query("SELECT r FROM RoomEntity r WHERE r.group = :group AND r.status <> 'FINISHED'")
     fun findAllByGroup(group: GroupEntity): List<RoomEntity>
 
     @Transactional
