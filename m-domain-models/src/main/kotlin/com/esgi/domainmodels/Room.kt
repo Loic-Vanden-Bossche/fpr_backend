@@ -12,4 +12,5 @@ data class Room(
     val createdAt: Instant,
     val invitationStatus: RoomInvitationStatus?,
     var players: List<Player>,
+    val group: Group
 )
