@@ -6,17 +6,15 @@ import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.input.CreateRoomDto
+import com.esgi.infrastructure.dto.input.GameDisplay
 import com.esgi.infrastructure.dto.input.GameErrorOutput
 import com.esgi.infrastructure.dto.input.GameOutput
-import com.esgi.infrastructure.dto.output.games.CreateRoomResponseDto
-import com.esgi.infrastructure.dto.output.games.JoinRoomResponseDto
-import com.esgi.infrastructure.dto.output.games.PlayGameResponseDto
-import com.esgi.infrastructure.dto.output.games.StartedGameResponseDto
+import com.esgi.infrastructure.dto.output.games.*
 import com.esgi.infrastructure.services.TcpService
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
@@ -38,6 +36,7 @@ class GamesGateway(
     val startSessionUseCase: StartSessionUseCase,
     val playSessionActionUseCase: PlaySessionActionUseCase,
     val deleteRoomUseCase: DeleteRoomUseCase,
+    val findRoomUseCase: FindRoomUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
     val jsonMapper = jacksonObjectMapper()
@@ -63,7 +62,7 @@ class GamesGateway(
         val session = try {
             Session(
                 roomId.toString(),
-                gameInstanciator.instanciateGame(roomData.gameId)
+                gameInstanciator.instanciateGame(roomData.gameId),
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -80,13 +79,13 @@ class GamesGateway(
 
                     if (jsonMessage != null) {
                         try {
-                            session.broadcast(
-                                jsonMapper.readValue<GameOutput>(jsonMessage)
+                            session.dispatch(
+                                jsonMapper.readValue<GameOutput>(jsonMessage),
                             )
                         } catch (e: IOException) {
                             try {
-                                session.broadcast(
-                                    jsonMapper.readValue<GameErrorOutput>(jsonMessage)
+                                session.dispatchError(
+                                    jsonMapper.readValue<GameErrorOutput>(jsonMessage),
                                 )
                             } catch (e: IOException) {
                                 println("Error parsing message")
@@ -114,9 +113,16 @@ class GamesGateway(
     ): JoinRoomResponseDto {
         println("Joining room $roomId")
 
+        val session = sessions[roomId]
+        val userId = (principal.principal as User).id
+
         return try {
-            joinRoomUseCase(roomId, (principal.principal as User).id.toString())
-            JoinRoomResponseDto(true, (principal.principal as User).id)
+            joinRoomUseCase(roomId, userId.toString())
+            JoinRoomResponseDto(true, userId)
+        } catch (e: IllegalStateException) {
+            session?.sendLatestStateToUser(userId.toString())
+
+            JoinRoomResponseDto(true)
         } catch (e: BadRequestException) {
             JoinRoomResponseDto(false, reason = e.message)
         } catch (e: NotFoundException) {
@@ -148,9 +154,22 @@ class GamesGateway(
         instruction: String
     ): PlayGameResponseDto {
         val session = sessions[roomId]
+        val room = findRoomUseCase(roomId)
+
+        val player = room?.players?.find { it.user.id == (principal.principal as User).id }
+            ?: return PlayGameResponseDto(false, "You are not in this room")
 
         try {
-            jsonMapper.readTree(instruction)
+            val tree = jsonMapper.readTree(instruction)
+
+            if (tree["actions"].isArray) {
+                tree["actions"].forEach {
+                    if (it.isObject) {
+                        (it as ObjectNode).put("player", player.playerIndex)
+                    }
+                }
+            }
+
         } catch (_: Exception) {
             PlayGameResponseDto(false, "Invalid JSON instruction")
         }
@@ -177,7 +196,15 @@ class GamesGateway(
         return PlayGameResponseDto(false, "Session not found")
     }
 
-    inner class Session(private val roomId: String, private val client: AsynchronousSocketChannel) {
+    inner class Session(
+        private val roomId: String,
+        private val client: AsynchronousSocketChannel
+    ) {
+        private var lastStateMap: MutableMap<String, GameOutputResponseDto> = mutableMapOf()
+
+        @OptIn(DelicateCoroutinesApi::class)
+        val lastStateContext = newSingleThreadContext("LastStateContext")
+
         fun sendInstruction(message: String) {
             tcpService.sendTcpMessage(client, "$message\n\n")
         }
@@ -186,12 +213,79 @@ class GamesGateway(
             return tcpService.receiveTcpMessage(client)
         }
 
-        fun broadcast(gameOutput: GameOutput) {
-            simpMessagingTemplate.convertAndSend("/rooms/$roomId", gameOutput)
+        fun sendLatestStateToUser(userId: String) {
+            lastStateMap[userId]?.let {
+                sentToUser(userId, it)
+            }
         }
 
-        fun broadcast(gameErrorOutput: GameErrorOutput) {
-            simpMessagingTemplate.convertAndSend("/rooms/$roomId", gameErrorOutput)
+        private fun sentToUser(userId: String, message: Any) {
+            simpMessagingTemplate.convertAndSend("/rooms/$roomId/${userId}", message)
+        }
+
+        fun dispatchError(gameErrorOutput: GameErrorOutput) {
+            val room = findRoomUseCase(roomId) ?: return
+
+            room.players.forEach {
+                val gameErrorResponse = GameErrorOutputResponseDto(
+                    errors = gameErrorOutput.errors.filter { error -> it.playerIndex == error.requestedAction.player }
+                        .map { error ->
+                            GameErrorResponseDto(
+                                type = error.type,
+                                subtype = error.subtype,
+                                action = error.action,
+                                requestedAction = error.requestedAction.let { action ->
+                                    GameRequestedActionResponseDto(
+                                        type = action.type,
+                                        zones = action.zones
+                                    )
+                                }
+                            )
+                        }
+                )
+
+                if (gameErrorResponse.errors.isNotEmpty()) {
+                    sentToUser(it.user.id.toString(), gameErrorResponse)
+                }
+            }
+        }
+
+        suspend fun dispatch(gameOutput: GameOutput) {
+            val room = findRoomUseCase(roomId) ?: return
+
+            room.players.forEach {
+                val display = gameOutput.displays.find { display -> it.playerIndex == display.player }
+                val requestActions = gameOutput.requestedActions.filter { action -> it.playerIndex == action.player }
+                val gameState = gameOutput.gameState
+
+                val gameResponse = GameOutputResponseDto(
+                    gameState = GameStateResponseDto(
+                        scores = gameState.scores,
+                        gameOver = gameState.gameOver
+                    ),
+                    display = display?.let { d ->
+                        GameDisplayResponseDto(
+                            width = d.width,
+                            height = d.height,
+                            content = d.content
+                        )
+                    },
+                    resquestedActions = requestActions.map { action ->
+                        GameRequestedActionResponseDto(
+                            type = action.type,
+                            zones = action.zones
+                        )
+                    }
+                )
+
+                withContext(lastStateContext) {
+                    sessions[roomId]?.let { session ->
+                        session.lastStateMap[it.user.id.toString()] = gameResponse
+                    }
+                }
+
+                sentToUser(it.user.id.toString(), gameResponse)
+            }
         }
     }
 

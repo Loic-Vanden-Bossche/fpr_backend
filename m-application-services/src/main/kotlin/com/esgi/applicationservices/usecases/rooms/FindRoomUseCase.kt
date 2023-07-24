@@ -11,4 +11,8 @@ class FindRoomUseCase(
     operator fun invoke(user: User, id: UUID): Room? {
         return roomsPersistence.findByIdOfUser(id, user.id)
     }
+
+    operator fun invoke(id: String): Room? {
+        return roomsPersistence.findById(id)
+    }
 }
