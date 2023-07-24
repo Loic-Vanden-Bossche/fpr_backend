@@ -257,7 +257,8 @@ class SessionsService(
 
                 val gameResponse = GameOutputResponseDto(
                     gameState = GameStateResponseDto(
-                        scores = gameState.scores,
+                        scores = gameState.scores.withIndex()
+                            .associate { (index, score) -> room.players.find { p -> (p.playerIndex - 1) == index }?.user?.id.toString() to score },
                         gameOver = gameState.gameOver
                     ),
                     display = display?.let { d ->
