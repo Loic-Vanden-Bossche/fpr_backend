@@ -288,4 +288,8 @@ class ApplicationConfiguration(
     @Bean
     fun finalizeSessionUseCase(): FinalizeSessionUseCase =
         FinalizeSessionUseCase(roomsPersistence, usersPersistence)
+
+    @Bean
+    fun pauseSessionUseCase(): PauseSessionUseCase =
+        PauseSessionUseCase(roomsPersistence)
 }

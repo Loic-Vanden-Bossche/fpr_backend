@@ -36,7 +36,8 @@ class GamesGateway(
     val playSessionActionUseCase: PlaySessionActionUseCase,
     val deleteRoomUseCase: DeleteRoomUseCase,
     val findRoomUseCase: FindRoomUseCase,
-    val finalizeSessionUseCase: FinalizeSessionUseCase
+    val finalizeSessionUseCase: FinalizeSessionUseCase,
+    val pauseSessionUseCase: PauseSessionUseCase
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
     val jsonMapper = jacksonObjectMapper()
@@ -95,7 +96,7 @@ class GamesGateway(
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    session.close(emptyList())
+                    session.stop(emptyList())
                     break
                 }
             }
@@ -146,6 +147,34 @@ class GamesGateway(
             StartedGameResponseDto(false, e.message)
         } catch (e: NotFoundException) {
             StartedGameResponseDto(false, e.message)
+        }
+    }
+
+    @MessageMapping("/stopGame/{roomId}")
+    @SendTo("/rooms/{roomId}")
+    fun stopGame(@DestinationVariable roomId: String): StoppedGameResponseDto {
+        val session = sessions[roomId] ?: return StoppedGameResponseDto(false, "Session not found")
+
+        return try {
+            session.stop(emptyList())
+            StoppedGameResponseDto(true)
+        } catch (e: NotFoundException) {
+            StoppedGameResponseDto(false, e.message)
+        }
+    }
+
+    @MessageMapping("/pauseGame/{roomId}")
+    @SendTo("/rooms/{roomId}")
+    fun pauseGame(@DestinationVariable roomId: String): PausedGameResponseDto {
+        val session = sessions[roomId] ?: return PausedGameResponseDto(false, "Session not found")
+
+        return try {
+            session.pause()
+            PausedGameResponseDto(true)
+        } catch (e: NotFoundException) {
+            PausedGameResponseDto(false, e.message)
+        } catch (e: BadRequestException) {
+            PausedGameResponseDto(false, e.message)
         }
     }
 
@@ -232,7 +261,7 @@ class GamesGateway(
 
             room.players.forEach {
                 val gameErrorResponse = GameErrorOutputResponseDto(
-                    errors = gameErrorOutput.errors.filter { error -> it.playerIndex == error.requestedAction.player }
+                    errors = gameErrorOutput.errors.filter { error -> it.playerIndex == error.player }
                         .map { error ->
                             GameErrorResponseDto(
                                 type = error.type,
@@ -292,15 +321,22 @@ class GamesGateway(
             }
 
             if (gameOutput.gameState.gameOver) {
-                close(gameOutput.gameState.scores)
+                stop(gameOutput.gameState.scores)
             }
         }
 
-        fun close(scores: List<Int>) {
+        fun stop(scores: List<Int>) {
             finalizeSessionUseCase(roomId, scores)
+            close()
+        }
 
+        fun pause() {
+            pauseSessionUseCase(roomId)
+            close()
+        }
+
+        private fun close() {
             client.close()
-
             sessions.remove(roomId)
         }
     }

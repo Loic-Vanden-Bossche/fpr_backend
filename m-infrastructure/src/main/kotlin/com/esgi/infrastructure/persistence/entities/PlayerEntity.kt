@@ -7,8 +7,10 @@ import java.util.*
 
 @Entity
 @DynamicUpdate
-@Table(name = "T_PLAYERS")
-class PlayerEntity(
+@Table(name = "T_PLAYERS", uniqueConstraints=[
+    UniqueConstraint(columnNames = ["PLAYER_USER_ID", "PLAYER_ROOM_ID"])
+])
+data class PlayerEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "PLAYER_ID", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
