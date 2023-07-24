@@ -155,13 +155,9 @@ class RoomsPersistenceAdapter(
         roomsRepository.deleteById(UUID.fromString(roomId))
     }
 
-    override fun getUserRooms(userId: UUID): List<Room> {
-        val user = usersRepository.findByIdOrNull(userId) ?: return emptyList()
-        return roomsRepository.findAllByUser(user).map {
-            val status =
-                if (user in it.players.map { player -> player.user }) RoomInvitationStatus.JOINED else RoomInvitationStatus.PENDING
-            mapper.toDomain(it, status)
-        }
+    override fun getUserRooms(group: Group): List<Room> {
+        val groupEntity = groupsRepository.findByIdOrNull(group.id)!!
+        return roomsRepository.findAllByGroup(groupEntity).map { mapper.toDomain(it, null) }
     }
 
     override fun pauseAllRooms() {
