@@ -16,4 +16,5 @@ interface RoomsPersistence {
     fun delete(roomId: String)
     fun getUserRooms(userId: UUID): List<Room>
     fun calculatePlayerIndexes(roomId: String): Room
+    fun pauseAllRooms()
 }

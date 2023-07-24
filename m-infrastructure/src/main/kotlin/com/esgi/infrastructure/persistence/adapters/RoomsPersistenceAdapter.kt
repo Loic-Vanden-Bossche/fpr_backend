@@ -164,4 +164,8 @@ class RoomsPersistenceAdapter(
             mapper.toDomain(it, status)
         }
     }
+
+    override fun pauseAllRooms() {
+        roomsRepository.pauseAllStartedRooms()
+    }
 }

@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.*
+import org.springframework.boot.context.event.ApplicationReadyEvent
+import org.springframework.context.event.EventListener
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
 import java.io.IOException
 import java.nio.channels.AsynchronousSocketChannel
+
 
 @Controller
 @CrossOrigin(origins = ["https://jxy.me"], allowCredentials = "true")
@@ -37,10 +40,17 @@ class GamesGateway(
     val deleteRoomUseCase: DeleteRoomUseCase,
     val findRoomUseCase: FindRoomUseCase,
     val finalizeSessionUseCase: FinalizeSessionUseCase,
-    val pauseSessionUseCase: PauseSessionUseCase
+    val pauseSessionUseCase: PauseSessionUseCase,
+    val pauseAllRoomsUseCase: PauseAllRoomsUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
     val jsonMapper = jacksonObjectMapper()
+
+    @EventListener(ApplicationReadyEvent::class)
+    fun doSomethingAfterStartup() {
+        println("Startup - pausing all rooms that are not finished")
+        pauseAllRoomsUseCase()
+    }
 
     @MessageMapping("/createRoom")
     @SendTo("/rooms/created")

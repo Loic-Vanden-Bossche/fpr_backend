@@ -2,6 +2,8 @@ package com.esgi.infrastructure.persistence.repositories
 
 import com.esgi.infrastructure.persistence.entities.RoomEntity
 import com.esgi.infrastructure.persistence.entities.UserEntity
+import jakarta.transaction.Transactional
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
@@ -14,4 +16,9 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
 
     @Query("SELECT r FROM RoomEntity r INNER JOIN UserGroupEntity ug WHERE ug.user = :user AND r.status <> 'FINISHED'")
     fun findAllByUser(@Param("user") user: UserEntity): List<RoomEntity>
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE RoomEntity r SET r.status = 'PAUSED' WHERE r.status <> 'FINISHED'")
+    fun pauseAllStartedRooms()
 }

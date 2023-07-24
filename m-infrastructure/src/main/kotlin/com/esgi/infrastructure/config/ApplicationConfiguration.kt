@@ -292,4 +292,8 @@ class ApplicationConfiguration(
     @Bean
     fun pauseSessionUseCase(): PauseSessionUseCase =
         PauseSessionUseCase(roomsPersistence)
+
+    @Bean
+    fun pauseAllRoomsUseCase(): PauseAllRoomsUseCase =
+        PauseAllRoomsUseCase(roomsPersistence)
 }
