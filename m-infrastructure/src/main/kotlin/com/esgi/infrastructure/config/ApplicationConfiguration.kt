@@ -300,4 +300,8 @@ class ApplicationConfiguration(
     @Bean
     fun resumeSessionUseCase(): ResumeSessionUseCase =
         ResumeSessionUseCase(roomsPersistence)
+
+    @Bean
+    fun getHistoryForRoomUseCase(): GetHistoryForRoomUseCase =
+        GetHistoryForRoomUseCase(roomsPersistence)
 }
