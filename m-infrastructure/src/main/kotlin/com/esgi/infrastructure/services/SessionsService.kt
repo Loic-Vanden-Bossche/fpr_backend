@@ -205,6 +205,8 @@ class SessionsService(
         val lastStateContext = newSingleThreadContext("LastStateContext")
 
         fun prepareAction(action: String, userId: String): String? {
+            return action;
+            
             if (!checkGameAction(userId)) {
                 println("Action $action is not valid for user $userId")
                 return null
@@ -219,6 +221,8 @@ class SessionsService(
             pendingActions[userId] = actions
 
             println("after checkComplete $pendingActions")
+
+            println(checkComplete())
 
             if (checkComplete()) {
                 val instructions = pendingActions.flatMap { (_, actions) -> actions }.flatMap { a ->
@@ -254,6 +258,8 @@ class SessionsService(
                 val userId = it.key
                 val userRequestedActions = it.value.requestedActions
                 val pendingActions = pendingActions[userId] ?: return false
+
+                println("$userId ${pendingActions.size} == ${userRequestedActions.size}}")
 
                 pendingActions.size == userRequestedActions.size
             }
