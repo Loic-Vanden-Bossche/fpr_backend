@@ -12,8 +12,9 @@ class CreateGameUseCase(
         nbMinPlayers: Int,
         nbMaxPlayers: Int,
         isDeterministic: Boolean,
-        owner: User
+        owner: User,
+        needSeed: Boolean
     ): Game {
-        return gamesPersistence.createGame(title, nbMinPlayers, nbMaxPlayers, isDeterministic, owner)
+        return gamesPersistence.createGame(title, nbMinPlayers, nbMaxPlayers, isDeterministic, owner, needSeed)
     }
 }

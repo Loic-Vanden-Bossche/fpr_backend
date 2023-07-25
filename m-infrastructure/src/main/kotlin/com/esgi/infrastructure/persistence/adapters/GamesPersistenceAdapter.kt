@@ -36,7 +36,8 @@ class GamesPersistenceAdapter(
         nbMinPlayers: Int,
         nbMaxPlayers: Int,
         isDeterministic: Boolean,
-        owner: User
+        owner: User,
+        needSeed: Boolean
     ): Game {
         val userEntity = usersRepository.findById(owner.id).orElse(null) ?: throw NotFoundException("User not found")
 
@@ -51,7 +52,7 @@ class GamesPersistenceAdapter(
                 lastBuildDate = null,
                 rooms = emptyList(),
                 picture = false,
-                needSeed = false
+                needSeed = needSeed
             )
         )
 

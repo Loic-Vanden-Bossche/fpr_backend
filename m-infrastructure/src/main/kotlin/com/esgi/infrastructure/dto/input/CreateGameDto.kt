@@ -20,4 +20,6 @@ data class CreateGameDto @JsonCreator constructor(
 
     @field:NotNull
     val isDeterministic: Boolean,
+
+    val needSeed: Boolean
 )

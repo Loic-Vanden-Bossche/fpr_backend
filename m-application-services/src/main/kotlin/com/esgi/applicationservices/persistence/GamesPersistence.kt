@@ -15,7 +15,8 @@ interface GamesPersistence {
         nbMinPlayers: Int,
         nbMaxPlayers: Int,
         isDeterministic: Boolean,
-        owner: User
+        owner: User,
+        needSeed: Boolean
     ): Game
 
     fun updateLastBuildDate(gameId: String): Game
