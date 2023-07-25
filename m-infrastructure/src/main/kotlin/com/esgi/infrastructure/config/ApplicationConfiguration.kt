@@ -305,4 +305,8 @@ class ApplicationConfiguration(
     @Bean
     fun updateLastReadUseCase(): UpdateLastReadUseCase =
         UpdateLastReadUseCase(groupsPersistence)
+
+    @Bean
+    fun rollbackSessionUseCase(): RollbackSessionUseCase =
+        RollbackSessionUseCase(roomsPersistence)
 }

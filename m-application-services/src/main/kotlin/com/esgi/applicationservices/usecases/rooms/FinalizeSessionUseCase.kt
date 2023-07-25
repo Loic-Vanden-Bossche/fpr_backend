@@ -22,6 +22,11 @@ class FinalizeSessionUseCase(
             }
         }
 
+        if (room.status === RoomStatus.PAUSED) {
+            println("Room $roomId is paused, not finishing")
+            return
+        }
+
         roomsPersistence.updateStatus(roomId, RoomStatus.FINISHED)
     }
 }

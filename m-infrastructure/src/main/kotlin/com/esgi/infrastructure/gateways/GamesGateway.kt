@@ -5,6 +5,7 @@ import com.esgi.domainmodels.User
 import com.esgi.domainmodels.exceptions.BadRequestException
 import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.input.CreateRoomDto
+import com.esgi.infrastructure.dto.input.RollbackRoomDto
 import com.esgi.infrastructure.dto.output.games.*
 import com.esgi.infrastructure.services.SessionsService
 import com.fasterxml.jackson.databind.node.ObjectNode
@@ -103,6 +104,34 @@ class GamesGateway(
             StartedGameResponseDto(false, e.message)
         } catch (e: NotFoundException) {
             StartedGameResponseDto(false, e.message)
+        }
+    }
+
+    @MessageMapping("/rollbackGame/{roomId}")
+    @SendTo("/rooms/{roomId}")
+    fun rollbackGame(@DestinationVariable roomId: String, roomData: RollbackRoomDto): RollbackedGameResponseDto {
+        println("Resuming game $roomId")
+        if (sessionsService.isSessionMissing(roomId)) {
+            return RollbackedGameResponseDto(false, reason = "Session not found")
+        }
+
+        val room = findRoomUseCase(roomId) ?: return RollbackedGameResponseDto(false, "Room not found")
+
+        println("Room $roomId found")
+
+        println("Rolling back game $roomId to action ${roomData.actionId}")
+
+        return try {
+            sessionsService.rollbackSession(
+                room,
+                roomData.actionId
+            )
+
+            RollbackedGameResponseDto(true)
+        } catch (e: BadRequestException) {
+            RollbackedGameResponseDto(false, e.message)
+        } catch (e: NotFoundException) {
+            RollbackedGameResponseDto(false, e.message)
         }
     }
 
