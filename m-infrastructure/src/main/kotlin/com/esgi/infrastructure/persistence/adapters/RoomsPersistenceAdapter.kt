@@ -176,4 +176,16 @@ class RoomsPersistenceAdapter(
             )
         }
     }
+
+    override fun removeActionsAfterActionId(roomId: String, actionId: String) {
+        val roomEntity =
+            roomsRepository.findById(UUID.fromString(roomId)).orElse(null) ?: throw NotFoundException("Room not found")
+
+        val actionEntity = sessionActionRepository.findById(UUID.fromString(actionId)).orElse(null)
+            ?: throw NotFoundException("Action not found")
+
+        val actionsToRemove = roomEntity.actions.filter { it.createdAt?.before(actionEntity.createdAt) ?: false }
+
+        sessionActionRepository.deleteAll(actionsToRemove)
+    }
 }

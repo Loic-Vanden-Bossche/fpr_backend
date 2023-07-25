@@ -30,6 +30,7 @@ class SessionsService(
     private val resumeSessionUseCase: ResumeSessionUseCase,
     private val pauseAllRoomsUseCase: PauseAllRoomsUseCase,
     private val getHistoryForRoomUseCase: GetHistoryForRoomUseCase,
+    private val rollbackSessionUseCase: RollbackSessionUseCase,
 ) {
     private val sessions: MutableMap<String, Session> = HashMap()
     private val jsonMapper = jacksonObjectMapper()
@@ -76,7 +77,6 @@ class SessionsService(
         val session = getSession(roomId) ?: return
 
         GlobalScope.launch {
-            // remove last state
             val actionsSequence = LinkedList(actions)
 
             while (true) {
@@ -114,16 +114,16 @@ class SessionsService(
         }
     }
 
-//    fun rollbackSession(room: Room, actionId: String) {
-//        val roomId = room.id.toString()
-//        val actions = replayToAction(room, actionId)
-//
-//        println("Rolling back session for room $roomId")
-//
-//        createSession(room.game.id.toString(), roomId)
-//
-//        listenToIncomingMessages(roomId, actions)
-//    }
+    fun rollbackSession(room: Room, actionId: String) {
+        val roomId = room.id.toString()
+        val actions = replayToAction(room, actionId)
+
+        println("Rolling back session for room $roomId")
+
+        createSession(room.game.id.toString(), roomId)
+
+        listenToIncomingMessages(roomId, actions)
+    }
 
     fun resumeSession(room: Room) {
         val roomId = room.id.toString()
@@ -141,16 +141,11 @@ class SessionsService(
 
         session.startGame(room.players.size)
 
-        // replay actions
-        val actions = if (actionId == null) {
-            // get all actions
+        return if (actionId == null) {
             getHistoryForRoomUseCase(room.id)
         } else {
-            // get actions after actionId
-            getHistoryForRoomUseCase(room.id)
+            rollbackSessionUseCase(room.id, actionId)
         }
-
-        return actions
     }
 
     private fun getSession(roomId: String): Session? {
