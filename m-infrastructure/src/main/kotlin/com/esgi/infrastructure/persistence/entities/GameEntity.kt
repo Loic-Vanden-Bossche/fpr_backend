@@ -32,6 +32,9 @@ data class GameEntity(
     @Column(name = "GAME_IS_DETERMINISTIC", nullable = false, columnDefinition = "BOOLEAN default true")
     val isDeterministic: Boolean,
 
+    @Column(name = "GAME_NEED_SEED", nullable = false, columnDefinition = "BOOLEAN default false")
+    var needSeed: Boolean,
+
     @Column(name = "GAME_IS_PUBLIC", nullable = false, columnDefinition = "BOOLEAN default false")
     var isPublic: Boolean,
 

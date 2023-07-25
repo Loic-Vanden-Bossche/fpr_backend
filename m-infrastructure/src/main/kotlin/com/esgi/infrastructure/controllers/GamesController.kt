@@ -4,6 +4,7 @@ import com.esgi.applicationservices.usecases.games.*
 import com.esgi.domainmodels.User
 import com.esgi.infrastructure.dto.input.CreateGameDto
 import com.esgi.infrastructure.dto.input.SetGameVisibilityDto
+import com.esgi.infrastructure.dto.input.SetNeedSeedDto
 import com.esgi.infrastructure.dto.mappers.GameMapper
 import com.esgi.infrastructure.dto.output.GameResponseDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -25,6 +26,7 @@ class GamesController(
     private val findingMyGamesUseCase: FindingMyGamesUseCase,
     private val addGamePictureUseCase: AddGamePictureUseCase,
     private val setGameVisibilityUseCase: SetGameVisibilityUseCase,
+    private val setNeedSeedUseCase: SetNeedSeedUseCase,
     private val deleteGameUseCase: DeleteGameUseCase
 ) {
     private val mapper = Mappers.getMapper(GameMapper::class.java)
@@ -81,6 +83,21 @@ class GamesController(
                 (principal.principal as User).id,
                 id,
                 body.public
+            )
+        )
+    }
+
+    @PatchMapping("/{id}/needSeed")
+    fun setNeedSeed(
+        principal: UsernamePasswordAuthenticationToken,
+        @RequestBody @NotNull body: SetNeedSeedDto,
+        @PathVariable @NotNull id: String
+    ): GameResponseDto {
+        return mapper.toDto(
+            setNeedSeedUseCase(
+                (principal.principal as User).id,
+                id,
+                body.needSeed
             )
         )
     }

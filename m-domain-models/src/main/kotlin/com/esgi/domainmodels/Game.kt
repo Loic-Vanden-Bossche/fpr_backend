@@ -12,4 +12,5 @@ data class Game(
     val nbMaxPlayers: Int,
     var isDeterministic: Boolean,
     val lastBuildDate: Date?,
+    val needSeed: Boolean
 )

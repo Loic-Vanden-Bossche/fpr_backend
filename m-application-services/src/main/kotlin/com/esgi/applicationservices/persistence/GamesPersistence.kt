@@ -24,5 +24,7 @@ interface GamesPersistence {
 
     fun setGameVisibility(gameId: String, visible: Boolean): Game
 
+    fun setNeedSeed(gameId: String, needSeed: Boolean): Game
+
     fun delete(gameId: String)
 }
