@@ -94,9 +94,11 @@ class GamesGateway(
             return StartedGameResponseDto(false, reason = "Session not found")
         }
 
+        val room = findRoomUseCase(roomId) ?: return StartedGameResponseDto(false, "Room not found")
+
         return try {
             sessionsService.startGameSession(
-                roomId,
+                room,
                 startSessionUseCase(roomId).players.size
             )
             StartedGameResponseDto(true)
@@ -223,17 +225,26 @@ class GamesGateway(
         } catch (_: Exception) {
             PlayGameResponseDto(false, "Invalid JSON instruction")
         }
+        val completedInstruction = sessionsService.prepareGameAction(
+            roomId,
+            jsonMapper.writeValueAsString(parsedInstruction),
+            player.user.id.toString()
+        )
+
+        if (completedInstruction.isNullOrEmpty()) {
+            return PlayGameResponseDto(true, "Played instruction - waiting for other players")
+        }
 
         return try {
             playSessionActionUseCase(
                 roomId,
                 (principal.principal as User).id.toString(),
-                jsonMapper.writeValueAsString(parsedInstruction)
+                completedInstruction
             )
 
-            println("Sending instruction $parsedInstruction to room $roomId")
+            println("Sending instruction $completedInstruction to room $roomId")
 
-            sessionsService.playGameAction(roomId, parsedInstruction.toString())
+            sessionsService.playGameAction(roomId, completedInstruction)
 
             PlayGameResponseDto(true)
         } catch (e: BadRequestException) {

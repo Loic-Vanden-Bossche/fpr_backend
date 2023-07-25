@@ -1,5 +1,5 @@
 package com.esgi.applicationservices.services
 
 interface GameBuilder {
-    fun buildGame(gameId: String)
+    fun buildGame(gameId: String, language: String)
 }

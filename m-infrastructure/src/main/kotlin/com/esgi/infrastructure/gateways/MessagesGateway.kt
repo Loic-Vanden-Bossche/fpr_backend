@@ -8,7 +8,7 @@ import com.esgi.infrastructure.dto.input.DeleteMessageDto
 import com.esgi.infrastructure.dto.input.EditMessageDto
 import com.esgi.infrastructure.dto.input.WriteMessageDto
 import com.esgi.infrastructure.dto.mappers.MessageMapper
-import com.esgi.infrastructure.dto.output.MessageResponseType
+import com.esgi.infrastructure.dto.output.MessageResponseTypeDto
 import jakarta.inject.Inject
 import org.mapstruct.factory.Mappers
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,7 +41,7 @@ class MessagesGateway(
         message: WriteMessageDto
     ) {
         val result = writeMessageToGroupUseCase.execute(principal.principal as User, id, message.message)
-        template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseType.NEW))
+        template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseTypeDto.NEW))
     }
 
     @MessageMapping("/{id}/messages/edit")
@@ -51,7 +51,7 @@ class MessagesGateway(
         message: EditMessageDto
     ) {
         val result = editMessageInGroupUseCase(principal.principal as User, id, message.id, message.message)
-        template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseType.EDIT))
+        template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseTypeDto.EDIT))
     }
 
     @MessageMapping("/{id}/messages/delete")
@@ -61,6 +61,6 @@ class MessagesGateway(
         message: DeleteMessageDto
     ) {
         val result = deleteMessageInGroupUseCase(principal.principal as User, id, message.id)
-        template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseType.DELETE))
+        template.convertAndSend("/groups/$id/messages", mapper.toDto(result, MessageResponseTypeDto.DELETE))
     }
 }

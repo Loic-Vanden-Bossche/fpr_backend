@@ -11,7 +11,7 @@ import com.esgi.infrastructure.dto.mappers.GroupMapper
 import com.esgi.infrastructure.dto.mappers.MessageMapper
 import com.esgi.infrastructure.dto.output.GroupResponseDto
 import com.esgi.infrastructure.dto.output.MessageResponseDto
-import com.esgi.infrastructure.dto.output.MessageResponseType
+import com.esgi.infrastructure.dto.output.MessageResponseTypeDto
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
@@ -102,7 +102,7 @@ class GroupsController(
         @RequestParam size: Int? = null
     ): List<MessageResponseDto> =
         findingAllGroupMessageUseCase.execute(principal.principal as User, id, page ?: 0, size ?: 20).map {
-            messageMapper.toDto(it, MessageResponseType.NEW)
+            messageMapper.toDto(it, MessageResponseTypeDto.NEW)
         }.also {
             updateLastReadUseCase(id, principal.principal as User)
         }

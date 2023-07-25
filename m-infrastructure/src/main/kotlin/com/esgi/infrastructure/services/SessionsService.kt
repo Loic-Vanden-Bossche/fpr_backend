@@ -169,8 +169,13 @@ class SessionsService(
         return getSession(roomId) != null
     }
 
-    fun startGameSession(roomId: String, nPlayers: Int) {
-        getSession(roomId)?.startGame(nPlayers, roomId)
+    fun startGameSession(room: Room, nPlayers: Int) {
+        val roomId = room.id.toString()
+        if (room.game.needSeed) {
+            getSession(roomId)?.startGame(nPlayers, roomId)
+        } else {
+            getSession(roomId)?.startGame(nPlayers)
+        }
     }
 
     fun stopGameSession(roomId: String, scores: List<Int>) {
@@ -185,14 +190,74 @@ class SessionsService(
         getSession(roomId)?.sendInstruction(action)
     }
 
+    fun prepareGameAction(roomId: String, action: String, userId: String): String? {
+        return getSession(roomId)?.prepareAction(action, userId)
+    }
+
     inner class Session(
         val roomId: String,
         private val client: AsynchronousSocketChannel
     ) {
         private var lastStateMap: MutableMap<String, GameOutputResponseDto> = mutableMapOf()
+        private val pendingActions = mutableMapOf<String, MutableList<String>>()
 
         @OptIn(DelicateCoroutinesApi::class)
         val lastStateContext = newSingleThreadContext("LastStateContext")
+
+        fun prepareAction(action: String, userId: String): String? {
+            if (!checkGameAction(userId)) {
+                println("Action $action is not valid for user $userId")
+                return null
+            }
+
+            println("Preparing action $action for user $userId")
+
+            println("before checkComplete $pendingActions")
+
+            val actions = pendingActions.getOrDefault(userId, mutableListOf())
+            actions.add(action)
+            pendingActions[userId] = actions
+
+            println("after checkComplete $pendingActions")
+
+            if (checkComplete()) {
+                val instructions = pendingActions.flatMap { (_, actions) -> actions }.flatMap { a ->
+                    jsonMapper.readValue(a, ActionInstruction::class.java).actions
+                }
+
+                jsonMapper.writeValueAsString(
+                    ActionInstruction(
+                        actions = instructions
+                    )
+                ).let {
+                    pendingActions.clear()
+                    return it
+                }
+            }
+
+            return null
+        }
+
+        private fun checkGameAction(userId: String): Boolean {
+            val userRequestedActions = lastStateMap[userId]?.requestedActions ?: return false
+            val pendingActions = pendingActions[userId] ?: mutableListOf()
+
+            println("Checking game action for user $userId")
+            println("Pending actions: ${pendingActions.size}")
+            println("User requested actions: ${userRequestedActions.size}")
+
+            return pendingActions.size < userRequestedActions.size
+        }
+
+        private fun checkComplete(): Boolean {
+            return lastStateMap.all {
+                val userId = it.key
+                val userRequestedActions = it.value.requestedActions
+                val pendingActions = pendingActions[userId] ?: return false
+
+                pendingActions.size == userRequestedActions.size
+            }
+        }
 
         fun sendInstruction(message: String) {
             tcpService.sendTcpMessage(client, "$message\n\n")
@@ -211,7 +276,7 @@ class SessionsService(
         fun startGame(nPlayers: Int) {
             sendInstruction(
                 jsonMapper.writeValueAsString(
-                    Instruction(Init(nPlayers))
+                    InitInstruction(Init(nPlayers))
                 )
             )
         }
@@ -219,7 +284,7 @@ class SessionsService(
         fun startGame(nPlayers: Int, seed: String) {
             sendInstruction(
                 jsonMapper.writeValueAsString(
-                    Instruction(InitSeed(nPlayers, seed))
+                    InitInstruction(InitSeed(nPlayers, seed))
                 )
             )
         }
@@ -314,7 +379,11 @@ class SessionsService(
         }
     }
 
-    data class Instruction<T: IInit>(
+    data class ActionInstruction(
+        val actions: List<Any>
+    )
+
+   data class InitInstruction<T: IInit>(
         val init: T
     )
 

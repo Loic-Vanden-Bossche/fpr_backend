@@ -24,4 +24,9 @@ interface RoomsRepository : CrudRepository<RoomEntity, UUID> {
 
     @Query("SELECT a FROM RoomEntity r INNER JOIN r.actions a WHERE r.id = :roomId ORDER BY a.createdAt ASC")
     fun findActionByRoomId(roomId: UUID): List<SessionActionEntity>
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE RoomEntity r SET r.game = NULL WHERE r.game.id = :gameId")
+    fun setGameToNull(gameId: UUID)
 }

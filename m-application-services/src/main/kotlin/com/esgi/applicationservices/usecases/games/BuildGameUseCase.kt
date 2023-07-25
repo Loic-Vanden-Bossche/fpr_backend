@@ -46,7 +46,7 @@ class BuildGameUseCase(
         }
 
         gameUploader.uploadGame(gameId, fileStream)
-        gameBuilder.buildGame(gameId)
+        gameBuilder.buildGame(gameId, language.lowercase())
 
         return gamesPersistence.updateLastBuildDate(gameId)
     }
