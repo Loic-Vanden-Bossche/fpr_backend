@@ -206,7 +206,7 @@ class SessionsService(
 
         fun prepareAction(action: String, userId: String): String? {
             return action;
-            
+
             if (!checkGameAction(userId)) {
                 println("Action $action is not valid for user $userId")
                 return null
