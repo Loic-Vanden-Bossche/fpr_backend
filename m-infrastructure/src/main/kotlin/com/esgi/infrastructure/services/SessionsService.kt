@@ -307,6 +307,6 @@ class SessionsService(
 
     data class Init(
         val players: Int,
-        val seel: String
+        val seed: String
     )
 }
