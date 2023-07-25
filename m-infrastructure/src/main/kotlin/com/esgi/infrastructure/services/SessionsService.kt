@@ -206,7 +206,7 @@ class SessionsService(
         fun startGame(nPlayers: Int, seed: String) {
             sendInstruction(
                 jsonMapper.writeValueAsString(
-                    Instruction(Init(nPlayers, seed))
+                    Instruction(Init(nPlayers))
                 )
             )
         }
@@ -301,11 +301,17 @@ class SessionsService(
         }
     }
 
-    data class Instruction(
-        val init: Init
+    data class Instruction<T: IInit>(
+        val init: T
     )
 
+    interface IInit
+
     data class Init(
+        val players: Int
+    ): IInit
+
+    data class InitSeed(
         val players: Int,
         val seed: String
     )
