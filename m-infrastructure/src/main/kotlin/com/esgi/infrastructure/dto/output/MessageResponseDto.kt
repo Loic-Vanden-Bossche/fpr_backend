@@ -7,11 +7,5 @@ data class MessageResponseDto(
     val user: UserMessageResponseDto,
     val message: String,
     val createdAt: Date,
-    val type: MessageResponseType
+    val type: MessageResponseTypeDto
 )
-
-enum class MessageResponseType {
-    NEW,
-    EDIT,
-    DELETE
-}
