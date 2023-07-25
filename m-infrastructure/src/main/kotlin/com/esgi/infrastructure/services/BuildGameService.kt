@@ -18,7 +18,7 @@ class BuildGameService(
     @Value("\${aws.accountId}")
     private val awsAccountId: String? = null
 
-    override fun buildGame(gameId: String) {
+    override fun buildGame(gameId: String, language: String) {
         val networkConfiguration = _taskService.getNetworkConfigFromService()
 
         val subnetId = networkConfiguration.awsvpcConfiguration.subnets[0]
@@ -26,6 +26,7 @@ class BuildGameService(
 
         val containerEnv = listOf(
             KeyValuePair().withName("GAME_ID").withValue(gameId),
+            KeyValuePair().withName("LANGUAGE").withValue(language),
             KeyValuePair().withName("S3_BUCKET").withValue(bucketName),
             KeyValuePair().withName("ECR_GAMES_REPOSITORY").withValue("fpr-games-repository"),
             KeyValuePair().withName("ECR_EXECUTOR_REPOSITORY").withValue("fpr-executor-repository"),

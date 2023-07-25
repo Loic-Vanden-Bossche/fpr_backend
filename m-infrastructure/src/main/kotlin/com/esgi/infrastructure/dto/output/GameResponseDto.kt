@@ -10,5 +10,5 @@ class GameResponseDto(
     var isDeterministic: Boolean,
     var isPublic: Boolean,
     val lastBuildDate: String?,
-    val needSeed: Boolean
+    var needSeed: Boolean
 )

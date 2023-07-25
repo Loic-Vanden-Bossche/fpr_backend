@@ -647,4 +647,26 @@
                 constraintName="UK_PLAYERS_USER_ROOM"
         />
     </changeSet>
+    <changeSet author="loloi (generated)" id="1690281758447-5">
+        <addColumn tableName="T_GAMES">
+            <column defaultValueBoolean="false" name="GAME_NEED_SEED" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690281758447-6">
+        <dropUniqueConstraint constraintName="UK_PLAYERS_USER_ROOM" tableName="T_PLAYERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690281758447-1">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690281758447-2">
+        <addDefaultValue columnDataType="uuid" columnName="GROUP" defaultValueComputed="NULL" tableName="T_FRIENDS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690281758447-3">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
+    <changeSet author="loloi (generated)" id="1690281758447-4">
+        <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
+    </changeSet>
 </databaseChangeLog>

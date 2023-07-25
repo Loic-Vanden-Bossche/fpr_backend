@@ -94,9 +94,11 @@ class GamesGateway(
             return StartedGameResponseDto(false, reason = "Session not found")
         }
 
+        val room = findRoomUseCase(roomId) ?: return StartedGameResponseDto(false, "Room not found")
+
         return try {
             sessionsService.startGameSession(
-                roomId,
+                room,
                 startSessionUseCase(roomId).players.size
             )
             StartedGameResponseDto(true)

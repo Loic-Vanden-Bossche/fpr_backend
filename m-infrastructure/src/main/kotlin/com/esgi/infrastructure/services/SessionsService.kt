@@ -169,8 +169,13 @@ class SessionsService(
         return getSession(roomId) != null
     }
 
-    fun startGameSession(roomId: String, nPlayers: Int) {
-        getSession(roomId)?.startGame(nPlayers, roomId)
+    fun startGameSession(room: Room, nPlayers: Int) {
+        val roomId = room.id.toString()
+        if (room.game.needSeed) {
+            getSession(roomId)?.startGame(nPlayers, roomId)
+        } else {
+            getSession(roomId)?.startGame(nPlayers)
+        }
     }
 
     fun stopGameSession(roomId: String, scores: List<Int>) {
@@ -252,12 +257,6 @@ class SessionsService(
 
                 pendingActions.size == userRequestedActions.size
             }
-
-//            return pendingActions.all { (userId, actions) ->
-//                val userRequestedActions = lastStateMap[userId]?.requestedActions ?: return false
-//
-//                actions.size == userRequestedActions.size
-//            }
         }
 
         fun sendInstruction(message: String) {
@@ -285,7 +284,7 @@ class SessionsService(
         fun startGame(nPlayers: Int, seed: String) {
             sendInstruction(
                 jsonMapper.writeValueAsString(
-                    Instruction(InitSeed(nPlayers, seed))
+                    InitInstruction(InitSeed(nPlayers, seed))
                 )
             )
         }
@@ -385,7 +384,7 @@ class SessionsService(
     )
 
    data class InitInstruction<T: IInit>(
-        val init: Init
+        val init: T
     )
 
     interface IInit
