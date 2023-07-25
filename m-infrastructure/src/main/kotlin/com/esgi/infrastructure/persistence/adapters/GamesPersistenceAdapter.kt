@@ -52,7 +52,8 @@ class GamesPersistenceAdapter(
                 isPublic = false,
                 lastBuildDate = null,
                 rooms = emptyList(),
-                picture = false
+                picture = false,
+                needSeed = false
             )
         )
 
@@ -86,6 +87,14 @@ class GamesPersistenceAdapter(
         return mapper.toDomain(gameRepository.save(gameEntity))
     }
 
+    override fun setNeedSeed(gameId: String, needSeed: Boolean): Game {
+        val gameEntity =
+            gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
+
+        gameEntity.needSeed = needSeed
+
+        return mapper.toDomain(gameRepository.save(gameEntity))
+    }
 
     override fun delete(gameId: String) {
         val gameEntity =

@@ -139,7 +139,12 @@ class SessionsService(
     private fun replayToAction(room: Room, actionId: String?): List<SessionAction> {
         val session = getSession(room.id.toString()) ?: return emptyList()
 
-        session.startGame(room.players.size)
+        if(room.game.needSeed){
+            session.startGame(room.players.size, room.id.toString())
+        }else {
+            session.startGame(room.players.size)
+        }
+
 
         return if (actionId == null) {
             getHistoryForRoomUseCase(room.id)
@@ -165,7 +170,7 @@ class SessionsService(
     }
 
     fun startGameSession(roomId: String, nPlayers: Int) {
-        getSession(roomId)?.startGame(nPlayers)
+        getSession(roomId)?.startGame(nPlayers, roomId)
     }
 
     fun stopGameSession(roomId: String, scores: List<Int>) {
@@ -277,6 +282,14 @@ class SessionsService(
             )
         }
 
+        fun startGame(nPlayers: Int, seed: String) {
+            sendInstruction(
+                jsonMapper.writeValueAsString(
+                    Instruction(InitSeed(nPlayers, seed))
+                )
+            )
+        }
+
         private fun sentToUser(userId: String, message: Any) {
             simpMessagingTemplate.convertAndSend("/rooms/$roomId/${userId}", message)
         }
@@ -371,11 +384,18 @@ class SessionsService(
         val actions: List<Any>
     )
 
-    data class InitInstruction(
+   data class InitInstruction<T: IInit>(
         val init: Init
     )
 
+    interface IInit
+
     data class Init(
         val players: Int
-    )
+    ): IInit
+
+    data class InitSeed(
+        val players: Int,
+        val seed: String
+    ): IInit
 }

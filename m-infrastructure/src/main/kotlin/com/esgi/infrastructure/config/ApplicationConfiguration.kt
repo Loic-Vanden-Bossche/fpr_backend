@@ -309,4 +309,8 @@ class ApplicationConfiguration(
     @Bean
     fun rollbackSessionUseCase(): RollbackSessionUseCase =
         RollbackSessionUseCase(roomsPersistence)
+
+    @Bean
+    fun setNeedVisibilityUseCase(): SetNeedSeedUseCase =
+        SetNeedSeedUseCase(gamesPersistence)
 }
