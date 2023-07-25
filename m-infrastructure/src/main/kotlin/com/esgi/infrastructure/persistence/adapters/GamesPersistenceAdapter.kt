@@ -7,6 +7,7 @@ import com.esgi.domainmodels.exceptions.NotFoundException
 import com.esgi.infrastructure.dto.mappers.GameMapper
 import com.esgi.infrastructure.persistence.entities.GameEntity
 import com.esgi.infrastructure.persistence.repositories.GamesRepository
+import com.esgi.infrastructure.persistence.repositories.RoomsRepository
 import com.esgi.infrastructure.persistence.repositories.UsersRepository
 import org.mapstruct.factory.Mappers
 import org.springframework.stereotype.Component
@@ -15,7 +16,8 @@ import java.util.*
 @Component
 class GamesPersistenceAdapter(
     private val gameRepository: GamesRepository,
-    private val usersRepository: UsersRepository
+    private val usersRepository: UsersRepository,
+    private val roomsRepository: RoomsRepository
 ) : GamesPersistence {
     private val mapper = Mappers.getMapper(GameMapper::class.java)
 
@@ -84,10 +86,12 @@ class GamesPersistenceAdapter(
         return mapper.toDomain(gameRepository.save(gameEntity))
     }
 
+
     override fun delete(gameId: String) {
         val gameEntity =
             gameRepository.findById(UUID.fromString(gameId)).orElse(null) ?: throw NotFoundException("Game not found")
 
+        roomsRepository.setGameToNull(UUID.fromString(gameId))
         gameRepository.delete(gameEntity)
     }
 
