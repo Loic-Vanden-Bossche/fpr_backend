@@ -669,4 +669,11 @@
     <changeSet author="loloi (generated)" id="1690281758447-4">
         <addDefaultValue columnDataType="timestamp(6)" columnName="LAST_READ" defaultValueComputed="NOW()" tableName="TJ_GROUPS_USERS"/>
     </changeSet>
+    <changeSet id="manual2" author="loloi (manual)">
+        <addUniqueConstraint
+                tableName="T_PLAYERS"
+                columnNames="PLAYER_USER_ID, PLAYER_ROOM_ID"
+                constraintName="UK_PLAYERS_USER_ROOM"
+        />
+    </changeSet>
 </databaseChangeLog>
