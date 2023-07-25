@@ -114,7 +114,8 @@ class GamesController(
                 body.nbMinPlayers,
                 body.nbMaxPlayers,
                 body.isDeterministic,
-                principal.principal as User
+                principal.principal as User,
+                body.needSeed
             )
         )
     }
